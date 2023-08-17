@@ -9,6 +9,7 @@ import com.example.twogether.workspace.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,15 @@ public class WorkspaceController {
    //     WorkspaceResponseDto workspaceResponseDto = workspaceService.getAllWorkspaces(userDetails.getUser());
    //     return ResponseEntity.ok().body(workspaceResponseDto);
    // }
+
+     @Operation(summary = "워크스페이스 전체 조회") //  description = ""
+     @GetMapping("/workspaces")
+     public ResponseEntity<List<WorkspaceResponseDto>> getWorkspaces() { //@Valid @RequestBody ~~, ~~) @AuthenticationPrincipal UserDetailsImpl userDetails
+         //WorkspaceResponseDto workspaceResponseDto = workspaceService.getAllWorkspaces(); // userDetails.getUser()
+         //return ResponseEntity.ok().body(workspaceResponseDto);
+         return ResponseEntity.ok().body(workspaceService.getAllWorkspaces());
+     }
+
 
     @Operation(summary = "워크스페이스 단일 조회") //  description = ""
     @GetMapping("/workspaces/{id}")

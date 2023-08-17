@@ -31,6 +31,21 @@ public class WorkspaceService {
         return WorkspaceResponseDto.of(workspace);
     }
 
+
+    //   @Transactional(readOnly = true)
+    //   public List<WorkspaceResponseDto> getAllWorkspaces() {
+    //       workspaceRepository.findAllByOrderByCreatedAtDesc().stream()
+    //           .map(WorkspaceResponseDto::new)
+    //           .collect(Collectors.toList());
+    //   }
+
+     @Transactional(readOnly = true)
+     public List<WorkspaceResponseDto> getAllWorkspaces() {
+//         List<Workspace> workspaces = workspaceRepository.findAllByUserOrderByCreatedAtDesc(user);
+//         return WorkspaceResponseDto.of(workspaces);
+         return workspaceRepository.findAll().stream().map(WorkspaceResponseDto::of).toList();
+     }
+
     @Transactional(readOnly = true)
     public WorkspaceResponseDto getWorkspace(User user, Long Id) {
         Workspace workspace = findWorkspace(user, Id);
