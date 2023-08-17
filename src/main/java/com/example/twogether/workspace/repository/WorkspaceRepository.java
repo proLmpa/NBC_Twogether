@@ -1,5 +1,9 @@
 package com.example.twogether.workspace.repository;
 
-public class WorkspaceRepository {
+import com.example.twogether.workspace.entity.Workspace;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
+    List<Workspace> findAllByUserId(Long id);
 }
