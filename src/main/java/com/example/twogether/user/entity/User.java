@@ -39,4 +39,9 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    public void editUserInfo(String nickname, String introduction) {
+        this.nickname = nickname;
+        this.introduction = introduction;
+    }
 }
