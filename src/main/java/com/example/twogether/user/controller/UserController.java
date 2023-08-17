@@ -2,6 +2,7 @@ package com.example.twogether.user.controller;
 
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
+import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.LoginRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
@@ -31,7 +32,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "회원 가입", description = "SignupRequesetDto를 통해 회원이 제출한 정보의 유효성 검사 후 통과 시 DB에 저장하고 성공 메시지를 반환합니다.")
+    @Operation(summary = "회원 가입")
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(
         @Validated @RequestBody SignupRequestDto requestDto) {
@@ -39,13 +40,13 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
     }
 
-    @Operation(summary = "로그인", description = "LoginRequestDto을 DB에 저장된 사용자 정보와 비교하여 동일할 시 성공 메시지를 반환합니다.")
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody LoginRequestDto requestDto) {
         return null;
     }
 
-    @Operation(summary = "사용자 정보 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditUserRequestDto를 통해 해당 사용자의 일부 정보를 수정합니다.")
+    @Operation(summary = "사용자 정보 수정")
     @PatchMapping("/info")
     public ResponseEntity<ApiResponseDto> editUserInfo(@RequestBody EditUserRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -53,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 수정 성공"));
     }
 
-    @Operation(summary = "회원 탈퇴", description = "전달된 Bearer 토큰을 통해 본인 혹은 관리자 여부 확인 후 사용자의 이메일로 찾은 회원이 탈퇴됩니다.")
+    @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/{id}/signout")
     public ResponseEntity<ApiResponseDto> deleteUserInfo(@PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -61,10 +62,12 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 탈퇴 성공"));
     }
 
-//    @Operation(summary = "사용자 비밀번호 수정", description = "전달된 Bearer 토큰을 통해 본인 확인 후 EditPasswordRequestDto를 통해 해당 사용자의 비밀번호를 수정합니다.")
-//    @PatchMapping("/password")
-//    public ResponseEntity<ApiResponseDto> editUserPassword(@Valid @RequestBody EditPasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        userService.editUserPassword(requestDto, userDetails.getUser());
-//        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 비밀번호 수정 성공"));
-//    }
+    @Operation(summary = "사용자 비밀번호 수정")
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponseDto> editUserPassword(
+        @Validated @RequestBody EditPasswordRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.editUserPassword(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 비밀번호 수정 성공"));
+    }
 }
