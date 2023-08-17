@@ -25,8 +25,7 @@ public class Deck extends Timestamped {
     @Column
     private String title;
 
-    @Column(name = "parent_id")
-    private Long parentId;
+    private float position;
 
     @Column(name = "is_deleted")
     private boolean deleted;
@@ -42,7 +41,7 @@ public class Deck extends Timestamped {
 
     public Deck(String title) {
         this.title = title;
-        this.parentId = 0l;
+        this.deleted = false;
     }
 
     public void editTitle(String title) {
@@ -50,14 +49,10 @@ public class Deck extends Timestamped {
     }
 
     public void archive() {
-        if (this.isDeleted()) {
-            this.deleted = false;
-        } else {
-            this.deleted = true;
-        }
+        this.deleted = !this.isDeleted();
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void updatePosition(float position) {
+        this.position = position;
     }
 }

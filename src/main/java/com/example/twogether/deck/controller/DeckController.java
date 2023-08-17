@@ -2,6 +2,7 @@ package com.example.twogether.deck.controller;
 
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.deck.dto.DeckResponseDto;
+import com.example.twogether.deck.dto.MoveDeckRequestDto;
 import com.example.twogether.deck.service.DeckService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,8 +30,9 @@ public class DeckController {
 
     @Operation(summary = "덱 생성", description = "DeckRequestDto에 담긴 정보를 토대로 덱을 생성합니다.")
     @PostMapping("/decks")
-    private ResponseEntity<ApiResponseDto> addDeck(@RequestBody String title) {
-        deckService.addDeck(title);
+    private ResponseEntity<ApiResponseDto> addDeck(@RequestParam() Long boardId,
+        @RequestBody String title) {
+        deckService.addDeck(boardId, title);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "덱 생성"));
     }
 
@@ -42,7 +45,8 @@ public class DeckController {
 
     @Operation(summary = "덱 title 수정", description = "id와 일치하는 덱의 title을 수정합니다.")
     @PutMapping("/decks/{id}")
-    private ResponseEntity<ApiResponseDto> editDeck(@PathVariable Long id, @RequestBody String title) {
+    private ResponseEntity<ApiResponseDto> editDeck(@PathVariable Long id,
+        @RequestBody String title) {
         deckService.editDeck(id, title);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "덱 수정"));
     }
@@ -62,5 +66,10 @@ public class DeckController {
     }
 
     // 덱 이동
-
+    @PatchMapping("/decks/{id}/move")
+    private ResponseEntity<ApiResponseDto> moveDeck(@PathVariable Long id,
+        @RequestBody MoveDeckRequestDto requestDto) {
+        deckService.moveDeck(id, requestDto);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "덱 이동"));
+    }
 }
