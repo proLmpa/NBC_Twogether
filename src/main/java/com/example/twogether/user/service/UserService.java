@@ -68,12 +68,18 @@ public class UserService {
     public User editUserPassword(EditPasswordRequestDto requestDto, User user) {
         User found = findUser(user.getId());
 
-        checkPassword(requestDto.getPassword(), found.getPassword());
-        checkRecentPasswords(found.getId(), requestDto.getNewPassword());
+        checkPassword(requestDto.getPassword(), found.getPassword());       // 기존 비밀번호 일치 여부 확인
+        checkRecentPasswords(found.getId(), requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
 
+        // 새 비밀번호 저장
         String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
         userPasswordRepository.save(UserPassword.builder().password(newPassword).user(found).build());
         found.editPassword(newPassword);
+
+        // 비밀번호 이력이 3개를 넘는가?
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(found.getId());
+        if(userPasswords.size() >= 3)
+            userPasswordRepository.deleteById(userPasswords.get(0).getId());
 
         return found;
     }
@@ -103,7 +109,7 @@ public class UserService {
     }
 
     private void checkRecentPasswords(Long userId, String newPassword) {
-        List<UserPassword> userPasswords = userPasswordRepository.get3RecentPasswords(userId);
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(userId);
         userPasswords.forEach(password -> {
             if (passwordEncoder.matches(newPassword, password.getPassword()))
                 throw new CustomException(CustomErrorCode.PASSWORD_RECENTLY_USED);
