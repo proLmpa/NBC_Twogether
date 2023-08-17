@@ -8,16 +8,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor // 생성자를 직접 만들어주었기 때문에 기초 생성자가 필수라서 추가
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
@@ -38,4 +36,14 @@ public class User {
 
     private String nickname;
     private String introduction;
+
+    @Builder
+    public User(String email, String password, UserRoleEnum role, String nickname,
+        String introduction) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.nickname = nickname;
+        this.introduction = introduction;
+    }
 }
