@@ -1,10 +1,14 @@
 package com.example.twogether.user.service;
 
+import com.example.twogether.common.error.CustomErrorCode;
+import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,8 +34,7 @@ class UserServiceTest {
 
     private User user;
 
-    @Test
-    @DisplayName("회원 가입 테스트")
+    @BeforeEach
     void signUp() {
         // given
         String email = "user2024@email.com";
@@ -40,7 +43,8 @@ class UserServiceTest {
         String adminToken = "";
 
         encoder = new BCryptPasswordEncoder();
-        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password).admin(admin).adminToken(adminToken).build();
+        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password)
+            .admin(admin).adminToken(adminToken).build();
 
         // when
         User signed = userService.signup(request);
@@ -52,35 +56,57 @@ class UserServiceTest {
         user = signed;
     }
 
-//    @Test
-//    @DisplayName("사용자 정보 수정")
-//    void editUserInfo() {
-//        // given
-//        String nickname = "I'm Owl";
-//        String introduction = "This is my child owo";
-//
-//        EditUserRequestDto requestDto = new EditUserRequestDto(nickname, introduction);
-//
-//        // when
-//        User edited = userService.editUserInfo(requestDto, user);
-//
-//        // then
-//        Assertions.assertEquals(nickname, edited.getNickname());
-//        Assertions.assertEquals(introduction, edited.getIntroduction());
-//    }
-//
-//    @Test
-//    @DisplayName("사용자 정보 삭제")
-//    void deleteUserInfo() {
-//        // given
-//
-//        // when
-//        userService.deleteUserInfo(user.getId(), user);
-//
-//        // then
-//        Assertions.assertNull(userRepository.findById(user.getId()).orElse(null));
-//    }
-//
+    @Test
+    @DisplayName("중복 회원 가입 테스트")
+    void duplicateSignUp() {
+        // given
+        String email = "user2024@email.com";
+        String password = "user123!@#";
+        boolean admin = false;
+        String adminToken = "";
+
+        encoder = new BCryptPasswordEncoder();
+        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password)
+            .admin(admin).adminToken(adminToken).build();
+
+        // when - then
+        try {
+            User signed = userService.signup(request);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.USER_ALREADY_EXISTS, e.getErrorCode());
+        }
+    }
+
+    @Test
+    @DisplayName("사용자 정보 수정")
+    void editUserInfo() {
+        // given
+        String nickname = "I'm Owl";
+        String introduction = "This is my child owo";
+
+        EditUserRequestDto requestDto = new EditUserRequestDto(nickname, introduction);
+
+        // when
+        User edited = userService.editUserInfo(requestDto, user);
+
+        // then
+        Assertions.assertEquals(nickname, edited.getNickname());
+        Assertions.assertEquals(introduction, edited.getIntroduction());
+    }
+
+    @Test
+    @DisplayName("사용자 정보 삭제")
+    void deleteUserInfo() {
+        // given
+        long userId = user.getId();
+
+        // when
+        userService.deleteUserInfo(userId, user);
+
+        // then
+        Assertions.assertNull(userRepository.findById(userId).orElse(null));
+    }
+
 //    @Test
 //    @DisplayName("사용자 비밀번호 수정")
 //    void editUserPassword() {
