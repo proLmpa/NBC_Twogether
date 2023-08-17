@@ -2,6 +2,7 @@ package com.example.twogether.user.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
 import com.example.twogether.user.entity.User;
@@ -57,8 +58,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("중복 회원 가입 테스트")
-    void duplicateSignUp() {
+    @DisplayName("중복 회원 가입 실패")
+    void SignUpFailed() {
         // given
         String email = "user2024@email.com";
         String password = "user123!@#";
@@ -71,7 +72,7 @@ class UserServiceTest {
 
         // when - then
         try {
-            User signed = userService.signup(request);
+            userService.signup(request);
         } catch (CustomException e) {
             Assertions.assertEquals(CustomErrorCode.USER_ALREADY_EXISTS, e.getErrorCode());
         }
@@ -107,21 +108,50 @@ class UserServiceTest {
         Assertions.assertNull(userRepository.findById(userId).orElse(null));
     }
 
-//    @Test
-//    @DisplayName("사용자 비밀번호 수정")
-//    void editUserPassword() {
-//        // given
-//        String password = "user123!@#";
-//        String newPassword1 = "user234@#$";
-//        String newPassword2 = "user234@#$";
-//
-//        EditPasswordRequestDto correctdto = new EditPasswordRequestDto(password, newPassword1, newPassword2);
-//
-//        // when - 정상 비밀번호 수정
-//        User edited = userService.editUserPassword(correctdto, user);
-//
-//        // then
-//        Assertions.assertFalse(encoder.matches(password, edited.getPassword()));
-//        Assertions.assertTrue(encoder.matches(newPassword1, edited.getPassword()));
-//    }
+    @Test
+    @DisplayName("사용자 비밀번호 수정")
+    void editUserPassword() {
+        // given
+        String password = "user123!@#";
+        String newPassword = "user234@#$";
+
+        EditPasswordRequestDto requestDto = EditPasswordRequestDto.builder().password(password)
+            .newPassword(newPassword).build();
+
+        // when - 정상 비밀번호 수정
+        User edited = userService.editUserPassword(requestDto, user);
+
+        // then
+        Assertions.assertFalse(encoder.matches(password, edited.getPassword()));
+        Assertions.assertTrue(encoder.matches(newPassword, edited.getPassword()));
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호 수정 실패")
+    void editUserPasswordFailed() {
+        // given
+        String password = "user123!@#";
+        String newPassword = "user234@#$";
+
+        EditPasswordRequestDto recentlyUsed = EditPasswordRequestDto.builder().password(password)
+            .newPassword(password).build();
+
+        EditPasswordRequestDto wrongPassword = EditPasswordRequestDto.builder()
+            .password(newPassword)
+            .newPassword(newPassword).build();
+
+        // when - then(1) : 최근 사용한 비밀번호 사용 불가
+        try {
+            userService.editUserPassword(recentlyUsed, user);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.PASSWORD_RECENTLY_USED, e.getErrorCode());
+        }
+
+        // when - then(2) : 잘못된 비밀번호 입력
+        try {
+            userService.editUserPassword(wrongPassword, user);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.PASSWORD_MISMATCHED, e.getErrorCode());
+        }
+    }
 }
