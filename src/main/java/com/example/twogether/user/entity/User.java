@@ -1,5 +1,7 @@
 package com.example.twogether.user.entity;
 
+import com.example.twogether.workspace.entity.Workspace;
+import com.example.twogether.workspace.entity.WorkspaceMember;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,7 +9,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +32,7 @@ public class User {
     private Long id;
 
     @Email
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -39,4 +44,12 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<Workspace> workspaces = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
 }

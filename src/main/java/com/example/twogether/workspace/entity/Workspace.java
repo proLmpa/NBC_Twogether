@@ -1,5 +1,6 @@
 package com.example.twogether.workspace.entity;
 
+import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import com.example.twogether.user.entity.User;
 import jakarta.persistence.Column;
@@ -47,6 +48,13 @@ public class Workspace extends Timestamped {
     @Builder.Default
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
+
+    // 보드 리스트
+    @Builder.Default
+    @OneToMany(mappedBy = "workspace")
+    private List<Board> boards = new ArrayList<>();
+
+
 
 
 
