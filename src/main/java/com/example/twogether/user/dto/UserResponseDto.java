@@ -8,11 +8,13 @@ import lombok.Getter;
 public class UserResponseDto {
     private Long id;
     private String email;
+    private String nickname;
     private UserRoleEnum role;
 
     public UserResponseDto(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
+        this.nickname = user.getNickname();
         this.role = user.getRole();
     }
 }
