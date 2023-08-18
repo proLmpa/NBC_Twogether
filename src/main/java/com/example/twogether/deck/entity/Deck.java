@@ -53,7 +53,7 @@ public class Deck extends Timestamped {
         this.deleted = !this.isDeleted();
     }
 
-    public void updatePosition(float position) {
+    public void editPosition(float position) {
         this.position = position;
     }
 }

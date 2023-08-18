@@ -62,11 +62,11 @@ public class DeckService {
         Deck next = deckRepository.findById(requestDto.getNextDeckId()).orElse(null);
 
         if (prev != null && next != null) { // 두 덱 사이로 옮길 때
-            deck.updatePosition((prev.getPosition() + next.getPosition()) / 2f);
+            deck.editPosition((prev.getPosition() + next.getPosition()) / 2f);
         } else if (prev == null) { // 맨 처음으로 옮길 때
-            deck.updatePosition(next.getPosition() / 2f);
+            deck.editPosition(next.getPosition() / 2f);
         } else { // 맨 마지막으로 옮길 때
-            deck.updatePosition(prev.getPosition() + cycle);
+            deck.editPosition(prev.getPosition() + cycle);
         }
     }
 
