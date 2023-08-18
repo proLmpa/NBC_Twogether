@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
