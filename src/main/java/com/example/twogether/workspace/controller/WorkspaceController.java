@@ -55,14 +55,14 @@ public class WorkspaceController {
 
     @Operation(summary = "워크스페이스 수정")
     @PutMapping("/workspaces/{id}")
-    public ResponseEntity<ApiResponseDto> updateWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody WorkspaceRequestDto workspaceRequestDto) { //@Valid @RequestBody WorkspaceRequestDto workspaceRequestDto, , ~~)
+    public ResponseEntity<ApiResponseDto> updateWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody WorkspaceRequestDto workspaceRequestDto) {
         workspaceService.updateWorkspace(userDetails.getUser(), id, workspaceRequestDto);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Update Success!"));
     }
 
-    @Operation(summary = "워크스페이스 삭제") //  description = ""
+    @Operation(summary = "워크스페이스 삭제")
     @DeleteMapping("/workspaces/{id}")
-    public ResponseEntity<ApiResponseDto> deleteWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) { //@Valid @RequestBody WorkspaceRequestDto workspaceRequestDto, , ~~)
+    public ResponseEntity<ApiResponseDto> deleteWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         workspaceService.deleteWorkspace(userDetails.getUser(), id);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Delete Success!"));
     }

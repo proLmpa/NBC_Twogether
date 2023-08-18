@@ -6,9 +6,5 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
-    List<Workspace> findAllByUserId(Long id);
-
-    //List<Workspace> findAllByOrderByCreatedAtDesc();
-
     List<Workspace> findAllByUserOrderByCreatedAtDesc(User user);
 }
