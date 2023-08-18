@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<ApiResponseDto> signup(
         @Validated @RequestBody SignupRequestDto requestDto) {
         userService.signup(requestDto);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원 가입 성공"));
     }
 
     @Operation(summary = "로그인")
