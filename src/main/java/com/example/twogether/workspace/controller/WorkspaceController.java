@@ -60,5 +60,10 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Update Success!"));
     }
 
-
+    @Operation(summary = "워크스페이스 삭제") //  description = ""
+    @DeleteMapping("/workspaces/{id}")
+    public ResponseEntity<ApiResponseDto> deleteWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) { //@Valid @RequestBody WorkspaceRequestDto workspaceRequestDto, , ~~)
+        workspaceService.deleteWorkspace(userDetails.getUser(), id);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Delete Success!"));
+    }
 }

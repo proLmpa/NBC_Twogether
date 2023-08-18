@@ -52,9 +52,17 @@ public class WorkspaceService {
         } else throw new CustomException(CustomErrorCode.WORKSPACE_NOT_USER);
     }
 
+    @Transactional
+    public void deleteWorkspace(User user, Long id) {
+        Workspace workspace = findWorkspace(user, id);
+        if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+            workspaceRepository.delete(workspace);
+            // 워크스페이스, 보드, 카드, 멤버 등 삭제
+        } else throw new CustomException(CustomErrorCode.WORKSPACE_NOT_USER);
+    }
+
     private Workspace findWorkspace(User user, Long workspaceId) {
         return workspaceRepository.findById(workspaceId).orElseThrow(() ->
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
-
 }
