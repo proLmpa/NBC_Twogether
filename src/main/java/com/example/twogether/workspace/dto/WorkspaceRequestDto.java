@@ -12,14 +12,12 @@ public class WorkspaceRequestDto {
 
     private String title;
     private String icon;
-    //private User user;
-    //private User email;
+
     public Workspace toEntity(User user) {
         return Workspace.builder()
             .title(this.title)
             .icon(this.icon)
             .user(user)
-            //.user(this.email)
             .build();
     }
 }

@@ -31,5 +31,4 @@ import org.springframework.transaction.annotation.Transactional;
 //        } catch (Exception e) {
 //            throw new RuntimeException("보드 협업자 삭제에 실패했습니다. 이유: " + e.getMessage(), e);
 //        }
-
-}
+//}

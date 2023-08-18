@@ -3,6 +3,7 @@ package com.example.twogether.workspace.entity;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import com.example.twogether.user.entity.User;
+import com.example.twogether.workspace.dto.WorkspaceRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -55,8 +56,8 @@ public class Workspace extends Timestamped {
     private List<Board> boards = new ArrayList<>();
 
 
-
-
-
-
+    public void update(WorkspaceRequestDto workspaceRequestDto) {
+        this.title = workspaceRequestDto.getTitle();
+        this.icon = workspaceRequestDto.getIcon();
+    }
 }

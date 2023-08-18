@@ -26,9 +26,6 @@ public class WorkspaceResponseDto {
             .title(workspace.getTitle())
             .icon(workspace.getIcon())
             //.workspaceMembers(workspace.getWorkspaceMembers().stream().map(workspaceMember -> new UserResponseDto(workspaceMember.getUser())).toList())
-            //.workspaceMembers
             .build();
     }
-
-
 }
