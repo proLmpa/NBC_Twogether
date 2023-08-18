@@ -9,6 +9,7 @@ import com.example.twogether.user.dto.SignupRequestDto;
 import com.example.twogether.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,21 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 @Tag(name = "사용자 API", description = "사용자의 회원 가입 기능과 관련된 API 정보를 담고 있습니다.")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @Operation(summary = "회원 가입")
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(
         @Validated @RequestBody SignupRequestDto requestDto) {
         userService.signup(requestDto);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 가입 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원 가입 성공"));
     }
 
     @Operation(summary = "로그인")

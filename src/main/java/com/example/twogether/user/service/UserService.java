@@ -90,7 +90,7 @@ public class UserService {
         }
     }
 
-    private User findUser(long id) {
+    private User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
     }
@@ -98,7 +98,7 @@ public class UserService {
     private void confirmUser(User user1, User user2) {
         if (!Objects.equals(user1.getId(), user2.getId())
             && !user2.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUESET);
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED_REQUEST);
         }
     }
 
