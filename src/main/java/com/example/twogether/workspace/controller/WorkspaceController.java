@@ -53,7 +53,12 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(workspaceResponseDto);
     }
 
-
+    @Operation(summary = "워크스페이스 수정")
+    @PutMapping("/workspaces/{id}")
+    public ResponseEntity<ApiResponseDto> updateWorkspace(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody WorkspaceRequestDto workspaceRequestDto) { //@Valid @RequestBody WorkspaceRequestDto workspaceRequestDto, , ~~)
+        workspaceService.updateWorkspace(userDetails.getUser(), id, workspaceRequestDto);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Update Success!"));
+    }
 
 
 }

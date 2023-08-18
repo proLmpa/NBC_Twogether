@@ -4,6 +4,7 @@ package com.example.twogether.workspace.service;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
+import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.dto.WorkspaceRequestDto;
 import com.example.twogether.workspace.dto.WorkspaceResponseDto;
@@ -40,6 +41,15 @@ public class WorkspaceService {
     public WorkspaceResponseDto getWorkspace(User user, Long Id) {
         Workspace workspace = findWorkspace(user, Id);
         return WorkspaceResponseDto.of(workspace);
+    }
+
+    @Transactional
+    public WorkspaceResponseDto updateWorkspace(User user, Long id, WorkspaceRequestDto workspaceRequestDto) {
+        Workspace workspace = findWorkspace(user, id);
+        if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+            workspace.update(workspaceRequestDto);
+            return WorkspaceResponseDto.of(workspace);
+        } else throw new CustomException(CustomErrorCode.WORKSPACE_NOT_USER);
     }
 
     private Workspace findWorkspace(User user, Long workspaceId) {
