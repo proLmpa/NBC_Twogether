@@ -31,7 +31,6 @@ public class Deck extends Timestamped {
     @Column(name = "is_deleted")
     private boolean deleted;
 
-//    @Builder.Default
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "board_id")
 //    private Board board;
