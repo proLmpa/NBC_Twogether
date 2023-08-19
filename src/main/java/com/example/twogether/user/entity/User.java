@@ -44,9 +44,6 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
-    /**
-     * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
-     */
 
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
@@ -69,5 +66,9 @@ public class User {
 
     public void editPassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void editRole(UserRoleEnum userRoleEnum) {
+        this.role = userRoleEnum;
     }
 }
