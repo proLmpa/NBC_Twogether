@@ -2,6 +2,7 @@ package com.example.twogether.board.entity;
 
 import com.example.twogether.board.dto.BoardRequestDto;
 import com.example.twogether.common.entity.Timestamped;
+import com.example.twogether.deck.entity.Deck;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.entity.Workspace;
 import jakarta.persistence.Column;
@@ -53,9 +54,9 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<BoardMember> boardMembers = new ArrayList<>();
 
-//    @Builder.Default
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Deck> decks = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Deck> decks = new ArrayList<>();
 
     public void updateTitle(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();

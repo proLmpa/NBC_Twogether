@@ -1,11 +1,15 @@
 package com.example.twogether.deck.entity;
 
+import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,9 +35,9 @@ public class Deck extends Timestamped {
     @Column(name = "is_deleted")
     private boolean deleted;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "board_id")
-//    private Board board;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
 //    @Builder.Default
 //    @OneToMany(mappedBy = "deck")
