@@ -2,6 +2,7 @@ package com.example.twogether.user.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.mail.service.EmailCerificationService;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
@@ -10,6 +11,8 @@ import com.example.twogether.user.entity.UserPassword;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserPasswordRepository;
 import com.example.twogether.user.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private final EmailCerificationService emailCertificationService;
 
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
@@ -37,9 +42,15 @@ public class UserService {
         // 사용자 존재 여부 확인
         findExistingUserByEmail(email);
 
-        UserRoleEnum role = UserRoleEnum.USER;
+        UserRoleEnum role = UserRoleEnum.NOT_YET_VERIFIED;
         if (requestDto.isAdmin() && requestDto.getAdminToken().equals(adminToken)) {
             role = UserRoleEnum.ADMIN;
+        } else {
+            try {
+                emailCertificationService.sendEmailForCertification(email);
+            } catch (NoSuchAlgorithmException | MessagingException  e) {
+                throw new CustomException(CustomErrorCode.EMAIL_SEND_FAILED);
+            }
         }
 
         User user = userRepository.save(requestDto.toEntity(password, role));
