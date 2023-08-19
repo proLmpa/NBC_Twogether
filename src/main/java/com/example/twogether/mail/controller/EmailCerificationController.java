@@ -1,9 +1,12 @@
 package com.example.twogether.mail.controller;
 
 import com.example.twogether.common.dto.ApiResponseDto;
+import com.example.twogether.common.error.CustomErrorCode;
+import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.mail.dto.EmailCerificationRequstDto;
 import com.example.twogether.mail.service.EmailCerificationService;
 import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +30,11 @@ public class EmailCerificationController {
     public ResponseEntity<ApiResponseDto> sendVerificationNumber(
         @Validated @RequestBody EmailCerificationRequstDto request)
         throws MessagingException, NoSuchAlgorithmException {
-        emailCerificationService.sendEmailForCertification(request.getEmail());
+        try {
+            emailCerificationService.sendEmailForCertification(request.getEmail());
+        } catch (UnsupportedEncodingException e) {
+            throw new CustomException(CustomErrorCode.EMAIL_SEND_FAILED);
+        }
 
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "인증번호 발송"));

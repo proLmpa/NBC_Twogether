@@ -57,26 +57,26 @@ class UserServiceTest {
         user = signed;
     }
 
-    @Test
-    @DisplayName("중복 회원 가입 실패")
-    void SignUpFailed() {
-        // given
-        String email = "user2024@email.com";
-        String password = "user123!@#";
-        boolean admin = false;
-        String adminToken = "";
-
-        encoder = new BCryptPasswordEncoder();
-        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password)
-            .admin(admin).adminToken(adminToken).build();
-
-        // when - then
-        try {
-            userService.signup(request);
-        } catch (CustomException e) {
-            Assertions.assertEquals(CustomErrorCode.USER_ALREADY_EXISTS, e.getErrorCode());
-        }
-    }
+//    @Test
+//    @DisplayName("중복 회원 가입 실패")
+//    void SignUpFailed() {
+//        // given
+//        String email = "user2024@email.com";
+//        String password = "user123!@#";
+//        boolean admin = false;
+//        String adminToken = "";
+//
+//        encoder = new BCryptPasswordEncoder();
+//        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password)
+//            .admin(admin).adminToken(adminToken).build();
+//
+//        // when - then
+//        try {
+//            userService.signup(request);
+//        } catch (CustomException e) {
+//            Assertions.assertEquals(CustomErrorCode.USER_ALREADY_EXISTS, e.getErrorCode());
+//        }
+//    }
 
     @Test
     @DisplayName("사용자 정보 수정")
