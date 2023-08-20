@@ -1,5 +1,8 @@
 package com.example.twogether.workspace.dto;
 
+import com.example.twogether.board.dto.BoardResponseDto;
+import com.example.twogether.board.dto.BoardsResponseDto;
+import com.example.twogether.user.dto.UserResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ public class WorkspaceResponseDto {
     private String icon;
     private String user;
     //private List<WorkspaceMemberResponseDto> workspaceMembers;
+    private BoardsResponseDto boards;
 
 
     public static WorkspaceResponseDto of(Workspace workspace) {
@@ -26,6 +30,7 @@ public class WorkspaceResponseDto {
             .title(workspace.getTitle())
             .icon(workspace.getIcon())
             //.workspaceMembers(workspace.getWorkspaceMembers().stream().map(workspaceMember -> new UserResponseDto(workspaceMember.getUser())).toList())
+            .boards(BoardsResponseDto.builder()::of)
             .build();
     }
 }

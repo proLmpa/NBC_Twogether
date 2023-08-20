@@ -56,7 +56,6 @@ public class Workspace extends Timestamped {
     @OneToMany(mappedBy = "workspace")
     private List<Board> boards = new ArrayList<>();
 
-
     public void update(WorkspaceRequestDto workspaceRequestDto) {
         this.title = workspaceRequestDto.getTitle();
         this.icon = workspaceRequestDto.getIcon();
