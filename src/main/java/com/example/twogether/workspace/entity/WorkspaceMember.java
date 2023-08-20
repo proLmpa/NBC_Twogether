@@ -15,10 +15,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Table(name = "workspace_member")
 public class WorkspaceMember {
     @Id
