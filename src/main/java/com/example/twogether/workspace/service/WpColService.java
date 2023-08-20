@@ -72,7 +72,9 @@ public class WpColService {
                     BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser,
                         foundBoard);
                     boardColRepository.save(boardCollaborator);
+
                 } catch (CustomException e) {
+
                     // 워크스페이스 협업자로 등록
                     WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
                     wpColRepository.save(foundWpCol);
