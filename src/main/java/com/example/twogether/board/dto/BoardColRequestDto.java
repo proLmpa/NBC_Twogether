@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 public class BoardColRequestDto {
 
-    private String userId;
+    private String email;
 
     public static BoardCollaborator toEntity(User boardCol, Board board) {
         return BoardCollaborator.builder()
-            .id(boardCol.getId())
+            .email(boardCol.getEmail())
             .user(boardCol)
             .board(board)
             .build();

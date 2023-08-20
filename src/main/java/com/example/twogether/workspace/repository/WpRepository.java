@@ -7,5 +7,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WpRepository extends JpaRepository<Workspace, Long> {
-    List<Workspace> findAllByUserOrderByCreatedAtDesc(User user);
+    List<Workspace> findAllByWpAuthorOrderByCreatedAtDesc(User wpAuthor);
 }

@@ -16,7 +16,7 @@ public class WpRequestDto {
         return Workspace.builder()
             .title(this.title)
             .icon(this.icon)
-            .user(wpAuthor)
+            .wpAuthor(wpAuthor)
             .build();
     }
 }

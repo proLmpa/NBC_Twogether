@@ -10,5 +10,7 @@ public interface BoardColRepository extends JpaRepository<BoardCollaborator, Lon
 
     List<BoardCollaborator> findByBoard(Board foundBoard);
     BoardCollaborator findByUserEmailAndBoard(String email, Board foundBoard);
+    BoardCollaborator findBoardCollaboratorByEmail(String email);
     boolean existsByUserEmailAndBoard(String email, Board foundBoard);
+    boolean existsByBoardAndEmail(Board foundBoard, String email);
 }

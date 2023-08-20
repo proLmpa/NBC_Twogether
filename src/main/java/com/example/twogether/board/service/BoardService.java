@@ -63,20 +63,18 @@ public class BoardService {
         }
 
         Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findByWorkspace_and_Board_Id(foundWorkspace, boardId);
+        Board foundBoard = findBoard(boardId);
         return BoardResponseDto.of(foundBoard);
     }
 
     // 보드 수정
     @Transactional
-    public Board editBoard(User boardAuthor, Long workspaceId, Long boardId,
-        BoardRequestDto boardRequestDto) {
+    public Board editBoard(User boardAuthor, Long boardId, BoardRequestDto boardRequestDto) {
         if (boardAuthor == null) {
             throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
         }
 
-        Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findByWorkspace_and_Board_Id(foundWorkspace, boardId);
+        Board foundBoard = findBoard(boardId);
         if (boardRequestDto.getTitle() != null) {
             foundBoard.editTitle(boardRequestDto);
         }
@@ -97,7 +95,7 @@ public class BoardService {
         }
 
         Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findByWorkspace_and_Board_Id(foundWorkspace, boardId);
+        Board foundBoard = findBoard(boardId);
 
         if (!foundBoard.getBoardAuthor().getEmail().equals(boardAuthor.getEmail())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
@@ -112,9 +110,9 @@ public class BoardService {
             .orElseThrow(() -> new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private Board findByWorkspace_and_Board_Id(Workspace foundWorkspace, Long boardId) {
+    private Board findBoard(Long boardId) {
 
-        return boardRepository.findByWorkspaceAndId(foundWorkspace, boardId)
+        return boardRepository.findById(boardId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 }

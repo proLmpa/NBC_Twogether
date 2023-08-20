@@ -57,7 +57,7 @@ public class User {
     private List<UserPassword> userPasswords = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "wpAuthor")
     private List<Workspace> workspaces = new ArrayList<>();
 
     @Builder.Default

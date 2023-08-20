@@ -44,7 +44,7 @@ public class Workspace extends Timestamped {
     // 워크스페이스 사용자 연관 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User wpAuthor;
 
     @Builder.Default
     @OneToMany(mappedBy = "workspace", orphanRemoval = true)

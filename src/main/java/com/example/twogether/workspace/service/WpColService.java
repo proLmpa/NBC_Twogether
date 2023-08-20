@@ -39,17 +39,16 @@ public class WpColService {
         Workspace foundWorkspace = findWorkspace(wpId);
 
         // 워크스페이스를 생성한 사람만 협업자 초대 가능
-        if (!foundWorkspace.getUser().getId().equals(wpAuthor.getId()) || wpAuthor.getRole()
-            .equals(UserRoleEnum.ADMIN)) {
+        if (!foundWorkspace.getWpAuthor().getId().equals(wpAuthor.getId()) || wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 오너는 초대 불가
+        // 워크스페이스 오너는 초대당하기 불가
         if (email.equals(wpAuthor.getEmail())) {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
         }
 
-        // 이미 등록된 사용자 초대 불가
+        // 이미 등록된 사용자 초대당하기 불가
         if (wpColRepository.existsByWorkspaceAndEmail(foundWorkspace, email)) {
             throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
         }
@@ -83,8 +82,7 @@ public class WpColService {
         Workspace foundWorkspace = findWorkspace(wpId);
 
         // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
-        if (!foundWorkspace.getUser().getId().equals(wpAuthor.getId()) || wpAuthor.getRole()
-            .equals(UserRoleEnum.ADMIN)) {
+        if (!foundWorkspace.getWpAuthor().getId().equals(wpAuthor.getId()) || wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 

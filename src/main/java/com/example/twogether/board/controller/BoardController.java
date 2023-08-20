@@ -42,7 +42,7 @@ public class BoardController {
 
         boardService.createBoard(userDetails.getUser(), workspaceId, boardRequestDto);
 
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "칸반 보드가 생성되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "보드가 생성되었습니다."));
     }
 
     // 보드 수정
@@ -55,10 +55,10 @@ public class BoardController {
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.editBoard(userDetails.getUser(), workspaceId, boardId, boardRequestDto);
+        boardService.editBoard(userDetails.getUser(), boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드가 수정되었습니다."));
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 수정되었습니다."));
     }
 
     // 보드 삭제
@@ -72,7 +72,7 @@ public class BoardController {
 
         boardService.deleteBoard(userDetails.getUser(), workspaceId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드 삭제되었습니다."));
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 삭제되었습니다."));
     }
 
     // 보드 단건 조회

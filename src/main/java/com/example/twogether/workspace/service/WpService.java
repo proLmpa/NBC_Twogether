@@ -32,7 +32,7 @@ public class WpService {
 
     @Transactional(readOnly = true) // 조회용 메서드에 붙임
      public WpsResponseDto getAllWorkspaces(User user) {
-         List<Workspace> workspaces = wpRepository.findAllByUserOrderByCreatedAtDesc(user);
+         List<Workspace> workspaces = wpRepository.findAllByWpAuthorOrderByCreatedAtDesc(user);
          return WpsResponseDto.of(workspaces);
      }
 
@@ -45,7 +45,7 @@ public class WpService {
     @Transactional
     public WpResponseDto editWorkspace(User user, Long id, WpRequestDto wpRequestDto) {
         Workspace workspace = findWorkspace(user, id);
-        if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(workspace.getWpAuthor().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
             workspace.update(wpRequestDto);
             return WpResponseDto.of(workspace);
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
@@ -54,7 +54,7 @@ public class WpService {
     @Transactional
     public void deleteWorkspace(User user, Long id) {
         Workspace workspace = findWorkspace(user, id);
-        if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(workspace.getWpAuthor().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
             wpRepository.delete(workspace);
             // 워크스페이스, 보드, 카드, 멤버 등 삭제
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
