@@ -16,7 +16,7 @@ public class WpResponseDto {
     private Long workspaceId;
     private String title;
     private String icon;
-    private String user;
+    private String email;
     private List<WpColResponseDto> wpCollaborators;
     private List<BoardResponseDto> boards;
 
@@ -24,7 +24,7 @@ public class WpResponseDto {
     public static WpResponseDto of(Workspace foundWp) {
         return WpResponseDto.builder()
             .workspaceId(foundWp.getId())
-            .user(foundWp.getWpAuthor().getEmail())
+            .email(foundWp.getWpAuthor().getEmail())
             .title(foundWp.getTitle())
             .icon(foundWp.getIcon())
             .wpCollaborators(foundWp.getWorkspaceCollaborators().stream().map(WpColResponseDto::of).toList())

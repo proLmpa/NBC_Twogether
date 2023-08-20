@@ -31,8 +31,8 @@ public class BoardColController {
     @PostMapping("/{wpId}/{boardId}")
     public ResponseEntity<ApiResponseDto> inviteBoardCol(
         @AuthenticationPrincipal UserDetailsImpl boardAuthor,
-        @PathVariable Long boardId,
         @PathVariable Long wpId,
+        @PathVariable Long boardId,
         @RequestBody BoardColRequestDto boardColRequestDto
     ) {
         boardColService.inviteBoardCol(boardAuthor.getUser(), wpId, boardId, boardColRequestDto.getEmail());
@@ -45,8 +45,8 @@ public class BoardColController {
     @DeleteMapping("/{wpId}/{boardId}")
     public ResponseEntity<ApiResponseDto> outBoardCol(
         @AuthenticationPrincipal UserDetailsImpl boardAuthor,
-        @PathVariable Long boardId,
         @PathVariable Long wpId,
+        @PathVariable Long boardId,
         @RequestBody BoardColRequestDto boardColRequestDto
     ) {
         boardColService.outBoardCol(boardAuthor.getUser(), wpId, boardId, boardColRequestDto.getEmail());

@@ -9,6 +9,7 @@ import com.example.twogether.board.repository.BoardRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
+import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpRepository;
@@ -31,9 +32,7 @@ public class BoardService {
     // 보드 생성
     @Transactional
     public void createBoard(User boardAuthor, Long workspaceId, BoardRequestDto boardRequestDto) {
-        if (boardAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
+        if (boardAuthor == null) throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
 
         Workspace foundWorkspace = findWorkspace(workspaceId);
         Board foundBoard = boardRequestDto.toEntity(foundWorkspace, boardAuthor);
@@ -43,9 +42,9 @@ public class BoardService {
         // 보드 협업자 자동 등록
         List<WorkspaceCollaborator> workspaceCollaborators = foundWorkspace.getWorkspaceCollaborators();
         for (WorkspaceCollaborator workspaceCollaborator : workspaceCollaborators) {
-            if (!boardColRepository.existsByUserEmailAndBoard(
-                workspaceCollaborator.getUser().getEmail(), foundBoard)) {
+            if (!boardColRepository.existsByUserEmailAndBoard(workspaceCollaborator.getUser().getEmail(), foundBoard)) {
                 BoardCollaborator newBoardCollaborator = BoardCollaborator.builder()
+                    .email(workspaceCollaborator.getUser().getEmail())
                     .user(workspaceCollaborator.getUser())
                     .board(foundBoard)
                     .build();
