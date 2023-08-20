@@ -53,24 +53,30 @@ public class WpColService {
             throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
         }
 
-        // 워크스페이스 협업자로 등록
-        User foundUser = findUser(email);
-        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
-        wpColRepository.save(foundWpCol);
-
         // 워크스페이스에 포함되어 있는 모든 보드에 협업자로 자동 등록
         List<Board> foundAllBoards = findAllBoards(foundWorkspace);
+        User foundUser = findUser(email);
 
         if (foundAllBoards != null && !foundAllBoards.isEmpty()) {
             for (Board foundBoard : foundAllBoards) {
-                // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
-                if (boardColRepository.existsByUserEmailAndBoard(foundUser.getEmail(),
-                    foundBoard)) {
-                    throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_EXISTS);
+                try {
+                    // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
+                    if (boardColRepository.existsByUserEmailAndBoard(foundUser.getEmail(), foundBoard)) {
+                        log.error("워크스페이스에 포함된 보드 중 이미 협업자가 등록된 경우가 있습니다.");
+                        throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_EXISTS);
+                    }
+
+                    WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+                    wpColRepository.save(foundWpCol);
+
+                    BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser,
+                        foundBoard);
+                    boardColRepository.save(boardCollaborator);
+                } catch (CustomException e) {
+                    // 워크스페이스 협업자로 등록
+                    WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+                    wpColRepository.save(foundWpCol);
                 }
-                BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser,
-                    foundBoard);
-                boardColRepository.save(boardCollaborator);
             }
         }
     }
