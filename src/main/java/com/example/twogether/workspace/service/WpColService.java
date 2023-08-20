@@ -67,6 +67,7 @@ public class WpColService {
         if (foundAllBoards != null && !foundAllBoards.isEmpty()) {
             for (Board foundBoard : foundAllBoards) {
                 try {
+
                     // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
                     if (boardColRepository.existsByUserEmailAndBoard(foundUser.getEmail(), foundBoard)) {
                         log.error("워크스페이스에 포함된 보드 중 이미 협업자가 등록된 경우가 있습니다.");
@@ -87,6 +88,10 @@ public class WpColService {
                     wpColRepository.save(foundWpCol);
                 }
             }
+        } else {
+            // 워크스페이스 협업자로 등록
+            WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+            wpColRepository.save(foundWpCol);
         }
     }
 
