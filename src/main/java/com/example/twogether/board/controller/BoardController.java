@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "보드 CRUD API")
 @Slf4j
@@ -33,44 +34,41 @@ public class BoardController {
 
     // 보드 생성
     @Operation(summary = "칸반 보드 생성")
-    @PostMapping("/boards")
+    @PostMapping("/{workspaceId}/boards/")
     public ResponseEntity<BoardResponseDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestBody BoardRequestDto boardRequestDto) {
-        BoardResponseDto result = boardService.createBoard(boardRequestDto, userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    // 보드 전체 조회 - Test 용
-    @Operation(summary = "칸반 보드 전체 조회")
-    @GetMapping("/boards")
-    public ResponseEntity<BoardsResponseDto> getAllBoards(
-        @AuthenticationPrincipal UserDetailsImpl userDetails
+        @RequestParam Long workspaceId,
+        @RequestBody BoardRequestDto boardRequestDto
     ) {
-        BoardsResponseDto boards = boardService.getAllBoards(userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.OK).body(boards);
+
+        BoardResponseDto result = boardService.createBoard(userDetails.getUser(), workspaceId, boardRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     // 보드 단건 조회
     @Operation(summary = "칸반 보드 단건 조회")
-    @GetMapping("/boards/{id}")
+    @GetMapping("/{workspaceId}/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> getBoardById(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long id
+        @PathVariable Long workspaceId,
+        @PathVariable Long boardId
     ) {
-        BoardResponseDto result = boardService.getBoardById(userDetails.getUser(), id);
+
+        BoardResponseDto result = boardService.getBoardById(userDetails.getUser(), workspaceId, boardId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 보드 수정
     @Operation(summary = "칸반 보드 수정", description = "")
-    @PatchMapping("/boards/{id}")
+    @PatchMapping("/{workspaceId}/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> editBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long id,
+        @PathVariable Long workspaceId,
+        @PathVariable Long boardId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
-        boardService.editBoard(userDetails.getUser(), id, boardRequestDto);
+
+        boardService.editBoard(userDetails.getUser(), workspaceId, boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드가 수정되었습니다."));
@@ -78,12 +76,14 @@ public class BoardController {
 
     // 보드 삭제
     @Operation(summary = "칸반 보드 삭제")
-    @DeleteMapping("/boards/{id}")
+    @DeleteMapping("/{workspaceId}/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long id
+        @PathVariable Long workspaceId,
+        @PathVariable Long boardId
     ) {
-        boardService.deleteBoard(userDetails.getUser(), id);
+
+        boardService.deleteBoard(userDetails.getUser(), workspaceId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드 삭제 성공"));
     }

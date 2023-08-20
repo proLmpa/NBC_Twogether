@@ -49,7 +49,7 @@ public class WorkspaceService {
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
             workspace.update(workspaceRequestDto);
             return WorkspaceResponseDto.of(workspace);
-        } else throw new CustomException(CustomErrorCode.WORKSPACE_NOT_USER);
+        } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class WorkspaceService {
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
             workspaceRepository.delete(workspace);
             // 워크스페이스, 보드, 카드, 멤버 등 삭제
-        } else throw new CustomException(CustomErrorCode.WORKSPACE_NOT_USER);
+        } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
     private Workspace findWorkspace(User user, Long workspaceId) {

@@ -1,40 +1,24 @@
 package com.example.twogether.board.service;
 
-import com.example.twogether.board.dto.BoardCollaboratorRequestDto;
-import com.example.twogether.board.dto.BoardResponseDto;
-import com.example.twogether.board.dto.BoardsResponseDto;
-import com.example.twogether.board.entity.Board;
-import com.example.twogether.board.entity.BoardCollaborator;
-import com.example.twogether.board.repository.BoardCollaboratorRepository;
-import com.example.twogether.board.repository.BoardRepository;
-import com.example.twogether.common.error.CustomErrorCode;
-import com.example.twogether.common.exception.CustomException;
-import com.example.twogether.common.security.UserDetailsImpl;
-import com.example.twogether.user.entity.User;
-import com.sun.jdi.request.DuplicateRequestException;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardCollaboratorService {
 
-    private final BoardCollaboratorRepository boardCollaboratorRepository;
+/*    private final BoardCollaboratorRepository boardCollaboratorRepository;
     private final BoardRepository boardRepository;
 
     // 보드 협업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
     @Transactional
-    public void addBoardMember(Long boardId, Long boardMemberId) {
+    public void addBoardCollaborator(Long boardId, Long boardCollaboratorId) {
 
         try {
             Board foundBoard = findBoard(boardId);
-            BoardCollaborator foundBoardCollaborator = findByBoard_Id_and_BoardMember_Id(foundBoard, boardMemberId);
+            BoardCollaborator foundBoardCollaborator = findByBoard_and_BoardCollaborator_Id(foundBoard, boardCollaboratorId);
 
             BoardCollaborator boardCollaborator = BoardCollaboratorRequestDto.toEntity(collaborator, board);
             boardCollaboratorRepository.save(boardCollaborator);
@@ -77,7 +61,7 @@ public class BoardCollaboratorService {
     @Transactional(readOnly = true)
     public BoardsResponseDto getCollaboratedBoards(UserDetailsImpl userDetails) {
         try {
-            List<BoardCollaborator> boardCollaborators = boardCollaboratorRepository.findByBoardMember(
+            List<BoardCollaborator> boardCollaborators = boardCollaboratorRepository.findByBoardCollaborator(
                 userDetails.getUser());
 
             List<Board> collaboratedBoards = boardCollaborators.stream()
@@ -119,14 +103,14 @@ public class BoardCollaboratorService {
         return boardRepository.findById(boardId).orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
-    private BoardCollaborator findByBoard_Id_and_BoardMember_Id(Board foundBoard, Long boardMemberId) {
+    private BoardCollaborator findByBoard_and_BoardCollaborator_Id(Board foundBoard, Long boardCollaboratorId) {
 
         // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
-        if(boardCollaboratorRepository.existsByBoardAndBoardMember_Id(foundBoard, boardMemberId)) {
+        if(boardCollaboratorRepository.existsByBoardAndBoardCollaborator_Id(foundBoard, boardCollaboratorId)) {
             throw new CustomException(CustomErrorCode.BOARD_MEMBER_ALREADY_EXISTS);
         }
         else {
-            return boardCollaboratorRepository.findByBoardANDBoardMember_Id(foundBoard, boardMemberId);
+            return boardCollaboratorRepository.findByBoardANDBoardCollaborator_Id(foundBoard, boardCollaboratorId);
         }
-    }
+    }*/
 }

@@ -7,10 +7,11 @@ import lombok.Getter;
 @Getter
 public class BoardCollaboratorRequestDto {
 
-    private String email;
+/*    private String nickname;
+    private
 
     public BoardCollaborator toEntity(User boardAuthor) {
         return BoardCollaborator.builder()
             .
-    }
+    }*/
 }
