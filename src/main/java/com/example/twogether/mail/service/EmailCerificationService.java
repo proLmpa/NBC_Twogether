@@ -2,7 +2,7 @@ package com.example.twogether.mail.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
-import com.example.twogether.common.util.RedisUtil;
+import com.example.twogether.common.redis.RedisEmail;
 import com.example.twogether.user.repository.UserRepository;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -23,10 +23,10 @@ public class EmailCerificationService {
 
     private final UserRepository userRepository;
     private final JavaMailSender emailSender;
-    private final RedisUtil redisUtil;
-
+    private final RedisEmail redisUtil;
 
     // 인증 요청 메일 전송
+    @Transactional
     public void sendEmailForCertification(String email)
         throws NoSuchAlgorithmException, MessagingException, UnsupportedEncodingException {
         // 기존에 이미 사용 중인 이메일인지 확인
@@ -35,16 +35,17 @@ public class EmailCerificationService {
         String certificationNumber = getVertificationNumber();
         sendMail(email, certificationNumber);
 
-        if(redisUtil.hasKey(email))
+        if (redisUtil.hasKey(email)) {
             redisUtil.removeCertificationNumber(email);
-        redisUtil.saveCertificationNumber(email, certificationNumber);
+        }
+        redisUtil.saveCertification(email, certificationNumber);
     }
 
     // 인증 번호 확인
     @Transactional
     public void verifyEmail(String certificationNumber, String email) {
         verifyCertification(certificationNumber, email);
-        redisUtil.removeCertificationNumber(email);
+        redisUtil.updateVerified(email);
     }
 
     private void findExistingUserByEmail(String email) {
@@ -75,7 +76,7 @@ public class EmailCerificationService {
         String msgg = "";
         msgg += "<div style='margin:100px;'>";
         msgg += "<h1> 안녕하세요</h1>";
-        msgg += "<h1> with 입니다</h1>";
+        msgg += "<h1> Twogether 입니다</h1>";
         msgg += "<br>";
         msgg += "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
         msgg += "<br>";
@@ -97,7 +98,7 @@ public class EmailCerificationService {
         }
 
         if (!Objects.equals(redisUtil.getCertificationNumber(email), certificationNumber)) {
-            throw new CustomException(CustomErrorCode.VERIFY_NOT_ALLOWED);
+            throw new CustomException(CustomErrorCode.INVALID_CERTIFICATION_NUMBER);
         }
     }
 }
