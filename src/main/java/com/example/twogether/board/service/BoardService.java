@@ -53,27 +53,14 @@ public class BoardService {
         }
     }
 
-    // 보드 단건 조회
-    @Transactional(readOnly = true)
-    public BoardResponseDto getBoardById(User boardAuthor, Long workspaceId, Long boardId) {
-
-        if (boardAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
-        Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findBoard(boardId);
-        return BoardResponseDto.of(foundBoard);
-    }
-
     // 보드 수정
     @Transactional
-    public Board editBoard(User boardAuthor, Long boardId, BoardRequestDto boardRequestDto) {
+    public Board editBoard(User boardAuthor, Long workspaceId, Long boardId, BoardRequestDto boardRequestDto) {
         if (boardAuthor == null) {
             throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
         }
 
-        Board foundBoard = findBoard(boardId);
+        Board foundBoard = findBoard(workspaceId, boardId);
         if (boardRequestDto.getTitle() != null) {
             foundBoard.editTitle(boardRequestDto);
         }
@@ -94,7 +81,7 @@ public class BoardService {
         }
 
         Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findBoard(boardId);
+        Board foundBoard = findBoard(workspaceId, boardId);
 
         if (!foundBoard.getBoardAuthor().getEmail().equals(boardAuthor.getEmail())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
@@ -104,14 +91,28 @@ public class BoardService {
         boardRepository.delete(foundBoard);
     }
 
+    // 보드 단건 조회
+    @Transactional(readOnly = true)
+    public BoardResponseDto getBoard(User boardAuthor, Long workspaceId, Long boardId) {
+
+        if (boardAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+        Workspace foundWorkspace = findWorkspace(workspaceId);
+        Board foundBoard = findBoard(foundWorkspace.getId(), boardId);
+
+        return BoardResponseDto.of(foundBoard);
+    }
+
     private Workspace findWorkspace(Long workspaceId) {
+
         return wpRepository.findById(workspaceId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private Board findBoard(Long boardId) {
+    private Board findBoard(Long workspaceId, Long boardId) {
 
-        return boardRepository.findById(boardId)
+        return boardRepository.findByWorkspace_IdAndId(workspaceId, boardId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 }

@@ -11,10 +11,13 @@ import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.dto.WpColRequestDto;
+import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpRepository;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,10 @@ public class WpColService {
     // 워크스페이스 협업자 초대 - 보드 협업자로도 자동 초대
     @Transactional
     public void inviteWpCol(User wpAuthor, Long wpId, String email) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
 
         Workspace foundWorkspace = findWorkspace(wpId);
 
@@ -87,6 +94,10 @@ public class WpColService {
     @Transactional
     public void outWpCol(User wpAuthor, Long wpId, String email) {
 
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
         Workspace foundWorkspace = findWorkspace(wpId);
 
         // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
@@ -120,6 +131,23 @@ public class WpColService {
                 boardColRepository.delete(foundBoardCol);
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public WpsResponseDto getWpCols(User wpAuthor, WpColRequestDto wpColRequestDto) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
+        List<WorkspaceCollaborator> wpCols = wpColRepository.findAllById(Collections.singleton(wpColRequestDto.getId()));
+        List<Workspace> foundWorkspaces = new ArrayList<>();
+        for(WorkspaceCollaborator workspaceCollaborator : wpCols) {
+            Workspace foundWorkspace = findWorkspace(workspaceCollaborator.getId());
+            foundWorkspaces.add(foundWorkspace);
+        }
+
+        return WpsResponseDto.of(foundWorkspaces);
     }
 
     private Workspace findWorkspace(Long wpId) {

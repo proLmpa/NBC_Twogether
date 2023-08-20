@@ -11,4 +11,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Optional<List<Board>> findAllByWorkspace(Workspace foundWorkspace);
 
     Optional<Board> findByWorkspaceAndId(Workspace foundWorkspace, Long boardId);
+
+    Optional<Board> findByWorkspace_IdAndId(Long workspaceId, Long boardId);
 }

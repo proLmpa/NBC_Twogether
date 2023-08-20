@@ -44,8 +44,11 @@ public class WpController {
     @Operation(summary = "워크스페이스 수정")
     @PutMapping("/workspaces/{id}")
     public ResponseEntity<ApiResponseDto> editWorkspace(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id,
-        @RequestBody WpRequestDto wpRequestDto) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long id,
+        @RequestBody WpRequestDto wpRequestDto
+    ) {
+
         wpService.editWorkspace(userDetails.getUser(), id, wpRequestDto);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "워크스페이스가 수정되었습니다."));
@@ -54,7 +57,10 @@ public class WpController {
     @Operation(summary = "워크스페이스 삭제")
     @DeleteMapping("/workspaces/{id}")
     public ResponseEntity<ApiResponseDto> deleteWorkspace(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long id
+    ) {
+
         wpService.deleteWorkspace(userDetails.getUser(), id);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "워크스페이스가 삭제되었습니다."));
@@ -63,7 +69,10 @@ public class WpController {
     @Operation(summary = "워크스페이스 단일 조회")
     @GetMapping("/workspaces/{id}")
     public ResponseEntity<WpResponseDto> getWorkspace(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long id
+    ) {
+
         WpResponseDto wpResponseDto = wpService.getWorkspace(
             userDetails.getUser(), id);
         return ResponseEntity.ok().body(wpResponseDto);
@@ -72,8 +81,10 @@ public class WpController {
     @Operation(summary = "워크스페이스 전체 조회")
     @GetMapping("/workspaces")
     public ResponseEntity<WpsResponseDto> getWorkspaces(
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        WpsResponseDto workspaces = wpService.getAllWorkspaces(userDetails.getUser());
+        @AuthenticationPrincipal UserDetailsImpl wpAuthor
+    ) {
+
+        WpsResponseDto workspaces = wpService.getWorkspaces(wpAuthor.getUser());
         return ResponseEntity.ok().body(workspaces);
     }
 }

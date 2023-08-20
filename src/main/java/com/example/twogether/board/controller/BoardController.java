@@ -55,7 +55,7 @@ public class BoardController {
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.editBoard(userDetails.getUser(), boardId, boardRequestDto);
+        boardService.editBoard(userDetails.getUser(), workspaceId, boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 수정되었습니다."));
@@ -78,13 +78,13 @@ public class BoardController {
     // 보드 단건 조회
     @Operation(summary = "칸반 보드 단건 조회")
     @GetMapping("/boards/{workspaceId}/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoardById(
+    public ResponseEntity<BoardResponseDto> getBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long workspaceId,
         @PathVariable Long boardId
     ) {
 
-        BoardResponseDto result = boardService.getBoardById(userDetails.getUser(), workspaceId, boardId);
+        BoardResponseDto result = boardService.getBoard(userDetails.getUser(), workspaceId, boardId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

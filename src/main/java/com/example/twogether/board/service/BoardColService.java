@@ -35,8 +35,7 @@ public class BoardColService {
         Board foundBoard = findBoard(foundWorkspace, boardId);
 
         // 보드를 생성한 사람만 협업자 초대하기 가능
-        if (!foundBoard.getBoardAuthor().getId().equals(boardAuthor.getId())
-            || boardAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!foundBoard.getBoardAuthor().getId().equals(boardAuthor.getId()) || boardAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 

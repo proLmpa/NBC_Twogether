@@ -25,42 +25,71 @@ public class WpService {
 
     @Transactional
     public WpResponseDto createWorkspace(User wpAuthor, WpRequestDto wpRequestDto){
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
         Workspace foundWp = wpRequestDto.toEntity(wpAuthor);
         wpRepository.save(foundWp);
         return WpResponseDto.of(foundWp);
     }
 
-    @Transactional(readOnly = true) // 조회용 메서드에 붙임
-     public WpsResponseDto getAllWorkspaces(User user) {
-         List<Workspace> workspaces = wpRepository.findAllByWpAuthorOrderByCreatedAtDesc(user);
-         return WpsResponseDto.of(workspaces);
-     }
-
-    @Transactional(readOnly = true) // 조회용 메서드에 붙임
-    public WpResponseDto getWorkspace(User user, Long Id) {
-        Workspace workspace = findWorkspace(user, Id);
-        return WpResponseDto.of(workspace);
-    }
-
     @Transactional
-    public WpResponseDto editWorkspace(User user, Long id, WpRequestDto wpRequestDto) {
-        Workspace workspace = findWorkspace(user, id);
-        if(workspace.getWpAuthor().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+    public WpResponseDto editWorkspace(User wpAuthor, Long id, WpRequestDto wpRequestDto) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
+        Workspace workspace = findWorkspace(id);
+        if(workspace.getWpAuthor().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
             workspace.update(wpRequestDto);
             return WpResponseDto.of(workspace);
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
     @Transactional
-    public void deleteWorkspace(User user, Long id) {
-        Workspace workspace = findWorkspace(user, id);
-        if(workspace.getWpAuthor().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
+    public void deleteWorkspace(User wpAuthor, Long id) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
+        Workspace workspace = findWorkspace(id);
+        if(workspace.getWpAuthor().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+
             wpRepository.delete(workspace);
-            // 워크스페이스, 보드, 카드, 멤버 등 삭제
+            /* 워크스페이스, 보드, 카드, 멤버 등 삭제 */
+
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
-    private Workspace findWorkspace(User user, Long workspaceId) {
+    @Transactional(readOnly = true)
+    public WpResponseDto getWorkspace(User wpAuthor, Long Id) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
+        Workspace workspace = findWorkspace(Id);
+        return WpResponseDto.of(workspace);
+    }
+
+    @Transactional(readOnly = true)
+    public WpsResponseDto getWorkspaces(User wpAuthor) {
+
+        if (wpAuthor == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+        }
+
+        List<Workspace> workspaces = wpRepository.findAllByWpAuthorOrderByCreatedAtDesc(wpAuthor);
+
+        return WpsResponseDto.of(workspaces);
+    }
+
+    private Workspace findWorkspace(Long workspaceId) {
+
         return wpRepository.findById(workspaceId).orElseThrow(() ->
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
