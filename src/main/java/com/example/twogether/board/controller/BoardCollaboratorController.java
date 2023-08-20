@@ -1,11 +1,11 @@
 package com.example.twogether.board.controller;
 
-import com.example.twogether.board.dto.BoardMemberRequestDto;
+import com.example.twogether.board.dto.BoardCollaboratorRequestDto;
 import com.example.twogether.board.dto.BoardResponseDto;
 import com.example.twogether.board.dto.BoardsResponseDto;
 import com.example.twogether.board.entity.Board;
-import com.example.twogether.board.entity.BoardMember;
-import com.example.twogether.board.service.BoardMemberService;
+import com.example.twogether.board.entity.BoardCollaborator;
+import com.example.twogether.board.service.BoardCollaboratorService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "보드 협업자 API")
 @Controller
 @RequiredArgsConstructor
-public class BoardMemberController {
+public class BoardCollaboratorController {
 
-    private final BoardMemberService boardMemberService;
+    private final BoardCollaboratorService boardCollaboratorService;
 
     // 보드 협업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
     @Operation(summary = "칸반 보드에 협업자 등록")
@@ -36,9 +36,9 @@ public class BoardMemberController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId,
         @PathVariable Long boardMemberId,
-        @RequestBody BoardMemberRequestDto requestDto
+        @RequestBody BoardCollaboratorRequestDto requestDto
     ) {
-        boardMemberService.addBoardMember(userDetails.getUser().getId());
+        boardCollaboratorService.addBoardMember(userDetails.getUser().getId());
 
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드에 협업자가 등록되었습니다."));
@@ -50,7 +50,7 @@ public class BoardMemberController {
     public ResponseEntity<ApiResponseDto> updateCollaborator(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @PathVariable boardMemberId) {
         Board board = boardService.findBoard(userDetails.getUser(), boardId);
-        BoardMember boardUser = boardService.findCollaborator(boardUserId);
+        BoardCollaborator boardUser = boardService.findCollaborator(boardUserId);
         User newCollaborator = userService.findUserByUserid(userDetails.getUser().getId());
 
         boardService.updateCollaborator(board, boardUser, newCollaborator);

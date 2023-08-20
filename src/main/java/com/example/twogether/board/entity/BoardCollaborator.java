@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardMember {
+public class BoardCollaborator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +34,9 @@ public class BoardMember {
 
     public void updateBoardCollaborator(User newCollaborator) {
         if(this.boardCollaborator != null) {
-            this.boardCollaborator.getBoardMembers().remove(this);
+            this.boardCollaborator.getBoardCollaborators().remove(this);
         }
         this.boardCollaborator = newCollaborator;
-        newCollaborator.getBoardMembers().add(this);
+        newCollaborator.getBoardCollaborators().add(this);
     }
 }

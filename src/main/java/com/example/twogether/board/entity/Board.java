@@ -46,7 +46,7 @@ public class Board extends Timestamped {
     // orphanRemoval 은 테스트 코드 작성 전 수정 예정입니다.
     @Builder.Default
     @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<BoardCollaborators> boardCollaborators = new ArrayList<>();
+    private List<BoardCollaborator> boardCollaborators = new ArrayList<>();
 
     public void updateTitle(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
