@@ -94,7 +94,7 @@ public class WpColService {
         }
 
         // 워크스페이스 협업자 삭제
-        WorkspaceCollaborator foundWpCol = findWpCol(foundWorkspace.getUser().getId());
+        WorkspaceCollaborator foundWpCol = findWpCol(email);
         wpColRepository.delete(foundWpCol);
 
         // 워크스페이스에서 추방한 협업자 모든 하위 보드에서 자동 추방
@@ -132,9 +132,9 @@ public class WpColService {
             new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
-    private WorkspaceCollaborator findWpCol(Long wpColId) {
+    private WorkspaceCollaborator findWpCol(String email) {
 
-        return wpColRepository.findById(wpColId).orElseThrow(() ->
+        return wpColRepository.findByUserEmail(email).orElseThrow(() ->
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
     }
 
