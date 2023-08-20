@@ -52,7 +52,7 @@ public class Board extends Timestamped {
     private User boardAuthor;
 
     @Builder.Default
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<BoardCollaborator> boardCollaborators = new ArrayList<>();
 
     @Builder.Default

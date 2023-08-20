@@ -93,26 +93,24 @@ public class WpColService {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 협업자로 등록
-        WorkspaceCollaborator foundWpCol = findWpCol(foundWorkspace.getUser().getId());
-
         // 워크스페이스 협업자 삭제
+        WorkspaceCollaborator foundWpCol = findWpCol(foundWorkspace.getUser().getId());
         wpColRepository.delete(foundWpCol);
 
         // 워크스페이스에서 추방한 협업자 모든 하위 보드에서 자동 추방
         List<Board> foundAllBoards = findAllBoards(foundWorkspace);
-        if (foundAllBoards != null && !foundAllBoards.isEmpty()) {
-            for (Board foundBoard : foundAllBoards) {
+        for (Board foundBoard : foundAllBoards) {
+            List<BoardCollaborator> boardCollaborators = boardColRepository.findByBoard(foundBoard);
+
+            if (boardCollaborators != null && !boardCollaborators.isEmpty()) {
                 // 이미 추방된 보드 협업자
                 if (!boardColRepository.existsByUserEmailAndBoard(email, foundBoard)) {
                     throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_OUT);
                 }
 
                 // 보드 협업자 삭제
-                List<BoardCollaborator> boardCollaborators = boardColRepository.findByBoard(foundBoard);
-                for (BoardCollaborator boardCollaborator : boardCollaborators) {
-                    boardColRepository.delete(boardCollaborator);
-                }
+                BoardCollaborator foundBoardCol = findBoardCol(email, foundBoard);
+                boardColRepository.delete(foundBoardCol);
             }
         }
     }
@@ -126,7 +124,12 @@ public class WpColService {
     private User findUser(String email) {
 
         return userRepository.findByEmail(email).orElseThrow(() ->
-                new CustomException(CustomErrorCode.USER_NOT_FOUND));
+            new CustomException(CustomErrorCode.USER_NOT_FOUND));
+    }
+
+    private List<Board> findAllBoards(Workspace foundWorkspace) {
+        return boardRepository.findAllByWorkspace(foundWorkspace).orElseThrow(() ->
+            new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
     private WorkspaceCollaborator findWpCol(Long wpColId) {
@@ -135,8 +138,8 @@ public class WpColService {
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
     }
 
-    private List<Board> findAllBoards(Workspace foundWorkspace) {
-        return boardRepository.findAllByWorkspace(foundWorkspace).orElseThrow(() ->
-            new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
+    private BoardCollaborator findBoardCol(String email, Board foundBoard) {
+
+        return boardColRepository.findByUserEmailAndBoard(email, foundBoard);
     }
 }
