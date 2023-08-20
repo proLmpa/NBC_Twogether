@@ -1,6 +1,7 @@
 package com.example.twogether.common.config;
 
 import com.example.twogether.common.jwt.JwtUtil;
+import com.example.twogether.common.redis.RedisRefreshToken;
 import com.example.twogether.common.security.JwtAuthenticationFilter;
 import com.example.twogether.common.security.JwtAuthorizationFilter;
 import com.example.twogether.common.security.UserDetailsServiceImpl;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
+    private final RedisRefreshToken redisRefreshToken;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -34,14 +36,14 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, redisRefreshToken);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, redisRefreshToken, userDetailsService);
     }
 
     @Bean
