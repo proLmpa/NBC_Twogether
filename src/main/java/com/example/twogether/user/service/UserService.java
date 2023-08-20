@@ -2,6 +2,7 @@ package com.example.twogether.user.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.common.redis.RedisEmail;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
@@ -25,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisEmail redisUtil;
 
     @Value("${admin.token}")
     private String adminToken;
@@ -32,6 +34,9 @@ public class UserService {
     @Transactional
     public User signup(SignupRequestDto requestDto) {
         String password = passwordEncoder.encode(requestDto.getPassword());
+
+        if(!redisUtil.hasKey(requestDto.getEmail()) || !redisUtil.isVerified(requestDto.getEmail()))
+            throw new CustomException(CustomErrorCode.EMAIL_NOT_VERIFIED);
 
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin() && requestDto.getAdminToken().equals(adminToken)) {
