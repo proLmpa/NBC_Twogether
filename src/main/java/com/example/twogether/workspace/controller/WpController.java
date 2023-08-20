@@ -2,10 +2,10 @@ package com.example.twogether.workspace.controller;
 
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
-import com.example.twogether.workspace.dto.WorkspaceRequestDto;
-import com.example.twogether.workspace.dto.WorkspaceResponseDto;
-import com.example.twogether.workspace.dto.WorkspacesResponseDto;
-import com.example.twogether.workspace.service.WorkspaceService;
+import com.example.twogether.workspace.dto.WpRequestDto;
+import com.example.twogether.workspace.dto.WpResponseDto;
+import com.example.twogether.workspace.dto.WpsResponseDto;
+import com.example.twogether.workspace.service.WpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,53 +25,55 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Tag(name = "워크스페이스 API", description = "워크스페이스 API 정보")
-public class WorkspaceController {
+public class WpController {
 
-    private final WorkspaceService workspaceService;
+    private final WpService wpService;
 
     @Operation(summary = "워크스페이스 생성")
     @PostMapping("/workspaces")
     public ResponseEntity<ApiResponseDto> createWorkspaces(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestBody WorkspaceRequestDto workspaceRequestDto) {
-        workspaceService.createWorkspace(workspaceRequestDto, userDetails.getUser());
-        return ResponseEntity.ok()
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Creation Success!"));
+        @RequestBody WpRequestDto wpRequestDto
+    ) {
+
+        wpService.createWorkspace(userDetails.getUser(), wpRequestDto);
+
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "워크스페이스가 생성되었습니다."));
     }
 
     @Operation(summary = "워크스페이스 수정")
     @PutMapping("/workspaces/{id}")
     public ResponseEntity<ApiResponseDto> updateWorkspace(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id,
-        @RequestBody WorkspaceRequestDto workspaceRequestDto) {
-        workspaceService.updateWorkspace(userDetails.getUser(), id, workspaceRequestDto);
+        @RequestBody WpRequestDto wpRequestDto) {
+        wpService.updateWorkspace(userDetails.getUser(), id, wpRequestDto);
         return ResponseEntity.ok()
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Update Success!"));
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "워크스페이스가 수정되었습니다."));
     }
 
     @Operation(summary = "워크스페이스 삭제")
     @DeleteMapping("/workspaces/{id}")
     public ResponseEntity<ApiResponseDto> deleteWorkspace(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        workspaceService.deleteWorkspace(userDetails.getUser(), id);
+        wpService.deleteWorkspace(userDetails.getUser(), id);
         return ResponseEntity.ok()
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "Workspace Delete Success!"));
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "워크스페이스가 삭제되었습니다."));
     }
 
     @Operation(summary = "워크스페이스 단일 조회")
     @GetMapping("/workspaces/{id}")
-    public ResponseEntity<WorkspaceResponseDto> getWorkspace(
+    public ResponseEntity<WpResponseDto> getWorkspace(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        WorkspaceResponseDto workspaceResponseDto = workspaceService.getWorkspace(
+        WpResponseDto wpResponseDto = wpService.getWorkspace(
             userDetails.getUser(), id);
-        return ResponseEntity.ok().body(workspaceResponseDto);
+        return ResponseEntity.ok().body(wpResponseDto);
     }
 
     @Operation(summary = "워크스페이스 전체 조회")
     @GetMapping("/workspaces")
-    public ResponseEntity<WorkspacesResponseDto> getWorkspaces(
+    public ResponseEntity<WpsResponseDto> getWorkspaces(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        WorkspacesResponseDto workspaces = workspaceService.getAllWorkspaces(userDetails.getUser());
+        WpsResponseDto workspaces = wpService.getAllWorkspaces(userDetails.getUser());
         return ResponseEntity.ok().body(workspaces);
     }
 }

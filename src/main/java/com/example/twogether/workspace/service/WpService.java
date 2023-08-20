@@ -6,11 +6,11 @@ import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
-import com.example.twogether.workspace.dto.WorkspaceRequestDto;
-import com.example.twogether.workspace.dto.WorkspaceResponseDto;
-import com.example.twogether.workspace.dto.WorkspacesResponseDto;
+import com.example.twogether.workspace.dto.WpRequestDto;
+import com.example.twogether.workspace.dto.WpResponseDto;
+import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
-import com.example.twogether.workspace.repository.WorkspaceRepository;
+import com.example.twogether.workspace.repository.WpRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,36 +19,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class WorkspaceService {
+public class WpService {
 
-    private final WorkspaceRepository workspaceRepository;
+    private final WpRepository wpRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public WorkspaceResponseDto createWorkspace(WorkspaceRequestDto workspaceRequestDto, User user){
-        Workspace workspace = workspaceRequestDto.toEntity(user);
-        workspaceRepository.save(workspace);
-        return WorkspaceResponseDto.of(workspace);
+    public WpResponseDto createWorkspace(User wpAuthor, WpRequestDto wpRequestDto){
+        Workspace foundWp = wpRequestDto.toEntity(wpAuthor);
+        wpRepository.save(foundWp);
+        return WpResponseDto.of(foundWp);
     }
 
     @Transactional(readOnly = true) // 조회용 메서드에 붙임
-     public WorkspacesResponseDto getAllWorkspaces(User user) {
-         List<Workspace> workspaces = workspaceRepository.findAllByUserOrderByCreatedAtDesc(user);
-         return WorkspacesResponseDto.of(workspaces);
+     public WpsResponseDto getAllWorkspaces(User user) {
+         List<Workspace> workspaces = wpRepository.findAllByUserOrderByCreatedAtDesc(user);
+         return WpsResponseDto.of(workspaces);
      }
 
     @Transactional(readOnly = true) // 조회용 메서드에 붙임
-    public WorkspaceResponseDto getWorkspace(User user, Long Id) {
+    public WpResponseDto getWorkspace(User user, Long Id) {
         Workspace workspace = findWorkspace(user, Id);
-        return WorkspaceResponseDto.of(workspace);
+        return WpResponseDto.of(workspace);
     }
 
     @Transactional
-    public WorkspaceResponseDto updateWorkspace(User user, Long id, WorkspaceRequestDto workspaceRequestDto) {
+    public WpResponseDto updateWorkspace(User user, Long id, WpRequestDto wpRequestDto) {
         Workspace workspace = findWorkspace(user, id);
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
-            workspace.update(workspaceRequestDto);
-            return WorkspaceResponseDto.of(workspace);
+            workspace.update(wpRequestDto);
+            return WpResponseDto.of(workspace);
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
@@ -56,13 +56,13 @@ public class WorkspaceService {
     public void deleteWorkspace(User user, Long id) {
         Workspace workspace = findWorkspace(user, id);
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
-            workspaceRepository.delete(workspace);
+            wpRepository.delete(workspace);
             // 워크스페이스, 보드, 카드, 멤버 등 삭제
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
     private Workspace findWorkspace(User user, Long workspaceId) {
-        return workspaceRepository.findById(workspaceId).orElseThrow(() ->
+        return wpRepository.findById(workspaceId).orElseThrow(() ->
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 }

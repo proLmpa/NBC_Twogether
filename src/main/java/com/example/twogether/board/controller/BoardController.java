@@ -33,27 +33,15 @@ public class BoardController {
     // 보드 생성
     @Operation(summary = "칸반 보드 생성")
     @PostMapping("/boards/{workspaceId}")
-    public ResponseEntity<BoardResponseDto> createBoard(
+    public ResponseEntity<ApiResponseDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long workspaceId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        BoardResponseDto result = boardService.createBoard(userDetails.getUser(), workspaceId, boardRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
+        boardService.createBoard(userDetails.getUser(), workspaceId, boardRequestDto);
 
-    // 보드 단건 조회
-    @Operation(summary = "칸반 보드 단건 조회")
-    @GetMapping("/boards/{workspaceId}/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoardById(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long workspaceId,
-        @PathVariable Long boardId
-    ) {
-
-        BoardResponseDto result = boardService.getBoardById(userDetails.getUser(), workspaceId, boardId);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "칸반 보드가 생성되었습니다."));
     }
 
     // 보드 수정
@@ -83,6 +71,19 @@ public class BoardController {
 
         boardService.deleteBoard(userDetails.getUser(), workspaceId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드 삭제 성공"));
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드 삭제되었습니다."));
+    }
+
+    // 보드 단건 조회
+    @Operation(summary = "칸반 보드 단건 조회")
+    @GetMapping("/boards/{workspaceId}/{boardId}")
+    public ResponseEntity<BoardResponseDto> getBoardById(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long workspaceId,
+        @PathVariable Long boardId
+    ) {
+
+        BoardResponseDto result = boardService.getBoardById(userDetails.getUser(), workspaceId, boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

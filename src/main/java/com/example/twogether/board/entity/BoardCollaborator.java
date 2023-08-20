@@ -26,17 +26,18 @@ public class BoardCollaborator {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User boardCollaborator;
+    private User boardCol;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    public void updateBoardCollaborator(User newCollaborator) {
-        if(this.boardCollaborator != null) {
-            this.boardCollaborator.getBoardCollaborators().remove(this);
+/*    public void updateBoardCol(User newCol) {
+        if(this.boardCol != null) {
+            this.boardCol.getBoardCollaborators().remove(this);
         }
-        this.boardCollaborator = newCollaborator;
-        newCollaborator.getBoardCollaborators().add(this);
-    }
+        this.boardCol = newCol;
+        newCol.getBoardCollaborators().add(this);
+    }*/
 }
+

@@ -5,6 +5,6 @@ import com.example.twogether.workspace.entity.Workspace;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
+public interface WpRepository extends JpaRepository<Workspace, Long> {
     List<Workspace> findAllByUserOrderByCreatedAtDesc(User user);
 }

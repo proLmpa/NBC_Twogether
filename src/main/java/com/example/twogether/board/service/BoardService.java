@@ -8,8 +8,7 @@ import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.entity.Workspace;
-import com.example.twogether.workspace.repository.WorkspaceRepository;
-import java.util.concurrent.RejectedExecutionException;
+import com.example.twogether.workspace.repository.WpRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final WorkspaceRepository workspaceRepository;
+    private final WpRepository wpRepository;
 
     // 보드 생성
     @Transactional
@@ -93,6 +92,7 @@ public class BoardService {
             if (!board.getBoardAuthor().getEmail().equals(boardAuthor.getEmail())) {
                 throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
             }
+
             boardRepository.delete(board);
         } catch (Exception e) {
             log.error("칸반 보드 삭제에 실패했습니다. 이유: ", e.getMessage(), e);
@@ -101,7 +101,7 @@ public class BoardService {
     }
 
     private Workspace findWorkspace(Long workspaceId) {
-        return workspaceRepository.findById(workspaceId)
+        return wpRepository.findById(workspaceId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
