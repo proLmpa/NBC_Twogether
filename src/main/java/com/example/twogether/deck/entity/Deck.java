@@ -55,4 +55,8 @@ public class Deck extends Timestamped {
     public void editPosition(float position) {
         this.position = position;
     }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
 }

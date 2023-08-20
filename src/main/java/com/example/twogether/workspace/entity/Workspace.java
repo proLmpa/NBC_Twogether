@@ -46,7 +46,6 @@ public class Workspace extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // 워크스페이스 멤버 리스트
     @Builder.Default
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceCollaborator> workspaceCollaborators = new ArrayList<>();

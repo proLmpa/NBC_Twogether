@@ -23,6 +23,7 @@ public enum CustomErrorCode {
     WORKSPACE_COLLABORATOR_NOT_ACCESSIBLE("WC004", "워크스페이스의 기능 사용에 실패했습니다."),
 
     // Board
+    BOARD_ALREADY_ARCHIVED("B001", "이미 삭제 보관된 보드입니다."),
     BOARD_NOT_FOUND("B002", "존재하지 않는 보드입니다."),
     NOT_YOUR_BOARD("B003", "해당 기능은 보드를 생성한 사람만 접근할 수 있습니다."),
     BOARD_NOT_ACCESSIBLE("B004", "보드의 CRUD 기능 사용에 실패했습니다."),
@@ -30,6 +31,7 @@ public enum CustomErrorCode {
     // BoardCollaborator
     BOARD_COLLABORATOR_ALREADY_EXISTS("BC001", "이미 존재하는 보드 협업자입니다."),
     BOARD_COLLABORATOR_NOT_FOUND("BC002", "존재하지 않는 보드 협업자입니다."),
+    BOARD_COLLABORATOR_ALREADY_OUT("B003", "이미 추방된 보드 협업자입니다."),
     BOARD_COLLABORATOR_NOT_ACCESSIBLE("BC004", "보드의 협업자 기능 사용에 실패했습니다.");
 
     private final String errorCode;

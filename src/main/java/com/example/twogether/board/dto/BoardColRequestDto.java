@@ -13,7 +13,7 @@ public class BoardColRequestDto {
     public static BoardCollaborator toEntity(User boardCol, Board board) {
         return BoardCollaborator.builder()
             .id(boardCol.getId())
-            .boardCol(boardCol)
+            .user(boardCol)
             .board(board)
             .build();
     }

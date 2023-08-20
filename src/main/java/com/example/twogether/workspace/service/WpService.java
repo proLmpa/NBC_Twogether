@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class WpService {
 
     private final WpRepository wpRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public WpResponseDto createWorkspace(User wpAuthor, WpRequestDto wpRequestDto){
@@ -44,7 +43,7 @@ public class WpService {
     }
 
     @Transactional
-    public WpResponseDto updateWorkspace(User user, Long id, WpRequestDto wpRequestDto) {
+    public WpResponseDto editWorkspace(User user, Long id, WpRequestDto wpRequestDto) {
         Workspace workspace = findWorkspace(user, id);
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
             workspace.update(wpRequestDto);

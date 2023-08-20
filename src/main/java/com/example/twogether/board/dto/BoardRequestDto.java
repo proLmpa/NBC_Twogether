@@ -19,7 +19,7 @@ public class BoardRequestDto {
         return Board.builder()
             .title(this.title)
             .color(this.color)
-            .info("This is " + boardAuthor.getNickname() + "'s \"" + this.title + "\" board.")
+            .info("This is " + boardAuthor.getNickname() + "'s " + this.title + " board.")
             .workspace(foundWorkspace)
             .boardAuthor(boardAuthor)
             .build();

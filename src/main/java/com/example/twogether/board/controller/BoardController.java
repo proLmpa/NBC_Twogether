@@ -5,6 +5,7 @@ import com.example.twogether.board.dto.BoardResponseDto;
 import com.example.twogether.board.service.BoardService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
+import com.example.twogether.workspace.service.WpColService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

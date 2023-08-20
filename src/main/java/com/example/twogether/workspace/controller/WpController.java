@@ -43,10 +43,10 @@ public class WpController {
 
     @Operation(summary = "워크스페이스 수정")
     @PutMapping("/workspaces/{id}")
-    public ResponseEntity<ApiResponseDto> updateWorkspace(
+    public ResponseEntity<ApiResponseDto> editWorkspace(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id,
         @RequestBody WpRequestDto wpRequestDto) {
-        wpService.updateWorkspace(userDetails.getUser(), id, wpRequestDto);
+        wpService.editWorkspace(userDetails.getUser(), id, wpRequestDto);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "워크스페이스가 수정되었습니다."));
     }
