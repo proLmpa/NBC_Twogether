@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class BoardsResponseDto {
+
     private List<BoardResponseDto> boards;
 
     public static BoardsResponseDto of(List<Board> boards){

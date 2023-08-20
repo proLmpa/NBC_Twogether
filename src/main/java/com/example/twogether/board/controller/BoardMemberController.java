@@ -1,14 +1,44 @@
 package com.example.twogether.board.controller;
 
-public class BoardMemberController {
-/*    // 보드 작업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
-    @Operation(summary = "칸반 보드에 작업자 등록")
-    @PostMapping("/boards/{id}/invite")
-    public ResponseEntity<ApiResponseDto> addCollaborator(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id,
-        @RequestBody BoardCollaboRequestDto requestDto) {
+import com.example.twogether.board.dto.BoardMemberRequestDto;
+import com.example.twogether.board.dto.BoardResponseDto;
+import com.example.twogether.board.dto.BoardsResponseDto;
+import com.example.twogether.board.entity.Board;
+import com.example.twogether.board.entity.BoardMember;
+import com.example.twogether.board.service.BoardMemberService;
+import com.example.twogether.common.dto.ApiResponseDto;
+import com.example.twogether.common.security.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-        boardService.addCollaborator(id, requestDto.getEmail());
+@Tag(name = "보드 협업자 API")
+@Controller
+@RequiredArgsConstructor
+public class BoardMemberController {
+
+    private final BoardMemberService boardMemberService;
+
+    // 보드 협업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
+    @Operation(summary = "칸반 보드에 협업자 등록")
+    @PostMapping("/boards/{id}/invite")
+    public ResponseEntity<ApiResponseDto> addBoardMember(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long boardId,
+        @PathVariable Long boardMemberId,
+        @RequestBody BoardMemberRequestDto requestDto
+    ) {
+        boardMemberService.addBoardMember(userDetails.getUser().getId());
 
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "칸반 보드에 협업자가 등록되었습니다."));
@@ -18,7 +48,7 @@ public class BoardMemberController {
     @Operation(summary = "칸반 보드의 협업자 명단 수정")
     @PutMapping("/boards/{id}/invite")
     public ResponseEntity<ApiResponseDto> updateCollaborator(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @PathVariable boardMemberId) {
         Board board = boardService.findBoard(userDetails.getUser(), boardId);
         BoardMember boardUser = boardService.findCollaborator(boardUserId);
         User newCollaborator = userService.findUserByUserid(userDetails.getUser().getId());
@@ -65,5 +95,5 @@ public class BoardMemberController {
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         BoardResponseDto result = boardService.getCollaboratedBoardById(userDetails.getUser(), id);
         return ResponseEntity.ok().body(result);
-    }*/
+    }
 }

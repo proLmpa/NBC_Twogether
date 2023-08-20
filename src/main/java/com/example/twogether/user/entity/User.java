@@ -53,7 +53,7 @@ public class User {
     private List<Board> boards = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "boardCollabo", orphanRemoval = true)
+    @OneToMany(mappedBy = "boardCollaborator", orphanRemoval = true)
     private List<BoardMember> boardMembers = new ArrayList<>();
 
     /**

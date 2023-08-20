@@ -4,16 +4,10 @@ import com.example.twogether.board.dto.BoardRequestDto;
 import com.example.twogether.board.dto.BoardResponseDto;
 import com.example.twogether.board.dto.BoardsResponseDto;
 import com.example.twogether.board.entity.Board;
-import com.example.twogether.board.entity.BoardMember;
-import com.example.twogether.board.repository.BoardMemberRepository;
 import com.example.twogether.board.repository.BoardRepository;
-import com.example.twogether.common.security.UserDetailsImpl;
 import com.example.twogether.user.entity.User;
-import com.example.twogether.user.repository.UserRepository;
-import com.sun.jdi.request.DuplicateRequestException;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -26,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final BoardMemberRepository boardMemberRepository;
-    private final UserRepository userRepository;
 
     // 보드 생성
     @Transactional
@@ -50,6 +42,10 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardsResponseDto getAllBoards(User boardAuthor) {
         try {
+            if (boardAuthor == null) {
+                throw new IllegalArgumentException("보드 작성자 정보가 없습니다.");
+            }
+
             List<Board> boards = boardRepository.findAllByBoardAuthorOrderByCreatedAtDesc(boardAuthor);
             return BoardsResponseDto.of(boards);
         } catch (Exception e) {
@@ -72,7 +68,7 @@ public class BoardService {
 
     // 보드 수정
     @Transactional
-    public Board updateBoard(User boardAuthor, Long id, BoardRequestDto boardRequestDto) {
+    public Board editBoard(User boardAuthor, Long id, BoardRequestDto boardRequestDto) {
         try {
             Board board = findBoard(boardAuthor, id);
             if(boardRequestDto.getTitle()!=null) board.updateTitle(boardRequestDto);
