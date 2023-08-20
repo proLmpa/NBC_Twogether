@@ -20,7 +20,7 @@ public class WorkspaceResponseDto {
     private String icon;
     private String user;
     //private List<WorkspaceMemberResponseDto> workspaceMembers;
-    private BoardsResponseDto boards;
+    private List<BoardResponseDto> boards;
 
 
     public static WorkspaceResponseDto of(Workspace workspace) {
@@ -30,7 +30,7 @@ public class WorkspaceResponseDto {
             .title(workspace.getTitle())
             .icon(workspace.getIcon())
             //.workspaceMembers(workspace.getWorkspaceMembers().stream().map(workspaceMember -> new UserResponseDto(workspaceMember.getUser())).toList())
-            .boards(BoardsResponseDto.builder()::of)
+            .boards(workspace.getBoards().stream().map(BoardResponseDto::of).toList())
             .build();
     }
 }

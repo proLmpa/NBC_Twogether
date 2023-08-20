@@ -34,6 +34,7 @@ public class BoardService {
             Workspace foundWorkspace = findWorkspace(workspaceId);
             Board board = boardRequestDto.toEntity(foundWorkspace, boardAuthor);
             boardRepository.save(board);
+            log.info("칸반 보드 생성에 성공했습니다.");
             return BoardResponseDto.of(board);
         } catch (Exception e) {
             log.error("칸반 보드 생성에 실패했습니다. 이유: ", e.getMessage(), e);

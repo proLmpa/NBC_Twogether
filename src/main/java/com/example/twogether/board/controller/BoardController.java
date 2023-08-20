@@ -2,7 +2,6 @@ package com.example.twogether.board.controller;
 
 import com.example.twogether.board.dto.BoardRequestDto;
 import com.example.twogether.board.dto.BoardResponseDto;
-import com.example.twogether.board.dto.BoardsResponseDto;
 import com.example.twogether.board.service.BoardService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "보드 CRUD API")
 @Slf4j
@@ -34,10 +32,10 @@ public class BoardController {
 
     // 보드 생성
     @Operation(summary = "칸반 보드 생성")
-    @PostMapping("/{workspaceId}/boards/")
+    @PostMapping("/boards/{workspaceId}")
     public ResponseEntity<BoardResponseDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestParam Long workspaceId,
+        @PathVariable Long workspaceId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
@@ -47,7 +45,7 @@ public class BoardController {
 
     // 보드 단건 조회
     @Operation(summary = "칸반 보드 단건 조회")
-    @GetMapping("/{workspaceId}/boards/{boardId}")
+    @GetMapping("/boards/{workspaceId}/{boardId}")
     public ResponseEntity<BoardResponseDto> getBoardById(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long workspaceId,
@@ -60,7 +58,7 @@ public class BoardController {
 
     // 보드 수정
     @Operation(summary = "칸반 보드 수정", description = "")
-    @PatchMapping("/{workspaceId}/boards/{boardId}")
+    @PatchMapping("/boards/{workspaceId}/{boardId}")
     public ResponseEntity<ApiResponseDto> editBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long workspaceId,
@@ -76,7 +74,7 @@ public class BoardController {
 
     // 보드 삭제
     @Operation(summary = "칸반 보드 삭제")
-    @DeleteMapping("/{workspaceId}/boards/{boardId}")
+    @DeleteMapping("/boards/{workspaceId}/{boardId}")
     public ResponseEntity<ApiResponseDto> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long workspaceId,

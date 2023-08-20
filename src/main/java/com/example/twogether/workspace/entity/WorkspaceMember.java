@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Table(name = "workspace_member")
 public class WorkspaceMember {
     @Id
@@ -38,7 +38,4 @@ public class WorkspaceMember {
         this.user = user;
         this.workspace = workspace;
     }
-
-
-
 }
