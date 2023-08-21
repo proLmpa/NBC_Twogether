@@ -16,6 +16,18 @@ public enum CustomErrorCode {
     EMAIL_SEND_FAILED("EM002", "이메일 전송에 실패했습니다"),
     EMAIL_NOT_FOUND("EM003", "인증을 요청받은 메일이 아닙니다."),
     INVALID_CERTIFICATION_NUMBER("EM004", "이메일 인증 번호가 일치하지 않습니다.");
+  
+    // Board
+    BOARD_NOT_FOUND("B001", "존재하지 않는 보드입니다."),
+
+    // Deck
+    DECK_NOT_FOUND("D001", "존재하지 않는 덱입니다."),
+    DECK_IS_NOT_ARCHIVE("D002", "덱이 보관된 상태에서만 삭제 가능합니다.")
+    ;
+
+    // Workspace
+    WORKSPACE_NOT_FOUND("W001", "존재하지 않는 워크스페이스 입니다."),
+    WORKSPACE_NOT_USER("W002", "본인이 작성한 워크스페이스만 수정/삭제 할 수 있습니다.");
 
     private final String errorCode;
     private final String errorMessage;
