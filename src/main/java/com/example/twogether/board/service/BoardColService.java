@@ -29,18 +29,18 @@ public class BoardColService {
 
     // 칸반 보드에 협업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
     @Transactional
-    public void inviteBoardCol(User boardAuthor, Long wpId, Long boardId, String email) {
+    public void inviteBoardCol(User user, Long wpId, Long boardId, String email) {
 
         Workspace foundWorkspace = findWorkspace(wpId);
         Board foundBoard = findBoard(foundWorkspace, boardId);
 
         // 보드를 생성한 사람만 협업자 초대하기 가능
-        if (!foundBoard.getBoardAuthor().getId().equals(boardAuthor.getId()) || boardAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!foundBoard.getUser().getId().equals(user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
         // 보드 오너는 초대당하기 불가
-        if (email.equals(boardAuthor.getEmail())) {
+        if (email.equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
         }
 
@@ -57,20 +57,20 @@ public class BoardColService {
 
     // 칸반 보드에서 협업자 추방
     @Transactional
-    public void outBoardCol(User boardAuthor, Long wpId, Long boardId, String email) {
+    public void outBoardCol(User user, Long wpId, Long boardId, String email) {
 
         Workspace foundWorkspace = findWorkspace(wpId);
         Board foundBoard = findBoard(foundWorkspace, boardId);
 
         // 보드를 생성한 사람만 협업자 추방하기 가능
-        if (!foundBoard.getBoardAuthor().getId().equals(boardAuthor.getId()) || boardAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!foundBoard.getUser().getId().equals(user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
 
             log.error("보드를 생성한 사람만 협업자 추방할 수 있습니다.");
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
         // 보드 오너는 초대당하기 불가
-        if (email.equals(boardAuthor.getEmail())) {
+        if (email.equals(user.getEmail())) {
             log.error("보드 오너는 초대할 수 없습니다.");
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
         }
@@ -86,15 +86,15 @@ public class BoardColService {
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private Board findBoard(Workspace foundWorkspace, Long boardId) {
+    private Board findBoard(Workspace workspace, Long boardId) {
 
-        return boardRepository.findByWorkspaceAndId(foundWorkspace, boardId).orElseThrow(() ->
+        return boardRepository.findByWorkspaceAndId(workspace, boardId).orElseThrow(() ->
             new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
-    private BoardCollaborator findBoardCol(Board foundBoard, String email) {
+    private BoardCollaborator findBoardCol(Board board, String email) {
 
-        return boardColRepository.findByBoardAndEmail(foundBoard, email).orElseThrow(() ->
+        return boardColRepository.findByBoardAndEmail(board, email).orElseThrow(() ->
             new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
     }
 

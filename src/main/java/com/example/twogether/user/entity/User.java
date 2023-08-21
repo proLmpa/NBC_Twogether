@@ -57,7 +57,7 @@ public class User {
     private List<UserPassword> userPasswords = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "wpAuthor")
+    @OneToMany(mappedBy = "user")
     private List<Workspace> workspaces = new ArrayList<>();
 
     @Builder.Default
@@ -66,12 +66,8 @@ public class User {
 
     // orphanRemoval 은 테스트 코드 작성 전 수정 예정입니다.
     @Builder.Default
-    @OneToMany(mappedBy = "boardAuthor", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
-
-/*    @Builder.Default
-    @OneToMany(mappedBy = "boardCollaborator", orphanRemoval = true)
-    private List<BoardCollaborator> boardCollaborators = new ArrayList<>();*/
 
     /**
      * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.

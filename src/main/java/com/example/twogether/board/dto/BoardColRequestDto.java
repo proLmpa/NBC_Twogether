@@ -10,10 +10,10 @@ public class BoardColRequestDto {
 
     private String email;
 
-    public static BoardCollaborator toEntity(User boardCol, Board board) {
+    public static BoardCollaborator toEntity(User user, Board board) {
         return BoardCollaborator.builder()
-            .email(boardCol.getEmail())
-            .user(boardCol)
+            .email(user.getEmail())
+            .user(user)
             .board(board)
             .build();
     }

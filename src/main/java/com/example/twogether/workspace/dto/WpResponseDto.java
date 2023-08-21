@@ -21,14 +21,14 @@ public class WpResponseDto {
     private List<BoardResponseDto> boards;
 
 
-    public static WpResponseDto of(Workspace foundWp) {
+    public static WpResponseDto of(Workspace workspace) {
         return WpResponseDto.builder()
-            .workspaceId(foundWp.getId())
-            .email(foundWp.getWpAuthor().getEmail())
-            .title(foundWp.getTitle())
-            .icon(foundWp.getIcon())
-            .wpCollaborators(foundWp.getWorkspaceCollaborators().stream().map(WpColResponseDto::of).toList())
-            .boards(foundWp.getBoards().stream().map(BoardResponseDto::of).toList())
+            .workspaceId(workspace.getId())
+            .email(workspace.getUser().getEmail())
+            .title(workspace.getTitle())
+            .icon(workspace.getIcon())
+            .wpCollaborators(workspace.getWorkspaceCollaborators().stream().map(WpColResponseDto::of).toList())
+            .boards(workspace.getBoards().stream().map(BoardResponseDto::of).toList())
             .build();
     }
 }

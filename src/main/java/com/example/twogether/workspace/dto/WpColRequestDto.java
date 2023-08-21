@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 public class WpColRequestDto {
 
-    private Long id;
+    private Long id; // 이거 있어야 하는지 고민 중
     private String email;
 
-    public static WorkspaceCollaborator toEntity(User wpCol, Workspace workspace) {
+    public static WorkspaceCollaborator toEntity(User user, Workspace workspace) {
         return WorkspaceCollaborator.builder()
-            .id(wpCol.getId())
-            .email(wpCol.getEmail())
-            .user(wpCol)
+            .id(user.getId())
+            .email(user.getEmail())
+            .user(user)
             .workspace(workspace)
             .build();
     }

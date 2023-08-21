@@ -49,7 +49,7 @@ public class Board extends Timestamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User boardAuthor;
+    private User user;
 
     @Builder.Default
     @OneToMany(mappedBy = "board", orphanRemoval = true)

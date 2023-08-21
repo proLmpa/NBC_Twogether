@@ -33,24 +33,20 @@ public class Workspace extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 워크스페이스 이름
     @Column(nullable = false)
     private String title;
 
-    // 아이콘
     @Column
     private String icon;
 
-    // 워크스페이스 사용자 연관 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User wpAuthor;
+    private User user;
 
     @Builder.Default
     @OneToMany(mappedBy = "workspace", orphanRemoval = true)
     private List<WorkspaceCollaborator> workspaceCollaborators = new ArrayList<>();
 
-    // 보드 리스트
     @Builder.Default
     @OneToMany(mappedBy = "workspace", orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();

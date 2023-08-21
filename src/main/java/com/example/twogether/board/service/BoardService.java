@@ -9,7 +9,6 @@ import com.example.twogether.board.repository.BoardRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
-import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpRepository;
@@ -31,18 +30,17 @@ public class BoardService {
 
     // 보드 생성
     @Transactional
-    public void createBoard(User boardAuthor, Long workspaceId, BoardRequestDto boardRequestDto) {
-        if (boardAuthor == null) throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
+    public void createBoard(User user, Long wpId, BoardRequestDto boardRequestDto) {
 
-        Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = boardRequestDto.toEntity(foundWorkspace, boardAuthor);
+        Workspace foundWorkspace = findWorkspace(wpId);
+        Board foundBoard = boardRequestDto.toEntity(foundWorkspace, user);
         boardRepository.save(foundBoard);
         log.info("칸반 보드 생성에 성공했습니다.");
 
         // 보드 협업자 자동 등록
         List<WorkspaceCollaborator> workspaceCollaborators = foundWorkspace.getWorkspaceCollaborators();
         for (WorkspaceCollaborator workspaceCollaborator : workspaceCollaborators) {
-            if (!boardColRepository.existsByUserEmailAndBoard(workspaceCollaborator.getUser().getEmail(), foundBoard)) {
+            if (!boardColRepository.existsByUserEmailAndBoard(foundBoard, workspaceCollaborator.getUser().getEmail())) {
                 BoardCollaborator newBoardCollaborator = BoardCollaborator.builder()
                     .email(workspaceCollaborator.getUser().getEmail())
                     .user(workspaceCollaborator.getUser())
@@ -55,12 +53,9 @@ public class BoardService {
 
     // 보드 수정
     @Transactional
-    public Board editBoard(User boardAuthor, Long workspaceId, Long boardId, BoardRequestDto boardRequestDto) {
-        if (boardAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
+    public Board editBoard(Long wpId, Long boardId, BoardRequestDto boardRequestDto) {
 
-        Board foundBoard = findBoard(workspaceId, boardId);
+        Board foundBoard = findBoard(wpId, boardId);
         if (boardRequestDto.getTitle() != null) {
             foundBoard.editTitle(boardRequestDto);
         }
@@ -75,15 +70,12 @@ public class BoardService {
 
     // 보드 삭제
     @Transactional
-    public void deleteBoard(User boardAuthor, Long workspaceId, Long boardId) {
-        if (boardAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
+    public void deleteBoard(User user, Long wpId, Long boardId) {
 
-        Workspace foundWorkspace = findWorkspace(workspaceId);
-        Board foundBoard = findBoard(workspaceId, boardId);
+        Workspace foundWorkspace = findWorkspace(wpId);
+        Board foundBoard = findBoard(wpId, boardId);
 
-        if (!foundBoard.getBoardAuthor().getEmail().equals(boardAuthor.getEmail())) {
+        if (!foundBoard.getUser().getEmail().equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
@@ -93,26 +85,23 @@ public class BoardService {
 
     // 보드 단건 조회
     @Transactional(readOnly = true)
-    public BoardResponseDto getBoard(User boardAuthor, Long workspaceId, Long boardId) {
+    public BoardResponseDto getBoard(Long wpId, Long boardId) {
 
-        if (boardAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-        Workspace foundWorkspace = findWorkspace(workspaceId);
+        Workspace foundWorkspace = findWorkspace(wpId);
         Board foundBoard = findBoard(foundWorkspace.getId(), boardId);
 
         return BoardResponseDto.of(foundBoard);
     }
 
-    private Workspace findWorkspace(Long workspaceId) {
+    private Workspace findWorkspace(Long wpId) {
 
-        return wpRepository.findById(workspaceId)
+        return wpRepository.findById(wpId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private Board findBoard(Long workspaceId, Long boardId) {
+    private Board findBoard(Long wpId, Long boardId) {
 
-        return boardRepository.findByWorkspace_IdAndId(workspaceId, boardId)
+        return boardRepository.findByWorkspace_IdAndId(wpId, boardId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 }

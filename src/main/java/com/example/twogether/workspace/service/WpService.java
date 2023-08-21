@@ -83,7 +83,7 @@ public class WpService {
             throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
         }
 
-        List<Workspace> workspaces = wpRepository.findAllByWpAuthorOrderByCreatedAtDesc(wpAuthor);
+        List<Workspace> workspaces = wpRepository.findAllByUserOrderByCreatedAtDesc(wpAuthor);
 
         return WpsResponseDto.of(workspaces);
     }

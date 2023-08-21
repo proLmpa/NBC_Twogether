@@ -5,7 +5,6 @@ import com.example.twogether.board.dto.BoardResponseDto;
 import com.example.twogether.board.service.BoardService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
-import com.example.twogether.workspace.service.WpColService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,29 +32,29 @@ public class BoardController {
 
     // 보드 생성
     @Operation(summary = "칸반 보드 생성")
-    @PostMapping("/boards/{workspaceId}")
+    @PostMapping("/workspaces/{wpId}/boards/")
     public ResponseEntity<ApiResponseDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long workspaceId,
+        @PathVariable Long wpId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.createBoard(userDetails.getUser(), workspaceId, boardRequestDto);
+        boardService.createBoard(userDetails.getUser(), wpId, boardRequestDto);
 
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "보드가 생성되었습니다."));
     }
 
     // 보드 수정
-    @Operation(summary = "칸반 보드 수정", description = "")
-    @PatchMapping("/boards/{workspaceId}/{boardId}")
+    @Operation(summary = "칸반 보드 수정")
+    @PatchMapping("/workspaces/{wpId}/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> editBoard(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long workspaceId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails, // 이럴 때 고민..
+        @PathVariable Long wpId,
         @PathVariable Long boardId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.editBoard(userDetails.getUser(), workspaceId, boardId, boardRequestDto);
+        boardService.editBoard(wpId, boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 수정되었습니다."));
@@ -63,28 +62,28 @@ public class BoardController {
 
     // 보드 삭제
     @Operation(summary = "칸반 보드 삭제")
-    @DeleteMapping("/boards/{workspaceId}/{boardId}")
+    @DeleteMapping("/workspaces/{wpId}/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long workspaceId,
+        @PathVariable Long wpId,
         @PathVariable Long boardId
     ) {
 
-        boardService.deleteBoard(userDetails.getUser(), workspaceId, boardId);
+        boardService.deleteBoard(userDetails.getUser(), wpId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 삭제되었습니다."));
     }
 
     // 보드 단건 조회
     @Operation(summary = "칸반 보드 단건 조회")
-    @GetMapping("/boards/{workspaceId}/{boardId}")
+    @GetMapping("/workspaces/{wpId}/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> getBoard(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long workspaceId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails, // 이럴 때 고민
+        @PathVariable Long wpId,
         @PathVariable Long boardId
     ) {
 
-        BoardResponseDto result = boardService.getBoard(userDetails.getUser(), workspaceId, boardId);
+        BoardResponseDto result = boardService.getBoard(wpId, boardId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

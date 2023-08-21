@@ -12,11 +12,11 @@ public class WpRequestDto {
     private String title;
     private String icon;
 
-    public Workspace toEntity(User wpAuthor) {
+    public Workspace toEntity(User user) {
         return Workspace.builder()
             .title(this.title)
             .icon(this.icon)
-            .wpAuthor(wpAuthor)
+            .user(user)
             .build();
     }
 }

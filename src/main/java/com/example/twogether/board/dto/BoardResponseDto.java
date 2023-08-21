@@ -19,14 +19,14 @@ public class BoardResponseDto {
     private String info;
     private List<BoardColResponseDto> boardCollaborators;
 
-    public static BoardResponseDto of(Board foundBoard) {
+    public static BoardResponseDto of(Board board) {
         return BoardResponseDto.builder()
-            .boardId(foundBoard.getId())
-            .nickname(foundBoard.getBoardAuthor().getNickname())
-            .title(foundBoard.getTitle())
-            .color(foundBoard.getColor())
-            .info(foundBoard.getInfo())
-            .boardCollaborators(foundBoard.getBoardCollaborators().stream().map(
+            .boardId(board.getId())
+            .nickname(board.getBoardAuthor().getNickname())
+            .title(board.getTitle())
+            .color(board.getColor())
+            .info(board.getInfo())
+            .boardCollaborators(board.getBoardCollaborators().stream().map(
                 BoardColResponseDto::of).toList())
             .build();
     }

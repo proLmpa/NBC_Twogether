@@ -81,10 +81,10 @@ public class WpController {
     @Operation(summary = "워크스페이스 전체 조회")
     @GetMapping("/workspaces")
     public ResponseEntity<WpsResponseDto> getWorkspaces(
-        @AuthenticationPrincipal UserDetailsImpl wpAuthor
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        WpsResponseDto workspaces = wpService.getWorkspaces(wpAuthor.getUser());
+        WpsResponseDto workspaces = wpService.getWorkspaces(userDetails.getUser());
         return ResponseEntity.ok().body(workspaces);
     }
 }

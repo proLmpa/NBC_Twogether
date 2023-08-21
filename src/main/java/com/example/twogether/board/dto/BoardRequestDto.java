@@ -15,13 +15,13 @@ public class BoardRequestDto {
     private String color;
     private String info;
 
-    public Board toEntity(Workspace foundWorkspace, User boardAuthor) {
+    public Board toEntity(Workspace workspace, User user) {
         return Board.builder()
             .title(this.title)
             .color(this.color)
-            .info("This is " + boardAuthor.getNickname() + "'s " + this.title + " board.")
-            .workspace(foundWorkspace)
-            .boardAuthor(boardAuthor)
+            .info("This is " + user.getNickname() + "'s " + this.title + " board.")
+            .workspace(workspace)
+            .boardAuthor(user)
             .build();
     }
 }

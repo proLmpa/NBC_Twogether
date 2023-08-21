@@ -21,35 +21,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "보드 협업자 API")
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/boards/invite")
+@RequestMapping("/api")
 public class BoardColController {
 
     private final BoardColService boardColService;
 
     // 허락받아야 초대되는 로직으로 develop 할지 고민 중
     @Operation(summary = "칸반 보드에 협업자 초대")
-    @PostMapping("/{wpId}/{boardId}")
+    @PostMapping("/workspaces/{wpId}/boards/{boardId}/invite")
     public ResponseEntity<ApiResponseDto> inviteBoardCol(
-        @AuthenticationPrincipal UserDetailsImpl boardAuthor,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long wpId,
         @PathVariable Long boardId,
         @RequestBody BoardColRequestDto boardColRequestDto
     ) {
-        boardColService.inviteBoardCol(boardAuthor.getUser(), wpId, boardId, boardColRequestDto.getEmail());
+        boardColService.inviteBoardCol(userDetails.getUser(), wpId, boardId, boardColRequestDto.getEmail());
 
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드에 협업자가 등록되었습니다."));
     }
 
     @Operation(summary = "칸반 보드에서 협업자 추방")
-    @DeleteMapping("/{wpId}/{boardId}")
+    @DeleteMapping("/workspaces/{wpId}/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> outBoardCol(
-        @AuthenticationPrincipal UserDetailsImpl boardAuthor,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long wpId,
         @PathVariable Long boardId,
         @RequestBody BoardColRequestDto boardColRequestDto
     ) {
-        boardColService.outBoardCol(boardAuthor.getUser(), wpId, boardId, boardColRequestDto.getEmail());
+        boardColService.outBoardCol(userDetails.getUser(), wpId, boardId, boardColRequestDto.getEmail());
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드에서 협업자를 추방하였습니다."));
     }
