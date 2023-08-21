@@ -66,7 +66,7 @@ public class WpColService {
             for (Board foundBoard : foundAllBoards) {
 
                 // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
-                if (boardColRepository.existsByUserEmailAndBoard(foundBoard,
+                if (boardColRepository.existsByBoardAndEmail(foundBoard,
                     foundUser.getEmail())) {
                     log.error("워크스페이스에 포함된 보드 중 이미 협업자가 등록된 경우가 있습니다.");
                     continue;
@@ -109,7 +109,7 @@ public class WpColService {
 
             if (boardCollaborators != null && !boardCollaborators.isEmpty()) {
                 // 이미 추방된 보드 협업자
-                if (!boardColRepository.existsByUserEmailAndBoard(foundBoard, email)) {
+                if (!boardColRepository.existsByBoardAndEmail(foundBoard, email)) {
                     throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_OUT);
                 }
 

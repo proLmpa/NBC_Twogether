@@ -26,10 +26,6 @@ public class WpService {
     @Transactional
     public WpResponseDto createWorkspace(User wpAuthor, WpRequestDto wpRequestDto){
 
-        if (wpAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
         Workspace foundWp = wpRequestDto.toEntity(wpAuthor);
         wpRepository.save(foundWp);
         return WpResponseDto.of(foundWp);
@@ -38,12 +34,8 @@ public class WpService {
     @Transactional
     public WpResponseDto editWorkspace(User wpAuthor, Long id, WpRequestDto wpRequestDto) {
 
-        if (wpAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
         Workspace workspace = findWorkspace(id);
-        if(workspace.getWpAuthor().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(workspace.getUser().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
             workspace.update(wpRequestDto);
             return WpResponseDto.of(workspace);
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
@@ -52,12 +44,8 @@ public class WpService {
     @Transactional
     public void deleteWorkspace(User wpAuthor, Long id) {
 
-        if (wpAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
         Workspace workspace = findWorkspace(id);
-        if(workspace.getWpAuthor().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(workspace.getUser().getId().equals(wpAuthor.getId())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)) {
 
             wpRepository.delete(workspace);
             /* 워크스페이스, 보드, 카드, 멤버 등 삭제 */
@@ -68,10 +56,6 @@ public class WpService {
     @Transactional(readOnly = true)
     public WpResponseDto getWorkspace(User wpAuthor, Long Id) {
 
-        if (wpAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
         Workspace workspace = findWorkspace(Id);
         return WpResponseDto.of(workspace);
     }
@@ -79,12 +63,7 @@ public class WpService {
     @Transactional(readOnly = true)
     public WpsResponseDto getWorkspaces(User wpAuthor) {
 
-        if (wpAuthor == null) {
-            throw new CustomException(CustomErrorCode.LOGIN_REQUIRED);
-        }
-
         List<Workspace> workspaces = wpRepository.findAllByUserOrderByCreatedAtDesc(wpAuthor);
-
         return WpsResponseDto.of(workspaces);
     }
 

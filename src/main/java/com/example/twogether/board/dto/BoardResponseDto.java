@@ -22,7 +22,7 @@ public class BoardResponseDto {
     public static BoardResponseDto of(Board board) {
         return BoardResponseDto.builder()
             .boardId(board.getId())
-            .nickname(board.getBoardAuthor().getNickname())
+            .nickname(board.getUser().getNickname())
             .title(board.getTitle())
             .color(board.getColor())
             .info(board.getInfo())

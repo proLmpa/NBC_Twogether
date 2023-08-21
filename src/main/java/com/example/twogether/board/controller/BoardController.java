@@ -32,7 +32,7 @@ public class BoardController {
 
     // 보드 생성
     @Operation(summary = "칸반 보드 생성")
-    @PostMapping("/workspaces/{wpId}/boards/")
+    @PostMapping("/workspaces/{wpId}/boards")
     public ResponseEntity<ApiResponseDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long wpId,

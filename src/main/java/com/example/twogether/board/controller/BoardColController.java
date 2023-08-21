@@ -42,7 +42,7 @@ public class BoardColController {
     }
 
     @Operation(summary = "칸반 보드에서 협업자 추방")
-    @DeleteMapping("/workspaces/{wpId}/boards/{boardId}")
+    @DeleteMapping("/workspaces/{wpId}/boards/{boardId}/invite")
     public ResponseEntity<ApiResponseDto> outBoardCol(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long wpId,

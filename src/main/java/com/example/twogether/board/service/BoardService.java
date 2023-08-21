@@ -40,7 +40,7 @@ public class BoardService {
         // 보드 협업자 자동 등록
         List<WorkspaceCollaborator> workspaceCollaborators = foundWorkspace.getWorkspaceCollaborators();
         for (WorkspaceCollaborator workspaceCollaborator : workspaceCollaborators) {
-            if (!boardColRepository.existsByUserEmailAndBoard(foundBoard, workspaceCollaborator.getUser().getEmail())) {
+            if (!boardColRepository.existsByBoardAndEmail(foundBoard, workspaceCollaborator.getUser().getEmail())) {
                 BoardCollaborator newBoardCollaborator = BoardCollaborator.builder()
                     .email(workspaceCollaborator.getUser().getEmail())
                     .user(workspaceCollaborator.getUser())

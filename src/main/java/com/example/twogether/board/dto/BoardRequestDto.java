@@ -21,7 +21,7 @@ public class BoardRequestDto {
             .color(this.color)
             .info("This is " + user.getNickname() + "'s " + this.title + " board.")
             .workspace(workspace)
-            .boardAuthor(user)
+            .user(user)
             .build();
     }
 }
