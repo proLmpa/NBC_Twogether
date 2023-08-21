@@ -73,4 +73,9 @@ public class CardService {
         Card card = findCardById(id);
         cardRepository.delete(card);
     }
+
+    public void archiveCard(Long id) {
+        Card card = findCardById(id);
+        card.archive();
+    }
 }
