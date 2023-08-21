@@ -72,14 +72,11 @@ public class BoardService {
     @Transactional
     public void deleteBoard(User user, Long wpId, Long boardId) {
 
-        Workspace foundWorkspace = findWorkspace(wpId);
         Board foundBoard = findBoard(wpId, boardId);
-
         if (!foundBoard.getUser().getEmail().equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
-        wpRepository.delete(foundWorkspace);
         boardRepository.delete(foundBoard);
     }
 

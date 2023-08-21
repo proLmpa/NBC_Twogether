@@ -1,6 +1,6 @@
 package com.example.twogether.deck.entity;
 
-import com.example.twogether.Card.entity.Card;
+import com.example.twogether.card.entity.Card;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import jakarta.persistence.Column;
