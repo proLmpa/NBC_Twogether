@@ -44,7 +44,7 @@ public class WpColService {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 오너는 초대당하기 불가
+        // 워크스페이스 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
         }
@@ -91,7 +91,7 @@ public class WpColService {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 오너는 추방당하기 불가
+        // 워크스페이스 오너는 추방당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
         }

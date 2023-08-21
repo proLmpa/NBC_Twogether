@@ -2,7 +2,6 @@ package com.example.twogether.board.controller;
 
 import com.example.twogether.board.dto.BoardColRequestDto;
 import com.example.twogether.board.service.BoardColService;
-import com.example.twogether.board.service.BoardService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;

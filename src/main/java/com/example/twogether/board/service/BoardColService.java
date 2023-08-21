@@ -39,7 +39,7 @@ public class BoardColService {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
-        // 보드 오너는 초대당하기 불가
+        // 보드 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
         }
@@ -69,7 +69,7 @@ public class BoardColService {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
 
-        // 보드 오너는 초대당하기 불가
+        // 보드 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
             log.error("보드 오너는 초대할 수 없습니다.");
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
