@@ -77,7 +77,7 @@ public class CardService {
             throw new CustomException(CustomErrorCode.CARD_IS_NOT_ARCHIVE);
         }
     }
-
+  
     public void archiveCard(Long id) {
         Card card = findCardById(id);
         card.archive();
