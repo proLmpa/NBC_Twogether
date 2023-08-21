@@ -21,7 +21,9 @@ public enum CustomErrorCode {
     // Deck
     DECK_NOT_FOUND("D001", "존재하지 않는 덱입니다."),
     DECK_IS_NOT_ARCHIVE("D002", "덱이 보관된 상태에서만 삭제 가능합니다."),
-
+  
+    // Card
+    CARD_NOT_FOUND("C001", "존재하지 않는 카드입니다."),
 
     // Label
     LABEL_ALREADY_EXISTS("L001", "이미 존재하는 라벨입니다."),
