@@ -3,6 +3,7 @@ package com.example.twogether.workspace.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.common.security.UserDetailsImpl;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.example.twogether.workspace.dto.WpRequestDto;
 import com.example.twogether.workspace.dto.WpResponseDto;
 import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
+import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,17 +56,18 @@ public class WpService {
     }
 
     @Transactional(readOnly = true)
-    public WpResponseDto getWorkspace(User wpAuthor, Long Id) {
-
-        Workspace workspace = findWorkspace(Id);
+    public WpResponseDto getWorkspace(User wpAuthor, WorkspaceCollaborator wpCol, Long id) {
+        Workspace workspace = findWorkspace(id);
+        if(workspace.getUser().getId().equals(wpAuthor.getId())||wpCol.getUser().getId().equals(wpCol.getEmail())||wpAuthor.getRole().equals(UserRoleEnum.ADMIN)){
         return WpResponseDto.of(workspace);
+        } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
 
     @Transactional(readOnly = true)
     public WpsResponseDto getWorkspaces(User wpAuthor) {
-
         List<Workspace> workspaces = wpRepository.findAllByUserOrderByCreatedAtDesc(wpAuthor);
         return WpsResponseDto.of(workspaces);
+
     }
 
     private Workspace findWorkspace(Long workspaceId) {

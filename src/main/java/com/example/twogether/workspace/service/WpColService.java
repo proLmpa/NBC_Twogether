@@ -11,10 +11,15 @@ import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.dto.WpColRequestDto;
+import com.example.twogether.workspace.dto.WpColResponseDto;
+import com.example.twogether.workspace.dto.WpResponseDto;
+import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpRepository;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,20 +123,27 @@ public class WpColService {
         }
     }
 
-    /*
-    @Transactional(readOnly = true)
-    public WpsResponseDto getWpCols(User user, WpColRequestDto wpColRequestDto) {
 
-        List<WorkspaceCollaborator> wpCols = wpColRepository.findAllById(Collections.singleton(wpColRequestDto.getId()));
-        List<Workspace> foundWorkspaces = new ArrayList<>();
-        for(WorkspaceCollaborator workspaceCollaborator : wpCols) {
-            Workspace foundWorkspace = findWorkspace(workspaceCollaborator.getId());
-            foundWorkspaces.add(foundWorkspace);
-        }
+//    @Transactional(readOnly = true)
+//    public WpColResponseDto getWpCols(User user, Long wpId) { // , WpColRequestDto wpColRequestDto
+//
+//        Workspace workspace = findWorkspace(wpId);
+//
+//        //
+//        if (workspace.getUser().getId().equals(user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+//            List<WorkspaceCollaborator> workspaceCollaborators = wpColRepository.findByWorkspace(workspace);
+//            return WpColResponseDto.of(workspaceCollaborators);
+//        } else {
+//            throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
+//        }
+//    }
 
-        return WpsResponseDto.of(foundWorkspaces);
-    }
-     */
+//    @Transactional(readOnly = true)
+//    public WpColResponseDto getWpCols(User user, Long wpId) {
+//        WorkspaceCollaborator workspaceCollaborator = wpColRepository.findAllByUser(user, wpId);
+//        return WpColResponseDto.of(workspaceCollaborator);
+//    }
+
 
     private Workspace findWorkspace(Long wpId) {
 
@@ -162,4 +174,6 @@ public class WpColService {
             .orElseThrow(() ->
                 new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
     }
+
+
 }

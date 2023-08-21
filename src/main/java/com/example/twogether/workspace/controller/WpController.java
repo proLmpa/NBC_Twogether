@@ -5,6 +5,7 @@ import com.example.twogether.common.security.UserDetailsImpl;
 import com.example.twogether.workspace.dto.WpRequestDto;
 import com.example.twogether.workspace.dto.WpResponseDto;
 import com.example.twogether.workspace.dto.WpsResponseDto;
+import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.service.WpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,11 +71,12 @@ public class WpController {
     @GetMapping("/workspaces/{id}")
     public ResponseEntity<WpResponseDto> getWorkspace(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable WorkspaceCollaborator wpCol,
         @PathVariable Long id
     ) {
 
         WpResponseDto wpResponseDto = wpService.getWorkspace(
-            userDetails.getUser(), id);
+            userDetails.getUser(), wpCol, id);
         return ResponseEntity.ok().body(wpResponseDto);
     }
 

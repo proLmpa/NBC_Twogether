@@ -2,6 +2,7 @@ package com.example.twogether.workspace.entity;
 
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
+import com.example.twogether.common.security.UserDetailsImpl;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.dto.WpRequestDto;
 import jakarta.persistence.Column;
