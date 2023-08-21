@@ -1,5 +1,6 @@
 package com.example.twogether.deck.entity;
 
+import com.example.twogether.Card.entity.Card;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import jakarta.persistence.Column;
@@ -10,6 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,9 +45,9 @@ public class Deck extends Timestamped {
     @JoinColumn(name = "board_id")
     private Board board;
 
-//    @OneToMany(mappedBy = "deck")
-//    private List<Card> cardList = new ArrayList<>();
-
+    @Builder.Default
+    @OneToMany(mappedBy = "deck")
+    private List<Card> cardList = new ArrayList<>();
 
     public void editTitle(String title) {
         this.title = title;
