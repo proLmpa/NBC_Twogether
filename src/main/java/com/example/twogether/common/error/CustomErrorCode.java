@@ -32,8 +32,19 @@ public enum CustomErrorCode {
     BOARD_COLLABORATOR_NOT_FOUND("BC002", "존재하지 않는 보드 협업자입니다."),
     BOARD_COLLABORATOR_ALREADY_OUT("B003", "이미 추방된 보드 협업자입니다."),
     BOARD_COLLABORATOR_NOT_ACCESSIBLE("BC004", "보드의 협업자 기능 사용에 실패했습니다."),
-    THIS_IS_YOUR_BOARD("WC005", "당신은 보드의 관리자입니다.");
+    THIS_IS_YOUR_BOARD("WC005", "당신은 보드의 관리자입니다."),
 
+    // Deck
+    DECK_NOT_FOUND("D001", "존재하지 않는 덱입니다."),
+    DECK_IS_NOT_ARCHIVE("D002", "덱이 보관된 상태에서만 삭제 가능합니다."),
+
+    // Card
+    CARD_NOT_FOUND("C001", "존재하지 않는 카드입니다."),
+    CARD_IS_NOT_ARCHIVE("C002", "카드가 보관된 상태에서만 삭제 가능합니다."),
+
+    // Label
+    LABEL_ALREADY_EXISTS("L001", "이미 존재하는 라벨입니다."),
+    LABEL_NOT_FOUND("L002", "존재하지 않는 라벨입니다."),;
 
     private final String errorCode;
     private final String errorMessage;
