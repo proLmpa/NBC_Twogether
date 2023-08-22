@@ -53,6 +53,9 @@ public enum CustomErrorCode {
     // CardLabel
     CARD_LABEL_ALREADY_EXISTS("CL001", "이미 해당 카드에 등록된 라벨입니다."),
     CARD_LABEL_NOT_FOUND("CL002", "해당 카드에 등록되지 않은 라벨입니다."),
+
+    // CheckList
+    CHECKLIST_NOT_FOUND("CHL001", "등록되지 않은 체크리스트입니다.")
     ;
 
     private final String errorCode;
