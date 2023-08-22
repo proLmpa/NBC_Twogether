@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/decks/**").permitAll()
                 .requestMatchers("api/cards/**").permitAll()
                 .requestMatchers("/api/labels/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/cards/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
                 .anyRequest().authenticated()
         );
 

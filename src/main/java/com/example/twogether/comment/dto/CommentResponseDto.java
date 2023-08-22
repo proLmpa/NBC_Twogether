@@ -4,8 +4,10 @@ import com.example.twogether.comment.entity.Comment;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 @AllArgsConstructor
 public class CommentResponseDto {
     private Long cardId;
