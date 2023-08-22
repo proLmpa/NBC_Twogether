@@ -69,12 +69,11 @@ public class WpController {
     @Operation(summary = "워크스페이스 단일 조회")
     @GetMapping("/workspaces/{id}")
     public ResponseEntity<WpResponseDto> getWorkspace(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails, // 필요한지 고민
         @PathVariable Long id
     ) {
 
-        WpResponseDto wpResponseDto = wpService.getWorkspace(
-            userDetails.getUser(), id);
+        WpResponseDto wpResponseDto = wpService.getWorkspace(id);
         return ResponseEntity.ok().body(wpResponseDto);
     }
 
