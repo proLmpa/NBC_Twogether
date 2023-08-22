@@ -8,7 +8,6 @@ import com.example.twogether.board.repository.BoardRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
-import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.dto.WpColRequestDto;
 import com.example.twogether.workspace.entity.Workspace;
@@ -39,7 +38,7 @@ public class WpColService {
         Workspace foundWorkspace = findWorkspace(wpId); // 중복되는 코드 처리 고민 중
 
         // 워크스페이스를 생성한 사람만 협업자 초대 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!foundWorkspace.getUser().getId().equals(user.getId())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
@@ -85,7 +84,7 @@ public class WpColService {
         Workspace foundWorkspace = findWorkspace(wpId);
 
         // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!foundWorkspace.getUser().getId().equals(user.getId())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
