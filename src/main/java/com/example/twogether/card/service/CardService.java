@@ -1,6 +1,7 @@
 package com.example.twogether.card.service;
 
 import com.example.twogether.card.dto.CardEditRequestDto;
+import com.example.twogether.card.dto.DateResponseDto;
 import com.example.twogether.card.dto.MoveCardRequestDto;
 import com.example.twogether.card.entity.Card;
 import com.example.twogether.card.repository.CardRepository;
@@ -121,5 +122,11 @@ public class CardService {
         } catch (RejectedExecutionException e) {
             throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
         }
+    }
+
+    @Transactional
+    public void editDate(Long id, DateResponseDto responseDto) {
+        Card card = findCardById(id);
+        card.editDueDate(responseDto.getDueDate());
     }
 }
