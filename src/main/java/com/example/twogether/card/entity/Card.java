@@ -1,6 +1,5 @@
 package com.example.twogether.card.entity;
 
-import com.example.twogether.checklist.entity.CheckList;
 import com.example.twogether.common.entity.Timestamped;
 import com.example.twogether.deck.entity.Deck;
 import jakarta.persistence.Column;
@@ -58,12 +57,12 @@ public class Card extends Timestamped {
 //    @OneToMany(mappedBy = "card")
 //    private List<Comment> commentList = new ArrayList<>();
 //
+//    @OneToMany(mappedBy = "card")
+//    private List<CheckList> checkLists = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "card")
-    private List<CheckList> checkLists = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "card")
-//    private List<CardLabel> cardLabelList = new ArrayList<>();
+    private List<CardLabel> cardLabelList = new ArrayList<>();
 
     public void editTitle(String title) {
         this.title = title;
@@ -72,6 +71,8 @@ public class Card extends Timestamped {
     public void editDescription(String description) {
         this.description = description;
     }
+
+    public void editDueDate(LocalDateTime dueDate) {this.dueDate = dueDate;}
 
     public void archive() {
         this.archived = !this.isArchived();
