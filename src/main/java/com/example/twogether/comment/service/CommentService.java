@@ -1,6 +1,8 @@
 package com.example.twogether.comment.service;
 
+import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.repository.BoardColRepository;
+import com.example.twogether.board.repository.BoardRepository;
 import com.example.twogether.card.entity.Card;
 import com.example.twogether.card.repository.CardRepository;
 import com.example.twogether.comment.dto.CommentRequestDto;
@@ -23,14 +25,15 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final CardRepository cardRepository;
+    private final BoardRepository boardRepository;
     private final BoardColRepository boardColRepository;
 
 
     @Transactional
-    public void createComment(Long cardId, CommentRequestDto requestDto, User user) {
+    public void createComment(Long boardId, Long cardId, CommentRequestDto requestDto, User user) {
         User writer = findUser(user.getId());
         Card card = findCard(cardId);
-        checkBoardCollabolator(writer.getEmail());
+        checkBoardCreatorOrCollabolator(boardId, writer);
 
         Comment comment = requestDto.toEntity(writer, card);
         commentRepository.save(comment);
@@ -75,14 +78,20 @@ public class CommentService {
             .orElseThrow(() -> new CustomException(CustomErrorCode.CARD_NOT_FOUND));
     }
 
-    private void checkBoardCollabolator(String email) {
-        if (!boardColRepository.existsByEmail(email)) {
+    // 생성자와 보드 협업자만 댓글 작성 가능하도록 로직 구현
+    private void checkBoardCreatorOrCollabolator(Long boardId, User writer) {
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
+
+        if (!board.getUser().getId().equals(writer.getId()) &&
+            !boardColRepository.existsByEmail(writer.getEmail())) {
             throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND);
         }
     }
 
     private void confirmUser(User user, Comment comment) {
-        if (!comment.getUser().getId().equals(user.getId()) && !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!comment.getUser().getId().equals(user.getId()) && !user.getRole()
+            .equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_COMMENT);
         }
     }

@@ -29,13 +29,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "카드에 댓글 등록")
-    @PostMapping("/cards/{cardId}/comments")
+    @PostMapping("/boards/{boardId}/cards/{cardId}/comments")
     public ResponseEntity<ApiResponseDto> createComment(
+        @PathVariable Long boardId,
         @PathVariable Long cardId,
         @RequestBody CommentRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        commentService.createComment(cardId, requestDto, userDetails.getUser());
+        commentService.createComment(boardId, cardId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "댓글 생성 완료"));
     }
 
