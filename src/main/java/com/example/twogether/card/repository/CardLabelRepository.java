@@ -12,4 +12,6 @@ public interface CardLabelRepository extends JpaRepository<CardLabel, Long> {
     Optional<CardLabel> findByCard_IdAndLabel_Id(Long cardId, Long labelId);
 
     List<CardLabel> findAllByLabel_Id(Long labelId);
+
+    void deleteAllByCard_Id(Long id);
 }
