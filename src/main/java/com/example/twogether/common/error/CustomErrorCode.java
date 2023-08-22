@@ -44,7 +44,12 @@ public enum CustomErrorCode {
 
     // Label
     LABEL_ALREADY_EXISTS("L001", "이미 존재하는 라벨입니다."),
-    LABEL_NOT_FOUND("L002", "존재하지 않는 라벨입니다."),;
+    LABEL_NOT_FOUND("L002", "존재하지 않는 라벨입니다."),
+
+    // CardLabel
+    CARD_LABEL_ALREADY_EXISTS("CL001", "이미 해당 카드에 등록된 라벨입니다."),
+    CARD_LABEL_NOT_FOUND("CL002", "해당 카드에 등록되지 않은 라벨입니다."),
+    ;
 
     private final String errorCode;
     private final String errorMessage;
