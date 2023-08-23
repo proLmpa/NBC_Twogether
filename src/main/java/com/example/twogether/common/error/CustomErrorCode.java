@@ -56,6 +56,10 @@ public enum CustomErrorCode {
 
     // CheckList
     CHECKLIST_NOT_FOUND("CHL001", "등록되지 않은 체크리스트입니다.")
+
+    // Comment
+    COMMENT_NOT_FOUND("C001", "존재하지 않는 댓글입니다."),
+    NOT_YOUR_COMMENT("C002", "본인이 작성한 댓글이 아닙니다."),
     ;
 
     private final String errorCode;
