@@ -1,6 +1,7 @@
 package com.example.twogether.workspace.entity;
 
 import com.example.twogether.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,8 +38,4 @@ public class WorkspaceCollaborator {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private List<Workspace> workspaces = new ArrayList<>();
-
-    public void addWorkspace(Workspace workspace) {
-        workspaces.add(workspace);
-    }
 }

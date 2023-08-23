@@ -11,7 +11,6 @@ import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.dto.WpColRequestDto;
-import com.example.twogether.workspace.dto.WpColResponseDto;
 import com.example.twogether.workspace.dto.WpResponseDto;
 import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
@@ -21,6 +20,7 @@ import com.example.twogether.workspace.repository.WpRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -55,8 +55,8 @@ public class WpColService {
         }
 
         // 이미 등록된 사용자 초대당하기 불가
-        for(int i=0; i< foundWorkspaces.size(); i++) {
-            if (wpColRepository.existsByWorkspacesAndEmail(foundWorkspaces.get(i), email)) {
+        for (Workspace workspace : foundWorkspaces) {
+            if (wpColRepository.existsByWorkspacesAndEmail(workspace, email)) {
                 throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
             }
         }
@@ -67,7 +67,12 @@ public class WpColService {
         wpColRepository.save(foundWpCol);
 
         for(Workspace foundWorkspace : foundWorkspaces) {
-            foundWpCol.addWorkspace(foundWorkspace);
+            try {
+                foundWpCol.getWorkspaces().add(foundWorkspace);
+            } catch (Exception ex) {
+                log.error("Error while adding workspace to collaborator: " + ex.getMessage());
+            }
+
             // 워크스페이스에서 초대한 협업자 모든 하위 보드도 자동 초대
             List<Board> foundAllBoards = findAllBoards(foundWorkspace);
             if (foundAllBoards != null && !foundAllBoards.isEmpty()) {
@@ -135,7 +140,7 @@ public class WpColService {
 
         Workspace foundWorkspace = findWpByEmail(user);
 
-        if(wpId != foundWorkspace.getId()) {
+        if(!Objects.equals(wpId, foundWorkspace.getId())) {
             throw new CustomException(CustomErrorCode.UNINVITED_WORKSPACE);
         }
 

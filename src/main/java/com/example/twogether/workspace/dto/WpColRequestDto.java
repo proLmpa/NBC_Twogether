@@ -17,8 +17,7 @@ public class WpColRequestDto {
         return WorkspaceCollaborator.builder()
             .id(user.getId())
             .email(user.getEmail())
-            .user(user)
-            .workspaces(workspaces)
+            .workspaces(workspaces.stream().toList())
             .build();
     }
 }

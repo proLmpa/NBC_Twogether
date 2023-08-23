@@ -4,6 +4,7 @@ import com.example.twogether.board.entity.Board;
 import com.example.twogether.common.entity.Timestamped;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.dto.WpRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
