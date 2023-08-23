@@ -1,6 +1,8 @@
 package com.example.twogether.board.service;
 
 import com.example.twogether.board.dto.BoardColRequestDto;
+import com.example.twogether.board.dto.BoardResponseDto;
+import com.example.twogether.board.dto.BoardsResponseDto;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.entity.BoardCollaborator;
 import com.example.twogether.board.repository.BoardColRepository;
@@ -10,8 +12,11 @@ import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
+import com.example.twogether.workspace.dto.WpResponseDto;
+import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.repository.WpRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -82,6 +87,23 @@ public class BoardColService {
         boardColRepository.delete(foundBoardCol);
     }
 
+
+    // 초대된 보드 단건 조회
+    @Transactional(readOnly = true)
+    public BoardResponseDto getBoardCol(User user, Long wpId, Long boardId) {
+
+        Board foundBoard = findInvitedBoard(wpId, boardId, user.getEmail());
+        return BoardResponseDto.of(foundBoard);
+    }
+
+    // 초대된 보드 전체 조회
+    @Transactional(readOnly = true)
+    public BoardsResponseDto getBoardCols(User user, Long wpId) {
+
+        List<Board> foundBoards = findAllInvitedBoards(wpId, user.getEmail());
+        return BoardsResponseDto.of(foundBoards);
+    }
+
     private Workspace findWorkspace(Long wpId) {
 
         return wpRepository.findById(wpId).orElseThrow(() ->
@@ -98,6 +120,17 @@ public class BoardColService {
 
         return boardColRepository.findByBoardAndEmail(board, email).orElseThrow(() ->
             new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
+    }
+
+    private List<Board> findAllInvitedBoards(Long wpId, String email) {
+
+        return boardRepository.findAllBoardsByWorkspace_IdAndBoardCollaborators_Email(wpId, email);
+    }
+
+    private Board findInvitedBoard(Long wpId, Long boardId, String email) {
+
+        return boardRepository.findByWorkspace_IdAndIdAndAndBoardCollaborators_Email(wpId, boardId, email).orElseThrow(() ->
+            new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
     private User findUser(String email) {

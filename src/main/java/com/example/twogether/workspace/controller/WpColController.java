@@ -59,8 +59,8 @@ public class WpColController {
         @PathVariable Long wpId
     ) {
 
-        WpResponseDto wpCol = wpColService.getWpCol(userDetails.getUser(), wpId);
-        return ResponseEntity.status(HttpStatus.OK).body(wpCol);
+        WpResponseDto invitedWp = wpColService.getWpCol(userDetails.getUser(), wpId);
+        return ResponseEntity.status(HttpStatus.OK).body(invitedWp);
     }
 
     @Operation(summary = "초대된 워크스페이스 전체 조회")
@@ -69,7 +69,7 @@ public class WpColController {
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        WpsResponseDto wpCols = wpColService.getWpCols(userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.OK).body(wpCols);
+        WpsResponseDto invitedWps = wpColService.getWpCols(userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(invitedWps);
     }
 }

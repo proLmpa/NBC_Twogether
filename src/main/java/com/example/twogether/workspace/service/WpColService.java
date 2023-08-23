@@ -139,7 +139,7 @@ public class WpColService {
         return WpResponseDto.of(foundWorkspace);
     }
 
-    // 초대된 워크스페이스 전체 조회 - 리팩토링 필요
+    // 초대된 워크스페이스 전체 조회
     @Transactional(readOnly = true)
     public WpsResponseDto getWpCols(User user) {
 

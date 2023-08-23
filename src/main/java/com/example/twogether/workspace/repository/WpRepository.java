@@ -1,5 +1,6 @@
 package com.example.twogether.workspace.repository;
 
+import com.example.twogether.board.entity.Board;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.entity.Workspace;
 import java.util.List;
