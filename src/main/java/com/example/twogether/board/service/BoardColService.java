@@ -64,7 +64,8 @@ public class BoardColService {
         Board foundBoard = findBoard(foundWorkspace, boardId);
 
         // 보드를 생성한 사람만 협업자 추방하기 가능
-        if (!user.getId().equals(foundBoard.getUser().getId()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!user.getId().equals(foundBoard.getUser().getId()) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
 
             log.error("보드를 생성한 사람만 협업자 추방할 수 있습니다.");
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);

@@ -92,8 +92,8 @@ public class WpColService {
         Workspace foundWorkspace = findWpById(wpId);
 
         // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) && !user.getRole()
-            .equals(UserRoleEnum.ADMIN)) {
+        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
