@@ -94,16 +94,20 @@ public class WpColService {
         // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
         if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+            log.error("워크스페이스를 생성한 사람만 협업자 추방할 수 있습니다.");
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
         // 워크스페이스 오너는 추방당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
+            log.error("워크스페이스의 오너는 초대할 수 없습니다.");
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 협업자 삭제
         User foundUser = findUser(email);
+
+        // 워크스페이스 협업자 삭제
         WorkspaceCollaborator foundWpCol = findWpColByEmail(foundWorkspace, email);
         wpColRepository.delete(foundWpCol);
 

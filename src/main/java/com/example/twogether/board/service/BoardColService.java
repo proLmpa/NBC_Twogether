@@ -64,7 +64,7 @@ public class BoardColService {
         Board foundBoard = findBoard(foundWorkspace, boardId);
 
         // 보드를 생성한 사람만 협업자 추방하기 가능
-        if (!user.getId().equals(foundBoard.getUser().getId()) &&
+        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
 
             log.error("보드를 생성한 사람만 협업자 추방할 수 있습니다.");
@@ -73,12 +73,12 @@ public class BoardColService {
 
         // 보드 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
         if (email.equals(user.getEmail())) {
-            log.error("보드 오너는 초대할 수 없습니다.");
+            log.error("보드의 오너는 초대할 수 없습니다.");
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
         }
 
         // 보드 협업자 삭제
-        BoardCollaborator foundBoardCol = findBoardCol(foundBoard, email);
+        BoardCollaborator foundBoardCol = findBoardColByEmail(foundBoard, email);
         boardColRepository.delete(foundBoardCol);
     }
 
@@ -94,7 +94,7 @@ public class BoardColService {
             new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
-    private BoardCollaborator findBoardCol(Board board, String email) {
+    private BoardCollaborator findBoardColByEmail(Board board, String email) {
 
         return boardColRepository.findByBoardAndEmail(board, email).orElseThrow(() ->
             new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
