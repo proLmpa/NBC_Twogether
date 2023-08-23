@@ -38,9 +38,8 @@ public class CheckListController {
     }
 
     @Operation(summary = "체크리스트 수정")
-    @PutMapping("/checklists/{clId}")
+    @PutMapping("/checklists/{chlId}")
     public ResponseEntity<ApiResponseDto> editCheckList(
-        //@PathVariable Long cardId,
         @PathVariable Long chlId,
         @RequestBody CheckListRequestDto chlRequestDto
     ) {
@@ -49,9 +48,8 @@ public class CheckListController {
             .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트가 수정되었습니다."));
     }
 
-    ///cards/{cardId}/checklists/{clId}
     @Operation(summary = "체크리스트 삭제")
-    @DeleteMapping("/checklists/{clId}")
+    @DeleteMapping("/checklists/{chlId}")
     public ResponseEntity<ApiResponseDto> deleteCheckList(
         @PathVariable Long chlId
     ) {
@@ -61,7 +59,7 @@ public class CheckListController {
     }
 
     @Operation(summary = "체크리스트 단일 조회")
-    @GetMapping("/checklists/{clId}")
+    @GetMapping("/checklists/{chlId}")
     public ResponseEntity<CheckListResponseDto> getCheckList(
         @PathVariable Long chlId
     ) {

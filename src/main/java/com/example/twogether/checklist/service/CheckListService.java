@@ -19,6 +19,7 @@ public class CheckListService {
 
     private final CheckListRepository chlRepository;
     private final CardRepository cardRepository;
+
     @Transactional
     public CheckListResponseDto createCheckList(Long cardId, CheckListRequestDto chlRequestDto) {
         Card card = findCardById(cardId);

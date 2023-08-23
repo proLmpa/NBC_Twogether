@@ -23,5 +23,4 @@ public class CheckListResponseDto {
             //.check
             .build();
     }
-
 }
