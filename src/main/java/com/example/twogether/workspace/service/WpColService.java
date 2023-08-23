@@ -67,9 +67,10 @@ public class WpColService {
 
         // 워크스페이스 협업자로 등록
         User foundUser = findUser(email);
-        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+        WorkspaceCollaborator newWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+        foundWorkspace.getWorkspaceCollaborators().add(newWpCol);
 //        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspaces);
-        wpColRepository.save(foundWpCol);
+        wpColRepository.save(newWpCol);
 
 //        for(Workspace foundWorkspace : foundWorkspaces) {
 //            try {
@@ -85,15 +86,10 @@ public class WpColService {
                 for (Board foundBoard : foundAllBoards) {
 
                     // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
-                    if (boardColRepository.existsByBoardAndEmail(foundBoard,
-                        foundUser.getEmail())) {
-                        log.error("워크스페이스에 포함된 보드 중 이미 협업자가 등록된 경우가 있습니다.");
-                        continue;
+                    if (!boardColRepository.existsByBoardAndEmail(foundBoard, foundUser.getEmail())) {
+                        BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser, foundBoard);
+                        boardColRepository.save(boardCollaborator); // 수정된 사항 확인에 대해 포스트맨 테스트 필요
                     }
-
-                    BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser,
-                        foundBoard);
-                    boardColRepository.save(boardCollaborator); // 수정된 사항 확인에 대해 포스트맨 테스트 필요
                 }
             }
 //        }
