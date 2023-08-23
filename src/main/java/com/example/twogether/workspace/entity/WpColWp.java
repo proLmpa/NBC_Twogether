@@ -39,6 +39,8 @@ public class WpColWp implements Persistable<WpColWpId> {
     @CreatedDate
     private LocalDate created;
 
+    // 부모 엔티티와 연관된 정보를 설정 - 필요한지 고민 중
+    // (생성된 WpColWp 엔티티가 어떤 워크스페이스와 협업자 간의 관계를 가지는지 설정)
     public void setParent(Workspace workspace) {
         this.workspace = workspace;
         this.id = new WpColWpId(workspace.getId(), workspaceCollaborator.getId());

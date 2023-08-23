@@ -21,7 +21,6 @@ public class WpColRequestDto {
         return WorkspaceCollaborator.builder()
             .id(newId)
             .email(user.getEmail())
-//            .workspaces(workspaces.stream().toList())
             .user(user)
             .workspace(workspace)
             .build();

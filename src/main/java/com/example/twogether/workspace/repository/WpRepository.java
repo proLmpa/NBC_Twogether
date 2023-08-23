@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WpRepository extends JpaRepository<Workspace, Long> {
     List<Workspace> findAllByUserOrderByCreatedAtDesc(User user);
-    Optional<Workspace> findByWorkspaceCollaborators_Email(String email);
     List<Workspace> findAllByWorkspaceCollaborators_Email(String email);
+    Optional<Workspace> findByIdAndWorkspaceCollaborators_Email(Long wpId, String email);
 }

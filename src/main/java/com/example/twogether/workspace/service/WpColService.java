@@ -20,15 +20,11 @@ import com.example.twogether.workspace.entity.WpColWpId;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpColWpRepository;
 import com.example.twogether.workspace.repository.WpRepository;
-import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,9 +65,9 @@ public class WpColService {
         // 워크스페이스 협업자로 등록
         User foundUser = findUser(email);
         WorkspaceCollaborator newWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
-        newWpCol.assignNewId();
 
-        foundWorkspace.getWorkspaceCollaborators().add(newWpCol);
+        // 아이디 수동 할당 - 데이터가 덮어 씌어지는 문제 방지
+        newWpCol.assignNewId();
         wpColRepository.save(newWpCol);
 
         // 워크스페이스에서 초대한 협업자 모든 하위 보드도 자동 초대
@@ -83,7 +79,7 @@ public class WpColService {
                 // 해당 보드에 이미 등록된 협업자인 경우 예외 던지기
                 if (!boardColRepository.existsByBoardAndEmail(foundBoard, foundUser.getEmail())) {
                     BoardCollaborator boardCollaborator = BoardColRequestDto.toEntity(foundUser, foundBoard);
-                    boardColRepository.save(boardCollaborator); // 수정된 사항 확인에 대해 포스트맨 테스트 필요
+                    boardColRepository.save(boardCollaborator);
                 }
             }
         }
@@ -130,14 +126,11 @@ public class WpColService {
         }
     }
 
-    // 초대된 워크스페이스 단건 조회
+    // 초대된 워크스페이스 단건 조회 - 리팩토링 필요
     @Transactional(readOnly = true)
     public WpResponseDto getWpCol(User user, Long wpId) {
 
-        Workspace foundWorkspace = findWpByEmail(user);
-        if (!Objects.equals(wpId, foundWorkspace.getId())) {
-            throw new CustomException(CustomErrorCode.UNINVITED_WORKSPACE);
-        }
+        Workspace foundWorkspace = findInvitedWp(user.getEmail(), wpId);
         return WpResponseDto.of(foundWorkspace);
     }
 
@@ -174,20 +167,10 @@ public class WpColService {
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-//    private List<Workspace> findAllWpById(Long wpId) {
-//
-//        return wpRepository.findAllById(Collections.singleton(wpId));
-//    }
+    private Workspace findInvitedWp(String email, Long wpId) {
 
-
-    private Workspace findWpByEmail(User user) {
-
-        return wpRepository.findByWorkspaceCollaborators_Email(user.getEmail()).orElseThrow(() ->
+        return wpRepository.findByIdAndWorkspaceCollaborators_Email(wpId, email).orElseThrow(() ->
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
-    }
-
-    private List<Workspace> findAllWps() {
-        return wpRepository.findAll();
     }
 
     private List<Workspace> findAllWpsByEmail(String email) {
