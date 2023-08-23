@@ -9,6 +9,6 @@ import org.hibernate.jdbc.Work;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WpColRepository extends JpaRepository<WorkspaceCollaborator, Long> {
-    boolean existsByWorkspacesAndEmail(Workspace workspace, String email);
-    Optional<WorkspaceCollaborator> findByWorkspacesAndEmail(Workspace workspace, String email);
+    boolean existsByWorkspaceAndEmail(Workspace workspace, String email);
+    Optional<WorkspaceCollaborator> findByWorkspaceAndEmail(Workspace workspace, String email);
 }

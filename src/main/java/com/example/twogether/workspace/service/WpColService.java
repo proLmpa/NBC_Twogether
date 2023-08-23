@@ -41,10 +41,10 @@ public class WpColService {
     @Transactional
     public void inviteWpCol(User user, Long wpId, String email) {
 
-        List<Workspace> foundWorkspaces = findAllWpById(wpId); // 중복되는 코드 처리 고민 중
+        Workspace foundWorkspace = findWpById(wpId); // 중복되는 코드 처리 고민 중
 
         // 워크스페이스를 생성한 사람만 협업자 초대 가능
-        if (!foundWorkspaces.get(0).getUser().getId().equals(user.getId()) &&
+        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
@@ -55,23 +55,28 @@ public class WpColService {
         }
 
         // 이미 등록된 사용자 초대당하기 불가
-        for (Workspace workspace : foundWorkspaces) {
-            if (wpColRepository.existsByWorkspacesAndEmail(workspace, email)) {
-                throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
-            }
+        if (wpColRepository.existsByWorkspaceAndEmail(foundWorkspace, email)) {
+            throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
         }
+
+//        for (Workspace workspace : foundWorkspaces) {
+//            if (wpColRepository.existsByWorkspaceAndEmail(workspace, email)) {
+//                throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
+//            }
+//        }
 
         // 워크스페이스 협업자로 등록
         User foundUser = findUser(email);
-        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspaces);
+        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspace);
+//        WorkspaceCollaborator foundWpCol = WpColRequestDto.toEntity(foundUser, foundWorkspaces);
         wpColRepository.save(foundWpCol);
 
-        for(Workspace foundWorkspace : foundWorkspaces) {
-            try {
-                foundWpCol.getWorkspaces().add(foundWorkspace);
-            } catch (Exception ex) {
-                log.error("Error while adding workspace to collaborator: " + ex.getMessage());
-            }
+//        for(Workspace foundWorkspace : foundWorkspaces) {
+//            try {
+//                foundWpCol.getWorkspaces().add(foundWorkspace);
+//            } catch (Exception ex) {
+//                log.error("Error while adding workspace to collaborator: " + ex.getMessage());
+//            }
 
             // 워크스페이스에서 초대한 협업자 모든 하위 보드도 자동 초대
             List<Board> foundAllBoards = findAllBoards(foundWorkspace);
@@ -91,7 +96,7 @@ public class WpColService {
                     boardColRepository.save(boardCollaborator); // 수정된 사항 확인에 대해 포스트맨 테스트 필요
                 }
             }
-        }
+//        }
     }
 
     // 워크스페이스 협업자 추방
@@ -188,10 +193,10 @@ public class WpColService {
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private List<Workspace> findAllWpById(Long wpId) {
-
-        return wpRepository.findAllById(Collections.singleton(wpId));
-    }
+//    private List<Workspace> findAllWpById(Long wpId) {
+//
+//        return wpRepository.findAllById(Collections.singleton(wpId));
+//    }
 
 
     private Workspace findWpByEmail(User user) {
@@ -217,7 +222,7 @@ public class WpColService {
 
     private WorkspaceCollaborator findWpColByEmail(Workspace foundWorkspace, String email) {
 
-        return wpColRepository.findByWorkspacesAndEmail(foundWorkspace, email).orElseThrow(() ->
+        return wpColRepository.findByWorkspaceAndEmail(foundWorkspace, email).orElseThrow(() ->
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
     }
 

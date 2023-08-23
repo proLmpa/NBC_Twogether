@@ -19,14 +19,14 @@ public class WpColResponseDto {
     private Long wpColId;
     private String email;
     private String nickname;
-    private List<Workspace> workspaces;
+//    private List<Workspace> workspaces;
 
     public static WpColResponseDto of(WorkspaceCollaborator workspaceCollaborator) {
         return WpColResponseDto.builder()
             .wpColId(workspaceCollaborator.getId())
             .email(workspaceCollaborator.getUser().getEmail())
             .nickname(workspaceCollaborator.getUser().getNickname())
-            .workspaces(workspaceCollaborator.getWorkspaces())
+//            .workspaces(workspaceCollaborator.getWorkspaces())
             .build();
     }
 }
