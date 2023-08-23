@@ -23,6 +23,7 @@ import com.example.twogether.workspace.repository.WpRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -130,7 +131,7 @@ public class WpColService {
         }
     }
 
-    // 초대된 워크스페이스 단건 조회 - 리팩토링 필요
+    // 초대된 워크스페이스 단건 조회
     @Transactional(readOnly = true)
     public WpResponseDto getWpCol(User user, Long wpId) {
 
@@ -138,31 +139,12 @@ public class WpColService {
         return WpResponseDto.of(foundWorkspace);
     }
 
-    // 초대된 워크스페이스 전체 조회
+    // 초대된 워크스페이스 전체 조회 - 리팩토링 필요
     @Transactional(readOnly = true)
     public WpsResponseDto getWpCols(User user) {
 
         List<Workspace> foundWorkspaces = findAllWpsByEmail(user.getEmail());
-        List<Workspace> filteredWorkspaces = new ArrayList<>();
-        boolean allBoardsInvited = true;
-        for (Workspace workspace : foundWorkspaces) {
-
-            // 해당 협업자와 워크스페이스가 연결된 WpColWp를 조회
-            WpColWpId wpColWpId = new WpColWpId(workspace.getId(), user.getId());
-            Optional<WpColWp> wpColWpOptional = wpColWpRepository.findById(wpColWpId);
-
-            if (wpColWpOptional.isPresent()) filteredWorkspaces.add(workspace);
-
-            // 초대된 워크스페이스에 포함되어 있는 보드 중, boardCollaborator 로 되어 있는 보드만 조회
-            for (Board board : workspace.getBoards()) {
-                if (!boardColRepository.existsByBoardAndEmail(board, user.getEmail())) {
-                    allBoardsInvited = false; break;
-                }
-            }
-            if (allBoardsInvited) filteredWorkspaces.add(workspace);
-        }
-
-        return WpsResponseDto.of(filteredWorkspaces);
+        return WpsResponseDto.of(foundWorkspaces);
     }
 
     private Workspace findWpById(Long wpId) {
@@ -203,5 +185,13 @@ public class WpColService {
         return boardColRepository.findByBoardAndEmail(foundBoard, foundUser.getEmail())
             .orElseThrow(() ->
                 new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
+    }
+
+    private List<WorkspaceCollaborator> findUserCollaborators(User user) {
+        return wpColRepository.findByUser(user);
+    }
+
+    private List<BoardCollaborator> findUserBoardCollaborators(User user) {
+        return boardColRepository.findByUser(user);
     }
 }
