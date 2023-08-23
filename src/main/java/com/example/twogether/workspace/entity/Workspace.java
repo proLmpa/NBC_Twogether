@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -43,7 +44,7 @@ public class Workspace extends Timestamped {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "workspace", orphanRemoval = true)
+    @ManyToMany(mappedBy = "workspaces")
     private List<WorkspaceCollaborator> workspaceCollaborators = new ArrayList<>();
 
     @Builder.Default

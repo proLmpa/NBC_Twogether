@@ -49,7 +49,6 @@ public class BoardColController {
         @RequestBody BoardColRequestDto boardColRequestDto
     ) {
         boardColService.outBoardCol(userDetails.getUser(), wpId, boardId, boardColRequestDto.getEmail());
-        return ResponseEntity.ok()
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "보드에서 협업자를 추방하였습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "보드에서 협업자를 추방하였습니다."));
     }
 }
