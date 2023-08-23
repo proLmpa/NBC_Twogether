@@ -5,7 +5,6 @@ import com.example.twogether.checklist.entity.CheckList;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
 public class CheckListRequestDto {
 

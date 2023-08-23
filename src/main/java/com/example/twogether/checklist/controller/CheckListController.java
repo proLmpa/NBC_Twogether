@@ -74,5 +74,4 @@ public class CheckListController {
         List<CheckListResponseDto> chlResponseDtos = chlService.getCheckLists(cardId);
         return ResponseEntity.ok().body(chlResponseDtos);
     }
-
 }

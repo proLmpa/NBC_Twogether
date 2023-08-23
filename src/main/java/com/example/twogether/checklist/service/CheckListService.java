@@ -42,16 +42,16 @@ public class CheckListService {
     }
 
     @Transactional(readOnly = true)
-    public CheckListResponseDto getCheckList(Long chlid) {
-        CheckList checkList = findCheckListById(chlid);
+    public CheckListResponseDto getCheckList(Long chlId) {
+        CheckList checkList = findCheckListById(chlId);
         return CheckListResponseDto.of(checkList);
     }
 
     @Transactional(readOnly = true)
     public List<CheckListResponseDto> getCheckLists(Long cardId) {
         findCardById(cardId);
-        List<CheckList> checkLists = chlRepository.findAllByCardId(cardId);
-        return checkLists.stream().map(CheckListResponseDto::of).toList();
+            List<CheckList> checkLists = chlRepository.findAllByCardId(cardId);
+            return checkLists.stream().map(CheckListResponseDto::of).toList();
     }
 
     private CheckList findCheckListById(Long chlId) {
