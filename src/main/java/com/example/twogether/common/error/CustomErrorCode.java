@@ -55,11 +55,11 @@ public enum CustomErrorCode {
     CARD_LABEL_NOT_FOUND("CL002", "해당 카드에 등록되지 않은 라벨입니다."),
     ;
 
-    private final String errorCode;
+    private final String code;
     private final String errorMessage;
 
-    CustomErrorCode(String errorCode, String errorMessage) {
-        this.errorCode = errorCode;
+    CustomErrorCode(String code, String errorMessage) {
+        this.code = code;
         this.errorMessage = errorMessage;
     }
 }
