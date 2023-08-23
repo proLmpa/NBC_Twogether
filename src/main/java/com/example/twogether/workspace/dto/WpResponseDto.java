@@ -22,7 +22,6 @@ public class WpResponseDto {
     private List<WpColResponseDto> wpCollaborators;
     private List<BoardResponseDto> boards;
 
-
     public static WpResponseDto of(Workspace workspace) {
         return WpResponseDto.builder()
             .workspaceId(workspace.getId())

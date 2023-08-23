@@ -57,20 +57,3 @@ public class WpColWp implements Persistable<WpColWpId> {
         return created == null;
     }
 }
-
-// 식별자 클래스
-@Embeddable
-@NoArgsConstructor
-@EqualsAndHashCode
-class WpColWpId implements Serializable {
-    @Column(name = "workspace_id")
-    private Long wpId;
-
-    @Column(name = "workspace_collaborator_id")
-    private Long wpColId;
-
-    public WpColWpId(Long wpId, Long wpColId) {
-        this.wpId = wpId;
-        this.wpColId = wpColId;
-    }
-}
