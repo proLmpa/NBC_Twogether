@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Tag(name = "체크리스트 아이템 API", description = "체크리스트 아이템 API 정보")
-public class chlItemController {
+public class ChlItemController {
 
     private final ChlItemService chlItemService;
 
