@@ -45,18 +45,8 @@ public class WpColService {
     @Transactional
     public void inviteWpCol(User user, Long wpId, String email) {
 
-        Workspace foundWorkspace = findWpById(wpId); // 중복되는 코드 처리 고민 중
-
-        // 워크스페이스를 생성한 사람만 협업자 초대 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
-            !user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
-        }
-
-        // 워크스페이스 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
-        if (email.equals(user.getEmail())) {
-            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
-        }
+        Workspace foundWorkspace = findWpById(wpId); 
+        checkWorkspacePermissions(foundWorkspace, user, email);
 
         // 이미 등록된 사용자 초대당하기 불가
         if (wpColRepository.existsByWorkspaceAndEmail(foundWorkspace, email)) {
@@ -91,20 +81,7 @@ public class WpColService {
     public void outWpCol(User user, Long wpId, String email) {
 
         Workspace foundWorkspace = findWpById(wpId);
-
-        // 워크스페이스를 생성한 사람만 협업자 추방하기 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
-            !user.getRole().equals(UserRoleEnum.ADMIN)) {
-
-            log.error("워크스페이스를 생성한 사람만 협업자 추방할 수 있습니다.");
-            throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
-        }
-
-        // 워크스페이스 오너는 추방당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
-        if (email.equals(user.getEmail())) {
-            log.error("워크스페이스의 오너는 초대할 수 없습니다.");
-            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
-        }
+        checkWorkspacePermissions(foundWorkspace, user, email);
 
         User foundUser = findUser(email);
 
@@ -117,8 +94,8 @@ public class WpColService {
         for (Board foundBoard : foundAllBoards) {
 
             List<BoardCollaborator> boardCollaborators = boardColRepository.findByBoard(foundBoard);
-
             if (boardCollaborators != null && !boardCollaborators.isEmpty()) {
+
                 // 이미 추방된 보드 협업자
                 if (!boardColRepository.existsByBoardAndEmail(foundBoard, email)) {
                     throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_OUT);
@@ -145,6 +122,22 @@ public class WpColService {
 
         List<Workspace> foundWorkspaces = findAllWpsByEmail(user.getEmail());
         return WpsResponseDto.of(foundWorkspaces);
+    }
+
+    private void checkWorkspacePermissions(Workspace workspace, User user, String email) {
+        if (!workspace.getUser().getId().equals(user.getId()) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
+            
+            log.error("워크스페이스를 생성한 사람만 협업자 초대/추방할 수 있습니다.");
+            throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
+        }
+
+        // 워크스페이스 오너는 추방당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
+        if (email.equals(user.getEmail())) {
+            
+            log.error("워크스페이스의 오너는 초대/추방할 수 없습니다.");
+            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);
+        }
     }
 
     private Workspace findWpById(Long wpId) {
@@ -185,13 +178,5 @@ public class WpColService {
         return boardColRepository.findByBoardAndEmail(foundBoard, foundUser.getEmail())
             .orElseThrow(() ->
                 new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
-    }
-
-    private List<WorkspaceCollaborator> findUserCollaborators(User user) {
-        return wpColRepository.findByUser(user);
-    }
-
-    private List<BoardCollaborator> findUserBoardCollaborators(User user) {
-        return boardColRepository.findByUser(user);
     }
 }
