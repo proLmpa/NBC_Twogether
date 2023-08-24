@@ -1,6 +1,5 @@
 package com.example.twogether.checklist.controller;
 
-import com.example.twogether.checklist.dto.ChlItemRequestDto;
 import com.example.twogether.checklist.dto.ChlItemResponseDto;
 import com.example.twogether.checklist.service.ChlItemService;
 import com.example.twogether.common.dto.ApiResponseDto;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;

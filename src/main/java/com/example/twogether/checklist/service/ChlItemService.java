@@ -1,6 +1,5 @@
 package com.example.twogether.checklist.service;
 
-import com.example.twogether.checklist.dto.ChlItemRequestDto;
 import com.example.twogether.checklist.dto.ChlItemResponseDto;
 import com.example.twogether.checklist.entity.CheckList;
 import com.example.twogether.checklist.entity.CheckListItem;

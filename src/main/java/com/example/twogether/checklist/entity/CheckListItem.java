@@ -1,6 +1,5 @@
 package com.example.twogether.checklist.entity;
 
-import com.example.twogether.card.entity.Card;
 import com.example.twogether.common.entity.Timestamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
