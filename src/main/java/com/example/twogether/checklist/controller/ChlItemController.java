@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,7 +38,7 @@ public class ChlItemController {
     }
 
     @Operation(summary = "체크리스트 아이템 내용 수정")
-    @PutMapping("/chlItems/{chlItemId}")
+    @PatchMapping("/chlItems/{chlItemId}/content")
     public ResponseEntity<ApiResponseDto> editContent(
         @PathVariable Long chlItemId,
         @RequestBody String content
@@ -44,6 +46,17 @@ public class ChlItemController {
         chlItemService.editContent(chlItemId, content);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트 아이템 내용이 수정되었습니다."));
+    }
+
+    @Operation(summary = "체크리스트 아이템 체크 상태 수정")
+    @PatchMapping("/chlItems/{chlItemId}/isChecked")
+    public ResponseEntity<ApiResponseDto> editIsChecked(
+        @PathVariable Long chlItemId,
+        @RequestBody Boolean isChecked
+    ) {
+        chlItemService.editIsChecked(chlItemId, isChecked);
+        return ResponseEntity.ok()
+            .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트 아이템 체크 상태가 수정되었습니다."));
     }
 
     @Operation(summary = "체크리스트 아이템 삭제")

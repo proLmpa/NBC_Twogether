@@ -31,12 +31,19 @@ public class CheckListItem extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private Boolean isChecked = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checklist_id", nullable = false)
     private CheckList checkList;
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateIsChecked(Boolean ischecked) {
+        this.isChecked = ischecked;
     }
 
 }

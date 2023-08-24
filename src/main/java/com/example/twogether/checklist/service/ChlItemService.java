@@ -35,6 +35,12 @@ public class ChlItemService {
         return ChlItemResponseDto.of(chlItem);
     }
 
+    public ChlItemResponseDto editIsChecked(Long chlItemId, Boolean isChecked) {
+        CheckListItem chlItem = findChlItemById(chlItemId);
+        chlItem.updateIsChecked(isChecked);
+        return ChlItemResponseDto.of(chlItem);
+    }
+
     @Transactional
     public void deleteChlItem(Long chlItemId) {
         CheckListItem chlItem = findChlItemById(chlItemId);
@@ -55,4 +61,6 @@ public class ChlItemService {
         return chlItemRepository.findById(checkId).orElseThrow(() ->
             new CustomException(CustomErrorCode.CHECKLIST_ITEM_NOT_FOUND));
     }
+
+
 }
