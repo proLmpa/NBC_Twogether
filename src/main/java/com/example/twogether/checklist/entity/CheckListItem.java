@@ -31,7 +31,7 @@ public class CheckListItem extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_checked")
     private boolean checked = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,8 +42,8 @@ public class CheckListItem extends Timestamped {
         this.content = content;
     }
 
-    public void updateIsChecked(boolean checked) {
-        this.checked = checked;
+    public void updateIsChecked() {
+        this.checked = !this.isChecked();
     }
 
 }
