@@ -19,9 +19,12 @@ public class ChlItemService {
     private final ChlItemRepository chlItemRepository;
 
     @Transactional
-    public ChlItemResponseDto createChlItem(Long chlId, ChlItemRequestDto chlItemRequestDto) {
+    public ChlItemResponseDto createChlItem(Long chlId, String content) {
         CheckList checkList = findCheckListById(chlId);
-        CheckListItem chlItem = chlItemRequestDto.toEntity(checkList);
+        CheckListItem chlItem = CheckListItem.builder()
+                .content(content)
+                .checkList(checkList)
+                .build();
         chlItemRepository.save(chlItem);
         return ChlItemResponseDto.of(chlItem);
     }
@@ -32,14 +35,6 @@ public class ChlItemService {
         chlItem.updateContent(content);
         return ChlItemResponseDto.of(chlItem);
     }
-
-    @Transactional
-    public ChlItemResponseDto editIsChecked(Long chlItemId, Boolean isChecked) {
-        CheckListItem chlItem = findChlItemById(chlItemId);
-        chlItem.updateIsChecked(isChecked);
-        return ChlItemResponseDto.of(chlItem);
-    }
-
 
     @Transactional
     public void deleteChlItem(Long chlItemId) {

@@ -14,13 +14,11 @@ import lombok.NoArgsConstructor;
 public class ChlItemResponseDto {
     private Long chlItemId;
     private String content;
-    private Boolean isChecked;
 
     public static ChlItemResponseDto of(CheckListItem chlItem) {
         return ChlItemResponseDto.builder()
             .chlItemId(chlItem.getId())
             .content(chlItem.getContent())
-            .isChecked(chlItem.getIsChecked())
             .build();
     }
 }

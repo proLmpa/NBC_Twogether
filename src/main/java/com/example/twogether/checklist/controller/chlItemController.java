@@ -30,15 +30,15 @@ public class chlItemController {
     @Operation(summary = "체크리스트 아이템 생성")
     @PostMapping("/checklists/{chlId}/chlItems")
     public ResponseEntity<ApiResponseDto> createChlItem(
-        @RequestBody ChlItemRequestDto chlItemRequestDto,
+        @RequestBody String content,
         @PathVariable Long chlId
     ) {
-        chlItemService.createChlItem(chlId, chlItemRequestDto);
+        chlItemService.createChlItem(chlId, content);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "체크리스트 아이템이 생성되었습니다."));
     }
 
     @Operation(summary = "체크리스트 아이템 내용 수정")
-    @PutMapping("/chlItems/{chlItemId}/content")
+    @PutMapping("/chlItems/{chlItemId}")
     public ResponseEntity<ApiResponseDto> editContent(
         @PathVariable Long chlItemId,
         @RequestBody String content
@@ -46,17 +46,6 @@ public class chlItemController {
         chlItemService.editContent(chlItemId, content);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트 아이템 내용이 수정되었습니다."));
-    }
-
-    @Operation(summary = "체크리스트 아이템 체크 수정")
-    @PatchMapping("/chlItems/{chlItemId}/isChecked")
-    public ResponseEntity<ApiResponseDto> editIsChecked(
-        @PathVariable Long chlItemId,
-        @RequestBody boolean isChecked
-    ) {
-        chlItemService.editIsChecked(chlItemId, isChecked);
-        return ResponseEntity.ok()
-            .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트 아이템 체크가 수정되었습니다."));
     }
 
     @Operation(summary = "체크리스트 아이템 삭제")
