@@ -36,28 +36,18 @@ public class BoardColService {
     @Transactional
     public void inviteBoardCol(User user, Long wpId, Long boardId, String email) {
 
-        Workspace foundWorkspace = findWorkspace(wpId);
-        Board foundBoard = findBoard(foundWorkspace, boardId);
-        User foundUser = findUser(email);
+        Board invitingBoard = findBoard(wpId, boardId);
+        User invitedUser = findUser(email);
 
-        // 보드를 생성한 사람만 협업자 초대하기 가능
-        if (!foundBoard.getUser().getId().equals(user.getId()) &&
-            !user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
-        }
-
-        // 보드 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
-        if (email.equals(user.getEmail())) {
-            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
-        }
+        checkBoardPermissions(invitingBoard, user, email);
 
         // 이미 등록된 사용자 초대당하기 불가
-        if (boardColRepository.existsByBoardAndEmail(foundBoard, email)) {
+        if (boardColRepository.existsByBoardAndEmail(invitingBoard, email)) {
             throw new CustomException(CustomErrorCode.BOARD_COLLABORATOR_ALREADY_EXISTS);
         }
 
         // 보드 협업자로 등록
-        BoardCollaborator foundBoardCol = BoardColRequestDto.toEntity(foundUser, foundBoard);
+        BoardCollaborator foundBoardCol = BoardColRequestDto.toEntity(invitedUser, invitingBoard);
         boardColRepository.save(foundBoardCol);
     }
 
@@ -65,25 +55,11 @@ public class BoardColService {
     @Transactional
     public void outBoardCol(User user, Long wpId, Long boardId, String email) {
 
-        Workspace foundWorkspace = findWorkspace(wpId);
-        Board foundBoard = findBoard(foundWorkspace, boardId);
-
-        // 보드를 생성한 사람만 협업자 추방하기 가능
-        if (!foundWorkspace.getUser().getId().equals(user.getId()) &&
-            !user.getRole().equals(UserRoleEnum.ADMIN)) {
-
-            log.error("보드를 생성한 사람만 협업자 추방할 수 있습니다.");
-            throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
-        }
-
-        // 보드 오너는 초대당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
-        if (email.equals(user.getEmail())) {
-            log.error("보드의 오너는 초대할 수 없습니다.");
-            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
-        }
+        Board invitingBoard = findBoard(wpId, boardId);
+        checkBoardPermissions(invitingBoard, user, email);
 
         // 보드 협업자 삭제
-        BoardCollaborator foundBoardCol = findBoardColByEmail(foundBoard, email);
+        BoardCollaborator foundBoardCol = findBoardColByEmail(invitingBoard, email);
         boardColRepository.delete(foundBoardCol);
     }
 
@@ -104,15 +80,27 @@ public class BoardColService {
         return BoardsResponseDto.of(foundBoards);
     }
 
-    private Workspace findWorkspace(Long wpId) {
+    private void checkBoardPermissions(Board invitingBoard, User user, String email) {
 
-        return wpRepository.findById(wpId).orElseThrow(() ->
-            new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
+        if (!invitingBoard.getUser().getId().equals(user.getId()) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+            log.error("보드를 생성한 사람만 협업자 초대/추방할 수 있습니다.");
+            throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
+        }
+
+        if (email.equals(user.getEmail())) { // 추후 프론트에서 예외처리되면 삭제될 예정
+            log.error("보드의 오너는 초대/추방할 수 없습니다.");
+            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
+        }
     }
 
-    private Board findBoard(Workspace workspace, Long boardId) {
+    private Board findBoard(Long wpId, Long boardId) {
 
-        return boardRepository.findByWorkspaceAndId(workspace, boardId).orElseThrow(() ->
+        Workspace foundWorkspace = wpRepository.findById(wpId).orElseThrow(() ->
+            new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
+
+        return boardRepository.findByWorkspaceAndId(foundWorkspace, boardId).orElseThrow(() ->
             new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 

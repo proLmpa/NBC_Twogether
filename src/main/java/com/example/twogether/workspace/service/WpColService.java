@@ -15,15 +15,10 @@ import com.example.twogether.workspace.dto.WpResponseDto;
 import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
-import com.example.twogether.workspace.entity.WpColWp;
-import com.example.twogether.workspace.entity.WpColWpId;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpColWpRepository;
 import com.example.twogether.workspace.repository.WpRepository;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +31,6 @@ public class WpColService {
 
     private final WpColRepository wpColRepository;
     private final WpRepository wpRepository;
-    private final WpColWpRepository wpColWpRepository;
     private final BoardColRepository boardColRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
@@ -132,8 +126,7 @@ public class WpColService {
             throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
         }
 
-        // 워크스페이스 오너는 추방당하기 불가 - 해당 사항에 대해 추후 프론트에서 예외처리되면 삭제될 예정
-        if (email.equals(user.getEmail())) {
+        if (email.equals(user.getEmail())) { // 추후 프론트에서 예외처리되면 삭제될 예정
             
             log.error("워크스페이스의 오너는 초대/추방할 수 없습니다.");
             throw new CustomException(CustomErrorCode.THIS_IS_YOUR_WORKSPACE);

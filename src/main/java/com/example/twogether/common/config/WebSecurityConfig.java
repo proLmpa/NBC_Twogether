@@ -57,7 +57,6 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-                .requestMatchers("/api/workspaces/**").permitAll()
                 .requestMatchers("/api/boards/**").permitAll()
                 .requestMatchers("/api/decks/**").permitAll()
                 .requestMatchers("api/cards/**").permitAll()
