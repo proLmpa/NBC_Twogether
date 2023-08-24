@@ -49,12 +49,12 @@ public class ChlItemController {
     }
 
     @Operation(summary = "체크리스트 아이템 체크 상태 수정")
-    @PatchMapping("/chlItems/{chlItemId}/isChecked")
-    public ResponseEntity<ApiResponseDto> editIsChecked(
+    @PatchMapping("/chlItems/{chlItemId}/checked")
+    public ResponseEntity<ApiResponseDto> editChecked(
         @PathVariable Long chlItemId,
-        @RequestBody Boolean isChecked
+        @RequestBody boolean checked
     ) {
-        chlItemService.editIsChecked(chlItemId, isChecked);
+        chlItemService.editChecked(chlItemId, checked);
         return ResponseEntity.ok()
             .body(new ApiResponseDto(HttpStatus.OK.value(), "체크리스트 아이템 체크 상태가 수정되었습니다."));
     }

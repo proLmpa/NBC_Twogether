@@ -35,9 +35,9 @@ public class ChlItemService {
         return ChlItemResponseDto.of(chlItem);
     }
 
-    public ChlItemResponseDto editIsChecked(Long chlItemId, Boolean isChecked) {
+    public ChlItemResponseDto editChecked(Long chlItemId, boolean checked) {
         CheckListItem chlItem = findChlItemById(chlItemId);
-        chlItem.updateIsChecked(isChecked);
+        chlItem.updateIsChecked(checked);
         return ChlItemResponseDto.of(chlItem);
     }
 
