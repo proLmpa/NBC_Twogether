@@ -1,6 +1,7 @@
 package com.example.twogether.card.service;
 
 import com.example.twogether.board.repository.BoardColRepository;
+import com.example.twogether.board.repository.BoardRepository;
 import com.example.twogether.card.dto.CardColEditResponseDto;
 import com.example.twogether.card.dto.CardColRequestDto;
 import com.example.twogether.card.dto.CardColsResponseDto;
@@ -25,6 +26,7 @@ public class CardColService {
 
     private final CardColRepository cardColRepository;
     private final CardRepository cardRepository;
+    private final BoardRepository boardRepository;
     private final BoardColRepository boardColRepository;
     private final UserRepository userRepository;
 
@@ -32,11 +34,11 @@ public class CardColService {
     @Transactional
     public void addCardCol(User user, Long cardId, CardColRequestDto cardColRequestDto) {
 
-        // 보드 협업자로 등록되어 있지 않는 사람은 카드 접근 불가
-        checkUserPermissions(user.getEmail());
-
+        checkUserPermissions(user);
         Card addedCard = findCard(cardId);
-        User addedUser = findUser(cardColRequestDto.getEmail());
+
+        User foundUser = findUserByEmail(cardColRequestDto.getEmail());
+        User addedUser = findAddedUser(foundUser);
 
         CardCollaborator foundCardCol = cardColRequestDto.toEntity(addedUser, addedCard);
 
@@ -48,23 +50,26 @@ public class CardColService {
     @Transactional
     public void editCardCol(User user, Long cardId, CardColEditResponseDto cardColEditResponseDto) {
 
-        checkUserPermissions(user.getEmail());
+        checkUserPermissions(user);
 
         Card editedCard = findCard(cardId);
-        User addedUser = findUser(cardColEditResponseDto.getAddedEmail());
+        User foundUser = findUserByEmail(cardColEditResponseDto.getAddedEmail());
+        User addedUser = findAddedUser(foundUser);
 
         CardCollaborator deletedCardCol = findCardCol(editedCard, cardColEditResponseDto.getDeletedEmail());
         CardCollaborator addedCardCol = CardColRequestDto.toEntity(addedUser, editedCard);
 
         checkCardColPermissions(editedCard, addedCardCol.getEmail());
-        editedCard.editCardCol(deletedCardCol, addedCardCol);
+
+        cardColRepository.delete(deletedCardCol);
+        cardColRepository.save(addedCardCol);
     }
 
     // 카드에 등록된 협업자 삭제
     @Transactional
     public void deleteCardCol(User user, Long cardId, CardColRequestDto cardColRequestDto) {
 
-        checkUserPermissions(user.getEmail());
+        checkUserPermissions(user);
 
         Card deletedCard = findCard(cardId);
 
@@ -76,7 +81,7 @@ public class CardColService {
     @Transactional(readOnly = true)
     public CardColsResponseDto getCardCols(User user, Long cardId) {
 
-        checkUserPermissions(user.getEmail());
+        checkUserPermissions(user);
 
         Card foundCard = findCard(cardId);
         List<CardCollaborator> foundCardCols = findCardCols(foundCard);
@@ -89,9 +94,22 @@ public class CardColService {
         return cardColRepository.findAlLByCard(foundCard);
     }
 
-    private User findUser(String email) {
+    private User findUserByEmail(String email) {
 
         return userRepository.findByEmail(email).orElseThrow(() ->
+            new CustomException(CustomErrorCode.USER_NOT_FOUND));
+    }
+
+    private User findAddedUser(User addedCardCol) {
+
+        // 보드 생성자나 협업자로 등록되어 있지 않는 사람은 등록 불가 - addedCardCol(카드에 할당 당하는 협업자)의 email
+        if (!boardRepository.existsByUser(addedCardCol) &&
+            !boardColRepository.existsByEmail(addedCardCol.getEmail())) {
+
+            throw new CustomException(CustomErrorCode.CARD_NOT_ACCESSIBLE);
+        }
+
+        return userRepository.findByEmail(addedCardCol.getEmail()).orElseThrow(() ->
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
     }
 
@@ -107,10 +125,12 @@ public class CardColService {
             new CustomException(CustomErrorCode.CARD_COLLABORATOR_NOT_FOUND));
     }
 
-    private void checkUserPermissions(String email) {
+    private void checkUserPermissions(User user) {
 
-        // 보드 협업자로 등록되어 있지 않는 사람은 카드 접근 불가
-        if (boardColRepository.existsByEmail(email)) {
+        // 보드 생성자나 협업자로 등록되어 있지 않는 사람은 카드 접근 불가 - user(로그인한 사람)의 email
+        if (!boardRepository.existsByUser(user) &&
+            !boardColRepository.existsByEmail(user.getEmail())) {
+
             throw new CustomException(CustomErrorCode.CARD_NOT_ACCESSIBLE);
         }
     }

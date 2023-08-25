@@ -3,13 +3,11 @@ package com.example.twogether.card.controller;
 import com.example.twogether.card.dto.CardColEditResponseDto;
 import com.example.twogether.card.dto.CardColRequestDto;
 import com.example.twogether.card.dto.CardColsResponseDto;
-import com.example.twogether.card.entity.CardCollaborator;
 import com.example.twogether.card.service.CardColService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +62,7 @@ public class CardColController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드에 할당된 협업자를 삭제하였습니다."));
     }
 
-    @Operation(summary = "카드를 작업할 협업자 전체 조회")
+    @Operation(summary = "카드를 작업할 협업자 전체 조회") // 혹시 몰라 만들어 둠
     @GetMapping("/cards/{cardId}/users")
     public ResponseEntity<CardColsResponseDto> getCardCols(
         @AuthenticationPrincipal UserDetailsImpl userDetails,

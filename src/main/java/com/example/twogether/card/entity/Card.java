@@ -80,11 +80,6 @@ public class Card extends Timestamped {
 
     public void editDueDate(LocalDateTime dueDate) {this.dueDate = dueDate;}
 
-    public void editCardCol(CardCollaborator deletedCardCol, CardCollaborator addedCardCol) {
-        this.cardCollaborators.remove(deletedCardCol);
-        this.cardCollaborators.add(addedCardCol);
-    }
-
     public void archive() {
         this.archived = !this.isArchived();
     }

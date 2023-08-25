@@ -13,15 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CardColsResponseDto {
 
-    private Long cardId;
-    private String email;
-    private String nickname;
-    private List<CardCollaborator> cardCollaborators;
+    private List<CardColResponseDto> cardCollaborators;
 
     public static CardColsResponseDto of(List<CardCollaborator> cardCollaborators) {
 
+        List<CardColResponseDto> cardColsResponseDto = cardCollaborators.stream().map(
+            CardColResponseDto::of).toList();
+
         return CardColsResponseDto.builder()
-            .cardId(cardCollaborators.get(0).getCard().getId())
-            .cardCollaborators(cardCollaborators)
+            .cardCollaborators(cardColsResponseDto)
             .build();
     }}
