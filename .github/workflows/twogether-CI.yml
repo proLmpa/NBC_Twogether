@@ -48,17 +48,13 @@ jobs:
         run: |
           rm -rf ./src/main/resources/application.properties
           touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
-          
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml          
           touch ./src/main/resources/application-s3.yml
-          echo "${{ secrets.APPLICATION_S3_YML }}" > ./src/main/resources/application-s3.yml
-          
+          echo "${{ secrets.APPLICATION_S3_YML }}" > ./src/main/resources/application-s3.yml          
           touch ./src/main/resources/application-key.yml
           echo "${{ secrets.APPLICATION_KEY_YML }}" > ./src/main/resources/application-key.yml
-          
           touch ./src/main/resources/application-smtp.yml
-          echo "${{ secrets.APPLICATION_SMTP_YML }}" > ./src/main/resources/application-smtp.yml
-          
+          echo "${{ secrets.APPLICATION_SMTP_YML }}" > ./src/main/resources/application-smtp.yml          
           touch ./src/main/resources/application-redis.yml
           echo "${{ secrets.APPLICATION_REDIS_YML }}" > ./src/main/resources/application-redis.yml
         shell: bash
