@@ -80,21 +80,6 @@ public class BoardColService {
         return BoardsResponseDto.of(foundBoards);
     }
 
-    private void checkBoardPermissions(Board invitingBoard, User user, String email) {
-
-        if (!invitingBoard.getUser().getId().equals(user.getId()) &&
-            !user.getRole().equals(UserRoleEnum.ADMIN)) {
-
-            log.error("보드를 생성한 사람만 협업자 초대/추방할 수 있습니다.");
-            throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
-        }
-
-        if (email.equals(user.getEmail())) { // 추후 프론트에서 예외처리되면 삭제될 예정
-            log.error("보드의 오너는 초대/추방할 수 없습니다.");
-            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
-        }
-    }
-
     private Board findBoard(Long wpId, Long boardId) {
 
         Workspace foundWorkspace = wpRepository.findById(wpId).orElseThrow(() ->
@@ -125,5 +110,20 @@ public class BoardColService {
 
         return userRepository.findByEmail(email).orElseThrow(() ->
             new CustomException(CustomErrorCode.USER_NOT_FOUND));
+    }
+
+    private void checkBoardPermissions(Board invitingBoard, User user, String email) {
+
+        if (!invitingBoard.getUser().getId().equals(user.getId()) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+            log.error("보드를 생성한 사람만 협업자 초대/추방할 수 있습니다.");
+            throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
+        }
+
+        if (email.equals(user.getEmail())) { // 추후 프론트에서 예외처리되면 삭제될 예정
+            log.error("보드의 오너는 초대/추방할 수 없습니다.");
+            throw new CustomException(CustomErrorCode.THIS_IS_YOUR_BOARD);
+        }
     }
 }

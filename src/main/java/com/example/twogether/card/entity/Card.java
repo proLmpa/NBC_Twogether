@@ -66,6 +66,10 @@ public class Card extends Timestamped {
     @OneToMany(mappedBy = "card")
     private List<CardLabel> cardLabelList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "card")
+    private List<CardCollaborator> cardCollaborators = new ArrayList<>();
+
     public void editTitle(String title) {
         this.title = title;
     }
@@ -75,6 +79,11 @@ public class Card extends Timestamped {
     }
 
     public void editDueDate(LocalDateTime dueDate) {this.dueDate = dueDate;}
+
+    public void editCardCol(CardCollaborator deletedCardCol, CardCollaborator addedCardCol) {
+        this.cardCollaborators.remove(deletedCardCol);
+        this.cardCollaborators.add(addedCardCol);
+    }
 
     public void archive() {
         this.archived = !this.isArchived();
