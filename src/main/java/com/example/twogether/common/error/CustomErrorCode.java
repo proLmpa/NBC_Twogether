@@ -55,7 +55,7 @@ public enum CustomErrorCode {
     CARD_LABEL_NOT_FOUND("CL002", "해당 카드에 등록되지 않은 라벨입니다."),
 
     // CheckList
-    CHECKLIST_NOT_FOUND("CHL001", "등록되지 않은 체크리스트입니다.")
+    CHECKLIST_NOT_FOUND("CHL001", "등록되지 않은 체크리스트입니다."),
 
     // Comment
     COMMENT_NOT_FOUND("C001", "존재하지 않는 댓글입니다."),
