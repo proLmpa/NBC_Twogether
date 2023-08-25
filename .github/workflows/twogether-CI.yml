@@ -40,23 +40,20 @@ jobs:
           character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
           collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
           mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-          mysql database: test # Optional, default value is "test". The specified database which will be create
-          mysql user: developer # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course you can use secrets, too
+          mysql database: test # Optional, default value is "test". The specified database which will be created
+          mysql user: developer # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course, you can use secrets, too
           mysql password: ${{ secrets.DB_PASSWORD }}
 
       - name: yml 파일 생성
         run: |
-          rm -rf ./src/main/resources/application.properties
-          touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml          
-          touch ./src/main/resources/application-s3.yml
-          echo "${{ secrets.APPLICATION_S3_YML }}" > ./src/main/resources/application-s3.yml          
-          touch ./src/main/resources/application-key.yml
-          echo "${{ secrets.APPLICATION_KEY_YML }}" > ./src/main/resources/application-key.yml
-          touch ./src/main/resources/application-smtp.yml
-          echo "${{ secrets.APPLICATION_SMTP_YML }}" > ./src/main/resources/application-smtp.yml          
-          touch ./src/main/resources/application-redis.yml
-          echo "${{ secrets.APPLICATION_REDIS_YML }}" > ./src/main/resources/application-redis.yml
+          cd ./src/main/resources
+          rm -rf ./application.properties
+          touch ./application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          touch ./application-aws.yml
+          echo "${{ secrets.APPLICATION_S3_YML }}" > ./application-s3.yml
+          touch ./application-key.yml
+          echo "${{ secrets.APPLICATION_KEY_YML }}" > ./application-key.yml
         shell: bash
 
       # gradle 실행 허가
