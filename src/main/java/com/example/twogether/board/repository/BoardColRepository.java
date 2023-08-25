@@ -15,4 +15,6 @@ public interface BoardColRepository extends JpaRepository<BoardCollaborator, Lon
     Optional<BoardCollaborator> findByBoardAndEmail(Board board, String email);
 
     boolean existsByEmail(String email);
+
+    void deleteAllByBoard_Id(Long boardId);
 }
