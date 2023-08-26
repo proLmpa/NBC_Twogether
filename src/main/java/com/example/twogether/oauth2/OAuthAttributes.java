@@ -57,7 +57,7 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> account = (Map<String, Object>) attributes.get("profile");
+        Map<String, Object> account = (Map<String, Object>) response.get("profile");
 
         return OAuthAttributes.builder()
             .nickname((String) account.get("nickname"))
@@ -69,8 +69,9 @@ public class OAuthAttributes {
 
     public User toEntity() {
         return User.builder()
-            .nickname(toEntity().getNickname())
+            .nickname(nickname)
             .email(email)
+            .password("1234")
             .role(UserRoleEnum.USER)
             .build();
     }

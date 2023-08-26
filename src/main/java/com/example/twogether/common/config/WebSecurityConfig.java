@@ -6,6 +6,7 @@ import com.example.twogether.common.security.JwtAuthorizationFilter;
 import com.example.twogether.common.security.UserDetailsServiceImpl;
 import com.example.twogether.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -72,13 +73,13 @@ public class WebSecurityConfig {
                 .requestMatchers("api/cards/**").permitAll()
                 .requestMatchers("/api/labels/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
-                //.requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // static 아래 정적파일 사용
-                .anyRequest().authenticated()//.permitAll() // 현재 html 사용할 때 permitAll로 풀어야 함
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static 아래 정적파일 사용
+                .anyRequest().permitAll()//.authenticated()//.permitAll() //.authenticated()// 현재 html 사용할 때 permitAll로 풀어야 함
         );
         //http.formLogin(AbstractHttpConfigurer::disable);
-        //http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
         //http.oauth2Login(Customizer.withDefaults()).userInfoEndpoint().userService(customOAuth2UserService);
-        //http.oauth2Login(Customizer.withDefaults()).userInfoEndpoint(Customizer.withDefaults());
+        //http.oauth2Login(Customizer.withDefaults()).userInfoEndpoint().userService(customOAuth2UserService);
+//        http.oauth2Login(Customizer.withDefaults()).userInfoEndpoint(Customizer.withDefaults());
         //http.userInfoEndpoint(Customizer.withDefaults());
         http.oauth2Login(Customizer.withDefaults());
         //http.userDetailsService((UserDetailsService) customOAuth2UserService);
