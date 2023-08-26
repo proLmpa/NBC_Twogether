@@ -22,6 +22,9 @@ repositories {
 }
 
 dependencies {
+    // oauth2
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+
     // h2
     testImplementation 'com.h2database:h2'
 
