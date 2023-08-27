@@ -76,18 +76,18 @@ public class CardColService {
         CardCollaborator deletedCardCol = findCardCol(deletedCard, cardColRequestDto.getEmail());
         cardColRepository.delete(deletedCardCol);
     }
-
-    // 카드에 등록된 협업자 전체 조회
-    @Transactional(readOnly = true)
-    public CardColsResponseDto getCardCols(User user, Long cardId) {
-
-        checkUserPermissions(user);
-
-        Card foundCard = findCard(cardId);
-        List<CardCollaborator> foundCardCols = findCardCols(foundCard);
-
-        return CardColsResponseDto.of(foundCardCols);
-    }
+    
+    // 카드에 등록된 협업자 전체 조회 - 프론트에서 필요할 경우를 대비해 CardColController에서 따로 구현
+//    @Transactional(readOnly = true)
+//    public CardColsResponseDto getCardCols(User user, Long cardId) {
+//
+//        checkUserPermissions(user);
+//
+//        Card foundCard = findCard(cardId);
+//        List<CardCollaborator> foundCardCols = findCardCols(foundCard);
+//
+//        return CardColsResponseDto.of(foundCardCols);
+//    }
 
     private List<CardCollaborator> findCardCols(Card foundCard) {
 

@@ -24,7 +24,7 @@ public class CardResponseDto {
     private LocalDateTime dueDate;
     private String attachment;
     private float position;
-    private List<CommentResponseDto> commentList;
+    private List<CommentResponseDto> comments;
     private List<CardColResponseDto> cardCollaborators;
 
     public static CardResponseDto of(Card card) {
@@ -35,7 +35,7 @@ public class CardResponseDto {
             .dueDate(card.getDueDate())
             .attachment(card.getAttachment())
             .position(card.getPosition())
-            .commentList(card.getCommentList().stream().map(CommentResponseDto::of).toList())
+            .comments(card.getComments().stream().map(CommentResponseDto::of).toList())
             .cardCollaborators(card.getCardCollaborators().stream().map(
                 CardColResponseDto::of).toList())
             .build();
