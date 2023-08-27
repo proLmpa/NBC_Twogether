@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "users")
 public class User {
 
     /**
@@ -67,9 +69,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<WorkspaceCollaborator> workspaceCollaborators = new ArrayList<>();
 
-    // orphanRemoval 은 테스트 코드 작성 전 수정 예정입니다.
     @Builder.Default
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
 
     @Builder.Default
