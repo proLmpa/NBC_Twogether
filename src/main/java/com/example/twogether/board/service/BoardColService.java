@@ -107,15 +107,10 @@ public class BoardColService {
             new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
     }
 
-    private CardCollaborator findCardColByEmail(String email) {
-
-        return cardColRepository.findByEmail(email).orElseThrow(() ->
-            new CustomException(CustomErrorCode.CARD_COLLABORATOR_NOT_FOUND));
-    }
-
     private List<Board> findAllInvitedBoards(Long wpId, String email) {
 
-        return boardRepository.findAllBoardsByWorkspace_IdAndBoardCollaborators_Email(wpId, email);
+        return boardRepository.findAllBoardsByWorkspace_IdAndBoardCollaborators_Email(wpId, email).orElseThrow(() ->
+            new CustomException(CustomErrorCode.UNINVITED_BOARD));
     }
 
     private Board findInvitedBoard(Long wpId, Long boardId, String email) {
