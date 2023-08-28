@@ -16,11 +16,9 @@ import com.example.twogether.workspace.dto.WpsResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpColRepository;
-import com.example.twogether.workspace.repository.WpColWpRepository;
 import com.example.twogether.workspace.repository.WpRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
