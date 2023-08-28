@@ -46,9 +46,9 @@ public class BoardService {
     public void createBoard(User user, Long wpId, BoardRequestDto boardRequestDto) {
 
         Workspace foundWorkspace = findWorkspace(wpId);
-        Board foundBoard = boardRequestDto.toEntity(foundWorkspace, user);
-        checkUserPermissions(foundWorkspace, user);
+        checkWpPermissions(foundWorkspace, user);
 
+        Board foundBoard = boardRequestDto.toEntity(foundWorkspace, user);
         boardRepository.save(foundBoard);
         log.info("칸반 보드 생성에 성공했습니다.");
 
@@ -68,9 +68,9 @@ public class BoardService {
 
     // 보드 수정
     @Transactional
-    public Board editBoard(Long wpId, Long boardId, BoardRequestDto boardRequestDto) {
+    public Board editBoard(Long boardId, BoardRequestDto boardRequestDto) {
 
-        Board foundBoard = findBoard(wpId, boardId);
+        Board foundBoard = findBoard(boardId);
         if (boardRequestDto.getTitle() != null) {
             foundBoard.editTitle(boardRequestDto);
         }
@@ -87,7 +87,7 @@ public class BoardService {
     @Transactional
     public void deleteBoard(User user, Long wpId, Long boardId) {
 
-        Board foundBoard = findBoard(wpId, boardId);
+        Board foundBoard = findBoard(boardId);
         if (!foundBoard.getUser().getEmail().equals(user.getEmail())) {
             throw new CustomException(CustomErrorCode.NOT_YOUR_BOARD);
         }
@@ -114,10 +114,10 @@ public class BoardService {
 
     // 보드 단일 조회
     @Transactional(readOnly = true)
-    public BoardResponseDto getBoard(Long wpId, Long boardId) {
+    public BoardResponseDto getBoard(User user, Long boardId) {
 
-        Workspace foundWorkspace = findWorkspace(wpId);
-        Board foundBoard = findBoard(foundWorkspace.getId(), boardId);
+        Board foundBoard = findBoard(boardId);
+        checkBoardPermissions(foundBoard, user);
 
         return BoardResponseDto.of(foundBoard);
     }
@@ -128,16 +128,26 @@ public class BoardService {
             .orElseThrow(() -> new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
 
-    private Board findBoard(Long wpId, Long boardId) {
+    private Board findBoard(Long boardId) {
 
-        return boardRepository.findByWorkspace_IdAndId(wpId, boardId)
+        return boardRepository.findById(boardId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
     }
 
-    private void checkUserPermissions(Workspace workspace, User user) {
+    private void checkWpPermissions(Workspace workspace, User user) {
 
         if (!workspace.getUser().equals(user) &&
             !workspace.getWorkspaceCollaborators().contains(user) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+            throw new CustomException(CustomErrorCode.NOT_PARTICIPATED_WORKSPACE);
+        }
+    }
+
+    private void checkBoardPermissions(Board board, User user) {
+
+        if (!board.getUser().equals(user) &&
+            !board.getBoardCollaborators().contains(user) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
 
             throw new CustomException(CustomErrorCode.NOT_PARTICIPATED_WORKSPACE);

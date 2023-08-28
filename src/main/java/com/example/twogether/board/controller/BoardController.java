@@ -46,14 +46,13 @@ public class BoardController {
 
     // 보드 수정
     @Operation(summary = "칸반 보드 수정")
-    @PatchMapping("/workspaces/{wpId}/boards/{boardId}")
+    @PatchMapping("/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> editBoard(
-        @PathVariable Long wpId,
         @PathVariable Long boardId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.editBoard(wpId, boardId, boardRequestDto);
+        boardService.editBoard(boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 수정되었습니다."));
@@ -75,13 +74,13 @@ public class BoardController {
 
     // 보드 단일 조회
     @Operation(summary = "칸반 보드 단일 조회")
-    @GetMapping("/workspaces/{wpId}/boards/{boardId}")
+    @GetMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> getBoard(
-        @PathVariable Long wpId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId
     ) {
 
-        BoardResponseDto result = boardService.getBoard(wpId, boardId);
+        BoardResponseDto result = boardService.getBoard(userDetails.getUser(), boardId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

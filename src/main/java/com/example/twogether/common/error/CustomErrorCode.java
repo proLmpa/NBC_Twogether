@@ -23,13 +23,14 @@ public enum CustomErrorCode {
     // Board
     BOARD_NOT_FOUND("B001", "존재하지 않는 보드입니다."),
     NOT_YOUR_BOARD("B002", "해당 기능은 보드를 생성한 사람만 접근할 수 있습니다."),
-    THIS_IS_YOUR_BOARD("B003", "당신은 보드의 관리자입니다."),
-    UNINVITED_BOARD("B004", "초대되지 않은 보드를 조회하였습니다."),
-    BOARD_ALREADY_ARCHIVED("B005", "이미 삭제 보관된 보드입니다."),
-    BOARD_COLLABORATOR_NOT_ACCESSIBLE("B006", "보드의 협업자 기능 사용에 실패했습니다."),
-    BOARD_COLLABORATOR_ALREADY_EXISTS("B007", "이미 존재하는 보드 협업자입니다."),
-    BOARD_COLLABORATOR_ALREADY_OUT("B008", "이미 추방된 보드 협업자입니다."),
-    BOARD_COLLABORATOR_NOT_FOUND("B009", "존재하지 않는 보드 협업자입니다."),
+    NOT_PARTICIPATED_BOARD("B003", "참여하지 않은 보드입니다."),
+    THIS_IS_YOUR_BOARD("B004", "당신은 보드의 관리자입니다."),
+    UNINVITED_BOARD("B005", "초대되지 않은 보드를 조회하였습니다."),
+    BOARD_ALREADY_ARCHIVED("B006", "이미 삭제 보관된 보드입니다."),
+    BOARD_COLLABORATOR_NOT_ACCESSIBLE("B007", "보드의 협업자 기능 사용에 실패했습니다."),
+    BOARD_COLLABORATOR_ALREADY_EXISTS("B008", "이미 존재하는 보드 협업자입니다."),
+    BOARD_COLLABORATOR_ALREADY_OUT("B009", "이미 추방된 보드 협업자입니다."),
+    BOARD_COLLABORATOR_NOT_FOUND("B010", "존재하지 않는 보드 협업자입니다."),
 
     // Deck
     DECK_NOT_FOUND("D001", "존재하지 않는 덱입니다."),
