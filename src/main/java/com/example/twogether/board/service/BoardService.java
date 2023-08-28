@@ -109,7 +109,7 @@ public class BoardService {
         boardRepository.delete(foundBoard);
     }
 
-    // 보드 단건 조회
+    // 보드 단일 조회
     @Transactional(readOnly = true)
     public BoardResponseDto getBoard(Long wpId, Long boardId) {
 

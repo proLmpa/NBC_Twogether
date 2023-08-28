@@ -73,7 +73,7 @@ public class BoardController {
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 삭제되었습니다."));
     }
 
-    // 보드 단건 조회
+    // 보드 단일 조회
     @Operation(summary = "칸반 보드 단일 조회")
     @GetMapping("/workspaces/{wpId}/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> getBoard(
