@@ -59,14 +59,13 @@ public class BoardController {
 
     // 보드 삭제
     @Operation(summary = "칸반 보드 삭제")
-    @DeleteMapping("/workspaces/{wpId}/boards/{boardId}")
+    @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long wpId,
         @PathVariable Long boardId
     ) {
 
-        boardService.deleteBoard(userDetails.getUser(), wpId, boardId);
+        boardService.deleteBoard(userDetails.getUser(), boardId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 삭제되었습니다."));
     }

@@ -87,7 +87,7 @@ public class BoardService {
 
     // 보드 삭제
     @Transactional
-    public void deleteBoard(User user, Long wpId, Long boardId) {
+    public void deleteBoard(User user, Long boardId) {
 
         Board foundBoard = findBoard(boardId);
         if (!foundBoard.getUser().getEmail().equals(user.getEmail())) {
