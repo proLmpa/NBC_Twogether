@@ -15,9 +15,10 @@ public enum CustomErrorCode {
     WORKSPACE_COLLABORATOR_ALREADY_EXISTS("W001", "이미 존재하는 워크스페이스 협업자입니다."),
     WORKSPACE_NOT_FOUND("W002", "존재하지 않는 워크스페이스입니다."),
     NOT_YOUR_WORKSPACE("W003", "해당 기능은 워크스페이스를 생성한 사람만 접근 할 수 있습니다."),
-    NO_BOARDS_IN_THIS_WORKSPACE("W004", "워크스페이스에 존재하는 보드가 없습니다."),
-    THIS_IS_YOUR_WORKSPACE("W005", "당신은 워크스페이스의 관리자입니다."),
-    UNINVITED_WORKSPACE("W006", "초대되지 않은 워크스페이스를 조회하였습니다."),
+    NOT_PARTICIPATED_WORKSPACE("W004", "참여하지 않은 워크스페이스입니다."),
+    NO_BOARDS_IN_THIS_WORKSPACE("W005", "워크스페이스에 존재하는 보드가 없습니다."),
+    THIS_IS_YOUR_WORKSPACE("W006", "당신은 워크스페이스의 관리자입니다."),
+    UNINVITED_WORKSPACE("W007", "초대되지 않은 워크스페이스를 조회하였습니다."),
 
     // Board
     BOARD_NOT_FOUND("B001", "존재하지 않는 보드입니다."),

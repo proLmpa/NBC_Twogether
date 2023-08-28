@@ -15,6 +15,7 @@ import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.deck.repository.DeckRepository;
 import com.example.twogether.user.entity.User;
+import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import com.example.twogether.workspace.repository.WpRepository;
@@ -46,6 +47,8 @@ public class BoardService {
 
         Workspace foundWorkspace = findWorkspace(wpId);
         Board foundBoard = boardRequestDto.toEntity(foundWorkspace, user);
+        checkUserPermissions(foundWorkspace, user);
+
         boardRepository.save(foundBoard);
         log.info("칸반 보드 생성에 성공했습니다.");
 
@@ -129,5 +132,15 @@ public class BoardService {
 
         return boardRepository.findByWorkspace_IdAndId(wpId, boardId)
             .orElseThrow(() -> new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
+    }
+
+    private void checkUserPermissions(Workspace workspace, User user) {
+
+        if (!workspace.getUser().equals(user) &&
+            !workspace.getWorkspaceCollaborators().contains(user) &&
+            !user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+            throw new CustomException(CustomErrorCode.NOT_PARTICIPATED_WORKSPACE);
+        }
     }
 }
