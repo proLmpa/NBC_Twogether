@@ -115,8 +115,13 @@ public class BoardColService {
 
     private Board findInvitedBoard(Long wpId, Long boardId, String email) {
 
-        return boardRepository.findByWorkspace_IdAndIdAndAndBoardCollaborators_Email(wpId, boardId, email).orElseThrow(() ->
-            new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
+        if(boardRepository.findByWorkspace_IdAndId(wpId, boardId).isEmpty()) {
+            return boardRepository.findByWorkspace_IdAndIdAndAndBoardCollaborators_Email(wpId, boardId, email).orElseThrow(() ->
+                new CustomException(CustomErrorCode.BOARD_NOT_FOUND));
+        } else {
+            return boardRepository.findByWorkspace_IdAndIdAndAndBoardCollaborators_Email(wpId, boardId, email).orElseThrow(() ->
+                new CustomException(CustomErrorCode.BOARD_COLLABORATOR_NOT_FOUND));
+        }
     }
 
     private User findUser(String email) {
