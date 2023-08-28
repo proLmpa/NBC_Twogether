@@ -40,7 +40,6 @@ public class BoardController {
     ) {
 
         boardService.createBoard(userDetails.getUser(), wpId, boardRequestDto);
-
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "보드가 생성되었습니다."));
     }
 
@@ -48,12 +47,12 @@ public class BoardController {
     @Operation(summary = "칸반 보드 수정")
     @PatchMapping("/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> editBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId,
         @RequestBody BoardRequestDto boardRequestDto
     ) {
 
-        boardService.editBoard(boardId, boardRequestDto);
-
+        boardService.editBoard(userDetails.getUser(), boardId, boardRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
             .body(new ApiResponseDto(HttpStatus.OK.value(), "보드가 수정되었습니다."));
     }

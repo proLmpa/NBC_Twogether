@@ -68,9 +68,11 @@ public class BoardService {
 
     // 보드 수정
     @Transactional
-    public Board editBoard(Long boardId, BoardRequestDto boardRequestDto) {
+    public Board editBoard(User user, Long boardId, BoardRequestDto boardRequestDto) {
 
         Board foundBoard = findBoard(boardId);
+        checkBoardPermissions(foundBoard, user);
+
         if (boardRequestDto.getTitle() != null) {
             foundBoard.editTitle(boardRequestDto);
         }
@@ -136,7 +138,7 @@ public class BoardService {
 
     private void checkWpPermissions(Workspace workspace, User user) {
 
-        if (!workspace.getUser().equals(user) &&
+        if (!workspace.getUser().getEmail().equals(user.getEmail()) &&
             !workspace.getWorkspaceCollaborators().contains(user) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
 
@@ -146,7 +148,7 @@ public class BoardService {
 
     private void checkBoardPermissions(Board board, User user) {
 
-        if (!board.getUser().equals(user) &&
+        if (!board.getUser().getEmail().equals(user.getEmail()) &&
             !board.getBoardCollaborators().contains(user) &&
             !user.getRole().equals(UserRoleEnum.ADMIN)) {
 
