@@ -1,7 +1,6 @@
 package com.example.twogether.deck.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.example.twogether.board.entity.Board;

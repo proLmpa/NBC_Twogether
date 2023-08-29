@@ -1,10 +1,7 @@
 package com.example.twogether.card.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.repository.BoardRepository;
@@ -16,13 +13,10 @@ import com.example.twogether.card.entity.Card;
 import com.example.twogether.card.repository.CardRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
-import com.example.twogether.deck.dto.DeckResponseDto;
-import com.example.twogether.deck.dto.MoveDeckRequestDto;
 import com.example.twogether.deck.entity.Deck;
 import com.example.twogether.deck.repository.DeckRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @SpringBootTest
@@ -143,7 +136,11 @@ public class CardServiceTest {
         List<Card> cards = cardRepository.findAll();
         Card target = cards.get(2);
         Card next = cards.get(0);
-        MoveCardRequestDto requestDto = new MoveCardRequestDto(0L, next.getId(), deck1.getId());
+        MoveCardRequestDto requestDto = MoveCardRequestDto.builder()
+            .prevCardId(0L)
+            .nextCardId(next.getId())
+            .deckId(deck1.getId())
+            .build();
 
         cardService.moveCard(target.getId(), requestDto);
 
@@ -157,7 +154,11 @@ public class CardServiceTest {
         List<Card> cards = cardRepository.findAll();
         Card target = cards.get(0);
         Card prev = cards.get(2);
-        MoveCardRequestDto requestDto = new MoveCardRequestDto(prev.getId(), 0L, deck1.getId());
+        MoveCardRequestDto requestDto = MoveCardRequestDto.builder()
+            .prevCardId(prev.getId())
+            .nextCardId(0L)
+            .deckId(deck1.getId())
+            .build();
 
         cardService.moveCard(target.getId(), requestDto);
 
@@ -172,7 +173,11 @@ public class CardServiceTest {
         Card target = cards.get(2);
         Card prev = cards.get(0);
         Card next = cards.get(1);
-        MoveCardRequestDto requestDto = new MoveCardRequestDto(prev.getId(), next.getId(), deck1.getId());
+        MoveCardRequestDto requestDto = MoveCardRequestDto.builder()
+            .prevCardId(prev.getId())
+            .nextCardId(next.getId())
+            .deckId(deck1.getId())
+            .build();
 
         cardService.moveCard(target.getId(), requestDto);
 
@@ -187,7 +192,11 @@ public class CardServiceTest {
         Card target = cards.get(1);
         Card prev = cards.get(4);
         Card next = cards.get(5);
-        MoveCardRequestDto requestDto = new MoveCardRequestDto(prev.getId(), next.getId(), deck2.getId());
+        MoveCardRequestDto requestDto = MoveCardRequestDto.builder()
+            .prevCardId(prev.getId())
+            .nextCardId(next.getId())
+            .deckId(deck2.getId())
+            .build();
 
         cardService.moveCard(target.getId(), requestDto);
 
