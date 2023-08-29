@@ -83,7 +83,9 @@ public class DeckServiceTest {
         List<Deck> decks = deckRepository.findAll();
         Deck target = decks.get(1);
         Deck next = decks.get(0);
-        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(0L, next.getId());
+        MoveDeckRequestDto requestDto = new MoveDeckRequestDto();
+        requestDto.setPrevDeckId(0L);
+        requestDto.setNextDeckId(next.getId());
 
         deckService.moveDeck(target.getId(), requestDto);
 
@@ -96,7 +98,9 @@ public class DeckServiceTest {
         List<Deck> decks = deckRepository.findAll();
         Deck target = decks.get(1);
         Deck prev = decks.get(2);
-        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(prev.getId(), 0L);
+        MoveDeckRequestDto requestDto = new MoveDeckRequestDto();
+        requestDto.setPrevDeckId(prev.getId());
+        requestDto.setNextDeckId(0L);
 
         deckService.moveDeck(target.getId(), requestDto);
 
@@ -110,7 +114,9 @@ public class DeckServiceTest {
         Deck target = decks.get(1);
         Deck prev = decks.get(0);
         Deck next = decks.get(2);
-        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(prev.getId(), next.getId());
+        MoveDeckRequestDto requestDto = new MoveDeckRequestDto();
+        requestDto.setNextDeckId(next.getId());
+        requestDto.setPrevDeckId(prev.getId());
 
         deckService.moveDeck(target.getId(), requestDto);
 
