@@ -26,8 +26,8 @@
 <div class="container">
   <h2>Two Gether</h2>
   <div>
-    <label for="signupEmail">이메일 주소</label>
-    <input type="text" id="signupEmail" placeholder="user@email.com"/>
+    <label for="email">이메일 주소</label>
+    <input type="text" id="email" placeholder="user@email.com"/>
     <button class="sendButton" onclick="submitEmail()">전송</button>
   </div>
   <div>
@@ -36,14 +36,14 @@
     <button class="sendButton" onclick="submitCertificationNumber()">인증</button>
   </div>
   <div>
-    <label for="signupPassword">비밀번호</label>
-    <input type="password" id="signupPassword" placeholder="소문자/숫자/특수문자의 8자 이상"/>
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" placeholder="소문자/숫자/특수문자의 8자 이상"/>
   </div>
   <div>
-    <label for="signupPasswordConfirm">비밀번호 확인</label>
-    <input type="password" id="signupPasswordConfirm" placeholder="위의 입력과 동일한 비밀번호"/>
+    <label for="passwordConfirm">비밀번호 확인</label>
+    <input type="password" id="passwordConfirm" placeholder="위의 입력과 동일한 비밀번호"/>
   </div>
-  <button id="signupButton" onclick="submitForm()">회원 가입</button>
+  <button id="signupButton" onclick="signup()">회원 가입</button>
 </div>
 </body>
 </html>

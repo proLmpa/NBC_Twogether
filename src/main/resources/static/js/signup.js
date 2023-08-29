@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:8080'
 
 async function submitEmail() {
   // given
-  let email = document.getElementById('signupEmail').value
+  let email = document.getElementById('email').value
   const request = {
     email: email
   }
@@ -30,7 +30,7 @@ async function submitEmail() {
 
 async function submitCertificationNumber() {
   // given
-  let email = document.getElementById('signupEmail').value
+  let email = document.getElementById('email').value
   let certificationNumber = document.getElementById('certificationNumber').value
   let params = {
     email: email,
@@ -63,11 +63,11 @@ async function submitCertificationNumber() {
   .catch(err => console.log("error: ", err))
 }
 
-async function submitForm() {
+async function signup() {
   // given
-  let email = document.getElementById('signupEmail').value
-  let password = document.getElementById('signupPassword').value
-  let passwordConfirm = document.getElementById('signupPasswordConfirm').value
+  let email = document.getElementById('email').value
+  let password = document.getElementById('password').value
+  let passwordConfirm = document.getElementById('passwordConfirm').value
 
   if (password !== passwordConfirm) {
     alert('비밀번호와 비밀번호 확인은 동일한 비밀번호를 입력해야 합니다.')
