@@ -2,6 +2,7 @@ package com.example.twogether.deck.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.repository.BoardRepository;
@@ -43,15 +44,12 @@ public class DeckServiceTest {
     @DisplayName("덱 생성 테스트")
     void addTest() {
 
-        String title1 = "test1";
+        String title = "test1";
 
-        deckRepository.save(Deck.builder()
-            .title(title1)
-            .board(board)
-            .build());
+        deckService.addDeck(board.getId(), title);
         List<Deck> decks = deckRepository.findAll();
 
-        assertEquals(title1, decks.get(decks.size()-1).getTitle());
+        assertEquals(title, decks.get(decks.size()-1).getTitle());
     }
 
     @Test
@@ -135,22 +133,20 @@ public class DeckServiceTest {
     @Test
     @DisplayName("덱 삭제 테스트")
     void deleteTest() {
-        List<Deck> decks = deckRepository.findAll();
-        Deck target = decks.get(3);
+        Long targetId = 4L;
 
-        deckService.deleteDeck(target.getId());
+        deckService.deleteDeck(targetId);
 
-        assertNotEquals(target, decks.get(0));
+        assertNull(deckRepository.findById(targetId).orElse(null));
     }
 
     @Test
     @DisplayName("보관 안 된 덱 삭제 테스트")
     void deleteFailTest() {
-        List<Deck> decks = deckRepository.findAll();
-        Deck target = decks.get(0);
+        Long targetId = 1L;
 
         try {
-            deckService.deleteDeck(target.getId());
+            deckService.deleteDeck(targetId);
         } catch (CustomException e) {
             assertEquals(CustomErrorCode.DECK_IS_NOT_ARCHIVE, e.getErrorCode());
         }
