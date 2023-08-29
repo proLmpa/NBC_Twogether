@@ -98,9 +98,9 @@ public class DeckServiceTest {
         DeckResponseDto responseDto2 = deckService.getDeck(decks.get(1).getId());
         DeckResponseDto responseDto3 = deckService.getDeck(decks.get(2).getId());
 
-        assertEquals("test1", responseDto1.getTitle());
-        assertEquals("test2", responseDto2.getTitle());
-        assertEquals("test3", responseDto3.getTitle());
+        assertEquals("Deck 1", responseDto1.getTitle());
+        assertEquals("Deck 2", responseDto2.getTitle());
+        assertEquals("Deck 3", responseDto3.getTitle());
     }
 
     @Test
@@ -120,9 +120,8 @@ public class DeckServiceTest {
     void moveTest1() {
         List<Deck> decks = deckRepository.findAll();
         Deck target = decks.get(1);
-        Deck prev = null;
         Deck next = decks.get(0);
-        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(prev.getId(), next.getId());
+        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(0L, next.getId());
 
         deckService.moveDeck(target.getId(), requestDto);
 
@@ -135,8 +134,7 @@ public class DeckServiceTest {
         List<Deck> decks = deckRepository.findAll();
         Deck target = decks.get(1);
         Deck prev = decks.get(2);
-        Deck next = null;
-        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(prev.getId(), next.getId());
+        MoveDeckRequestDto requestDto = new MoveDeckRequestDto(prev.getId(), 0L);
 
         deckService.moveDeck(target.getId(), requestDto);
 
@@ -168,28 +166,28 @@ public class DeckServiceTest {
 
         assertEquals(!archived, target.isArchived());
     }
+
+    @Test
+    @DisplayName("덱 삭제 테스트")
+    void deleteTest() {
+        List<Deck> decks = deckRepository.findAll();
+        Deck target = decks.get(3);
+
+        deckService.deleteDeck(target.getId());
+
+        assertNotEquals(target, decks.get(0));
+    }
+
+    @Test
+    @DisplayName("보관 안 된 덱 삭제 테스트")
+    void deleteFailTest() {
+        List<Deck> decks = deckRepository.findAll();
+        Deck target = decks.get(0);
+
+        try {
+            deckService.deleteDeck(target.getId());
+        } catch (CustomException e) {
+            assertEquals(CustomErrorCode.DECK_IS_NOT_ARCHIVE, e.getErrorCode());
+        }
+    }
 }
-//    @Test
-//    @DisplayName("덱 삭제 테스트")
-//    void deleteTest() {
-//        List<Deck> decks = deckRepository.findAll();
-//        Deck target = decks.get(0);
-//        target.setArchived(true);
-//
-//        deckService.deleteDeck(target.getId());
-//
-//        assertNotEquals(target, decks.get(0));
-//    }
-//
-//    @Test
-//    @DisplayName("보관 안 된 덱 삭제 테스트")
-//    void deleteFailTest() {
-//        List<Deck> decks = deckRepository.findAll();
-//        Deck target = decks.get(0);
-//
-//        try {
-//            deckService.deleteDeck(target.getId());
-//        } catch (CustomException e) {
-//            assertEquals(CustomErrorCode.DECK_IS_NOT_ARCHIVE, e.getErrorCode());
-//        }
-//    }
