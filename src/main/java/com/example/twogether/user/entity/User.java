@@ -4,7 +4,6 @@ import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.entity.BoardCollaborator;
 import com.example.twogether.card.entity.CardCollaborator;
 import com.example.twogether.comment.entity.Comment;
-import com.example.twogether.notification.entity.Notification;
 import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.entity.WorkspaceCollaborator;
 import jakarta.persistence.Column;
@@ -85,14 +84,6 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "editor", orphanRemoval = true)
-    private List<Notification> notifiedEditors = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "receiver", orphanRemoval = true)
-    private List<Notification> notifiedReceivers = new ArrayList<>();
 
     /**
      * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.

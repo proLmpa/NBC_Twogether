@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class Alarm extends Timestamped {
     @Column(name = "alarm_id")
     private Long id;
 
+    @Lob
     private String content;
 
     private String url; // 알림의 대상이 되는 페이지로 이동

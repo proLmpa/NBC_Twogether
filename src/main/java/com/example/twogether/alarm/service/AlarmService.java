@@ -1,15 +1,11 @@
 package com.example.twogether.alarm.service;
 
-import com.example.twogether.alarm.dto.AlarmResponseDto;
 import com.example.twogether.alarm.dto.AlarmsResponseDto;
 import com.example.twogether.alarm.entity.Alarm;
 import com.example.twogether.alarm.repository.AlarmRepository;
-import com.example.twogether.board.entity.BoardCollaborator;
-import com.example.twogether.board.repository.BoardColRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

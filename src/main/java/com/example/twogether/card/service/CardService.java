@@ -1,6 +1,7 @@
 package com.example.twogether.card.service;
 
 import com.example.twogether.alarm.event.TriggerEventPublisher;
+import com.example.twogether.alarm.service.AlarmService;
 import com.example.twogether.card.dto.CardEditRequestDto;
 import com.example.twogether.card.dto.CardResponseDto;
 import com.example.twogether.card.dto.DateRequestDto;
@@ -39,6 +40,7 @@ public class CardService {
     private final ChlItemRepository chlItemRepository;
     private final S3Uploader s3Uploader;
     private final TriggerEventPublisher eventPublisher;
+    private final AlarmService alarmService;
 
     private static final float CYCLE = 128f;
 

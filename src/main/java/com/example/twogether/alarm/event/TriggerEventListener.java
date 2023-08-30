@@ -7,18 +7,20 @@ import com.example.twogether.alarm.service.AlarmService;
 import com.example.twogether.card.entity.Card;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TriggerEventListener {
+public class TriggerEventListener implements ApplicationListener<CardEditedEvent> {
 
     private final AlarmService alarmService;
 
+    @Override
     @TransactionalEventListener
-    public void cardEditedEvent(CardEditedEvent event) {
+    public void onApplicationEvent(CardEditedEvent event) {
 
         Card card = event.getCard();
         if (!event.getOldContent().equals(event.getNewContent())) {

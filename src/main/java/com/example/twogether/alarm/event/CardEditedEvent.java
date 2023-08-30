@@ -26,7 +26,6 @@ public class CardEditedEvent extends ApplicationEvent {
         this.content = generateProcessedContent(oldContent, newContent);
     }
 
-    // 잘 작동하는지는 프론트에서 확인이 필요함
     public static String generateProcessedContent(String oldContent, String newContent) {
 
         StringBuilder contentBuilder = new StringBuilder();
@@ -35,19 +34,34 @@ public class CardEditedEvent extends ApplicationEvent {
         int newIndex = 0;
 
         while (newIndex < newContent.length()) {
+
             if (oldIndex < oldContent.length() && oldContent.charAt(oldIndex) == newContent.charAt(newIndex)) {
                 contentBuilder.append(newContent.charAt(newIndex));
                 oldIndex++;
                 newIndex++;
-            } else {
-                contentBuilder.append("<del>").append(oldContent.charAt(oldIndex)).append("</del>");
+            }
+            else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
+                contentBuilder.append("<span style=\"background-color: lightyellow;\">").append(oldContent.charAt(oldIndex)).append("</span>");
                 oldIndex++;
+            }
+            while (newIndex < newContent.length()) {
+                contentBuilder.append(newContent.charAt(newIndex));
+                newIndex++;
             }
         }
 
-        while (oldIndex < oldContent.length()) {
+        while (oldIndex < oldContent.length() && oldContent.charAt(oldIndex) != newContent.charAt(newIndex)) {
             contentBuilder.append("<del>").append(oldContent.charAt(oldIndex)).append("</del>");
             oldIndex++;
+        }
+
+        String remove = "</del><del>";
+        String replace = "";
+        int index = contentBuilder.indexOf(remove);
+
+        while (index != -1) {
+            contentBuilder.replace(index, index + remove.length(), replace);
+            index = contentBuilder.indexOf(remove, index + replace.length());
         }
 
         return contentBuilder.toString();
