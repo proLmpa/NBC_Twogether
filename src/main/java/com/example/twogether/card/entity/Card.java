@@ -23,8 +23,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
-@Entity
 @Getter
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Card extends Timestamped {
@@ -59,9 +59,11 @@ public class Card extends Timestamped {
     @JoinColumn(name = "deck_id", nullable = false)
     private Deck deck;
 
+    @Builder.Default
     @OneToMany(mappedBy = "card")
     private List<CheckList> checkLists = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "card")
     private List<Comment> comments = new ArrayList<>();
 

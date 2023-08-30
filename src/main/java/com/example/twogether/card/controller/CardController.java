@@ -76,7 +76,7 @@ public class CardController {
     }
 
     @Operation(summary = "카드 보관/복구", description = "카드를 삭제하기 전 보관상태로 만들고, 복구하는 기능")
-    @PatchMapping("/cards/{id}/archive")
+    @PutMapping("/cards/{id}/archive")
     private ResponseEntity<ApiResponseDto> archiveCard(@PathVariable Long id) {
 
         cardService.archiveCard(id);
@@ -85,7 +85,7 @@ public class CardController {
 
     @Operation(summary = "카드 이동", description = "카드를 이동하면 position 값을 이동하고자 하는 카드와 카드 사이의 "
         + "position 중간 값으로 설정, board 도 바꿀 수 있음.")
-    @PatchMapping("/cards/{id}/move")
+    @PutMapping("/cards/{id}/move")
     private ResponseEntity<ApiResponseDto> moveCard(
         @PathVariable Long id,
         @RequestBody MoveCardRequestDto requestDto
@@ -105,7 +105,7 @@ public class CardController {
     }
 
     @Operation(summary = "협업 마감일 수정")
-    @PatchMapping("/cards/{id}/date")
+    @PutMapping("/cards/{id}/date")
     private ResponseEntity<ApiResponseDto> editDate(
         @PathVariable Long id,
         @RequestBody DateRequestDto requestDto
