@@ -189,7 +189,7 @@ public class BoardServiceTest {
 
         // 1번 보드 삭제 시 남아있는 보드 전체가 DB에 정상적으로 있는지 확인
         for (int i = 0; i < Boards.size(); i++) {
-            if (Boards.get(i).getId().equals(boardId)) {
+            if (!Boards.get(i).getId().equals(boardId)) {
                 Board Board = Boards.get(i);
                 Board DeletedBoard = DeletedBoards.get(i-1);
                 Assertions.assertEquals(Board.getTitle(), DeletedBoard.getTitle());
@@ -200,7 +200,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("보드 삭제 실패 테스트")
+    @DisplayName("보드 삭제 실패 테스트 - 존재하지 않는 보드 삭제 테스트")
     void deleteFailTest() {
         Long boardId = 5L;
 

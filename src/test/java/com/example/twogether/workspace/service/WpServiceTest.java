@@ -1,18 +1,17 @@
 package com.example.twogether.workspace.service;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
-
-import com.example.twogether.user.dto.LoginRequestDto;
-import com.example.twogether.user.dto.SignupRequestDto;
+import com.example.twogether.common.error.CustomErrorCode;
+import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
-import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.user.service.UserService;
 import com.example.twogether.workspace.dto.WpRequestDto;
 import com.example.twogether.workspace.dto.WpResponseDto;
+import com.example.twogether.workspace.entity.Workspace;
 import com.example.twogether.workspace.repository.WpRepository;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,30 +39,21 @@ public class WpServiceTest {
     private UserRepository userRepository;
     @Autowired
     private WpRepository wpRepository;
-    private User user;
+    private User user1;
+    private User user2;
+    private User user3;
+
 
     @BeforeEach
     void signUp() {
-        // given
-        String email = "user2024@email.com";
-        String password = "user123!@#";
-        boolean admin = false;
-        String adminToken = "";
-
-        encoder = new BCryptPasswordEncoder();
-        SignupRequestDto request = SignupRequestDto.builder().email(email).password(password)
-            .admin(admin).adminToken(adminToken).build();
-
-        // when
-        User signed = userService.signup(request);
-
-        // then
-        user = signed;
+        user1 = userRepository.findById(1L).orElse(null);
+        user2 = userRepository.findById(2L).orElse(null);
+        user3 = userRepository.findById(3L).orElse(null);
     }
 
 
     @Test
-    @DisplayName("워크스페이스 생성")
+    @DisplayName("워크스페이스 생성 테스트")
     public void createWorkspace() {
         String title = "Two Gether 1 !";
         String icon = "Two Gether 1 - icon 1 !";
@@ -75,123 +64,216 @@ public class WpServiceTest {
             .build();
 
         // when
-        WpResponseDto savedWp = wpService.createWorkspace(user, wpRequestDto);
+        WpResponseDto savedWp = wpService.createWorkspace(user1, wpRequestDto);
+        List<Workspace> workspaces = wpRepository.findAll();
 
         // then
-        assertEquals(title, savedWp.getTitle());
-        assertEquals(icon, savedWp.getIcon());
+        Assertions.assertEquals(title, savedWp.getTitle());
+        Assertions.assertEquals(icon, savedWp.getIcon());
+        Assertions.assertEquals(user1.getId(), workspaces.get(workspaces.size()-1).getUser().getId());
     }
 
     @Test
-    @DisplayName("워크스페이스 수정")
+    @DisplayName("워크스페이스 수정 테스트")
     void editWorkspace() {
         //given
-        String title = "새 워크스페이스";
-        String icon = "새 아이콘";
-
-        WpRequestDto wpRequestDto = WpRequestDto.builder()
-            .title(title)
-            .icon(icon)
-            .build();
-
-        wpService.createWorkspace(user, wpRequestDto);
-
+        List<Workspace> workspaces = wpRepository.findAll();
+        Workspace workspace = workspaces.get(0);
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
-        WpRequestDto wpRequestDto1 = new WpRequestDto(editedTitle, editedIcon);
+        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
 
         // when
-        WpResponseDto editedWp = wpService.editWorkspace(user, 1L, wpRequestDto1);
+        WpResponseDto editedWp = wpService.editWorkspace(user1, workspace.getId(), wpRequestDto);
 
         // then
-        assertEquals(editedTitle, editedWp.getTitle());
-        assertEquals(editedIcon, editedWp.getIcon());
+        Assertions.assertEquals(editedTitle, editedWp.getTitle());
+        Assertions.assertEquals(editedIcon, editedWp.getIcon());
     }
 
     @Test
-    @DisplayName("워크스페이스 삭제")
+    @DisplayName("워크스페이스 수정 실패 테스트 1")
+    void editFailWorkspace1() {
+        //given
+        List<Workspace> workspaces = wpRepository.findAll();
+        Workspace workspace = workspaces.get(2);
+        String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
+        String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
+
+        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+
+        // when
+        try {
+            wpService.editWorkspace(user1, workspace.getId(), wpRequestDto);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.WORKSPACE_NOT_FOUND, e.getErrorCode());
+        }
+    }
+
+    @Test
+    @DisplayName("워크스페이스 수정 실패 테스트 2 - 존재하지 않는 wpId(워크스페이스 ID) 수정 테스트")
+    void editFailWorkspace2() {
+        //given
+        Long wpId = 4L;
+        String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
+        String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
+
+        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+
+        // when
+        try {
+            wpService.editWorkspace(user1, wpId, wpRequestDto);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.WORKSPACE_NOT_FOUND, e.getErrorCode());
+        }
+    }
+
+    @Test
+    @DisplayName("워크스페이스 수정 실패 테스트 3 - 다른 유저가 생성한 워크스페이스를 수정 테스트")
+    void editFailWorkspace3() {
+        //given
+        Long wpId = 3L;
+        List<Workspace> workspaces = wpRepository.findAll();
+        String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
+        String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
+
+        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+
+        // when
+        try {
+            wpService.editWorkspace(user1, wpId, wpRequestDto);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.NOT_YOUR_WORKSPACE, e.getErrorCode());
+        }
+    }
+
+    @Test
+    @DisplayName("워크스페이스 삭제 테스트")
     void deleteWorkspace() {
         //given
-        String title = "Two Gether 1 !";
-        String icon = "Two Gether 1 - icon 1 !";
-
-        WpRequestDto wpRequestDto = WpRequestDto.builder()
-            .title(title)
-            .icon(icon)
-            .build();
-
-        wpService.createWorkspace(user, wpRequestDto);
+        Long wpId = 1L;
+        List<Workspace> workspaces = wpRepository.findAll();
 
         // when
-        wpService.deleteWorkspace(user, 1L);
+        wpService.deleteWorkspace(user1, wpId);
+        List<Workspace> DeletedWps = wpRepository.findAll();
 
         // then
         Assertions.assertNull(wpRepository.findById(anyLong()).orElse(null));
+
+        // 1번 워크스페이스 삭제 시 남아있는 보드 전체가 DB에 정상적으로 있는지 확인
+        for (int i = 0; i < workspaces.size(); i++) {
+            if (!workspaces.get(i).getId().equals(wpId)) {
+                Workspace workspace = workspaces.get(i);
+                Workspace DeletedWp = DeletedWps.get(i-1);
+                Assertions.assertEquals(workspace.getTitle(), DeletedWp.getTitle());
+                Assertions.assertEquals(workspace.getIcon(), DeletedWp.getIcon());
+            }
+        }
     }
 
     @Test
-    @DisplayName("워크스페이스 단일 조회")
+    @DisplayName("워크스페이스 삭제 실패 테스트 1 - 존재 하지 않는 워크스페이스 삭제 테스트")
+    void deleteFailWorkspace1() {
+        //given
+        Long wpId = 4L;
+        List<Workspace> workspaces = wpRepository.findAll();
+
+        try {
+            wpService.deleteWorkspace(user1, wpId);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.WORKSPACE_NOT_FOUND, e.getErrorCode());
+        }
+
+        List<Workspace> DeletedWps = wpRepository.findAll();
+
+        for (int i = 0; i < workspaces.size(); i++) {
+            if (!workspaces.get(i).getId().equals(wpId)) {
+                Workspace workspace = workspaces.get(i);
+                Workspace DeletedWp = DeletedWps.get(i);
+
+                Assertions.assertEquals(workspace.getTitle(), DeletedWp.getTitle());
+                Assertions.assertEquals(workspace.getIcon(), DeletedWp.getIcon());
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("워크스페이스 삭제 실패 테스트 2 - 다른 유저가 생성한 워크스페이스 삭제 테스트")
+    void deleteFailWorkspace2() {
+        //given
+        Long wpId = 3L;
+        List<Workspace> workspaces = wpRepository.findAll();
+
+        try {
+            wpService.deleteWorkspace(user1, wpId);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.NOT_YOUR_WORKSPACE, e.getErrorCode());
+        }
+
+        List<Workspace> DeletedWps = wpRepository.findAll();
+
+        for (int i = 0; i < workspaces.size(); i++) {
+            if (!workspaces.get(i).getId().equals(wpId)) {
+                Workspace workspace = workspaces.get(i);
+                Workspace DeletedWp = DeletedWps.get(i);
+
+                Assertions.assertEquals(workspace.getTitle(), DeletedWp.getTitle());
+                Assertions.assertEquals(workspace.getIcon(), DeletedWp.getIcon());
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("워크스페이스 단건 조회 테스트")
     void getWorkspace() {
         //given
-        String title = "Two Gether 1 !";
-        String icon = "Two Gether 1 - icon 1 !";
-
-        WpRequestDto wpRequestDto = WpRequestDto.builder()
-            .title(title)
-            .icon(icon)
-            .build();
-
-        wpService.createWorkspace(user, wpRequestDto);
+        List<Workspace> workspaces = wpRepository.findAll();
 
         // when
-        wpService.getWorkspace(1L);
+        WpResponseDto wpResponseDto1 = wpService.getWorkspace(workspaces.get(0).getId());
+        WpResponseDto wpResponseDto2 = wpService.getWorkspace(workspaces.get(1).getId());
+        WpResponseDto wpResponseDto3 = wpService.getWorkspace(workspaces.get(2).getId());
+
 
         // then
         Assertions.assertNull(wpRepository.findById(anyLong()).orElse(null));
+        Assertions.assertEquals("Workspace 1", wpResponseDto1.getTitle());
+        Assertions.assertEquals("test", wpResponseDto1.getIcon());
+        Assertions.assertEquals("Workspace 2", wpResponseDto2.getTitle());
+        Assertions.assertEquals("Workspace 1", wpResponseDto3.getTitle());
+
+    }
+
+    @Test
+    @DisplayName("워크스페이스 단건 조회 실패 테스트 - 존재하지 않는 워크스페이스 조회 테스트")
+    void getFailWorkspace() {
+        Long wpId = 4L;
+
+        try {
+            wpService.getWorkspace(wpId);
+        } catch (CustomException e) {
+            Assertions.assertEquals(CustomErrorCode.WORKSPACE_NOT_FOUND, e.getErrorCode());
+        }
     }
 
     @Test
     @DisplayName("워크스페이스 전체 조회")
     public void getWorkspaces() {
         //given
-        String title1 = "Two Gether 1 !";
-        String icon1 = "Two Gether 1 - icon 1 !";
+        // 전체 워크스페이스 조회
+        List<Workspace> workspaces = wpRepository.findAll();
 
-        WpRequestDto wpRequestDto1 = WpRequestDto.builder()
-            .title(title1)
-            .icon(icon1)
-            .build();
-
-        WpResponseDto wpResponseDto1 = wpService.createWorkspace(user, wpRequestDto1);
-
-        String title2 = "Two Gether 2 !";
-        String icon2 = "Two Gether 2 - icon 2 !";
-
-        WpRequestDto wpRequestDto2 = WpRequestDto.builder()
-            .title(title2)
-            .icon(icon2)
-            .build();
-
-        WpResponseDto wpResponseDto2 = wpService.createWorkspace(user, wpRequestDto2);
-
-        String title3 = "Two Gether 3 !";
-        String icon3 = "Two Gether 3 - icon 3 !";
-
-        WpRequestDto wpRequestDto3 = WpRequestDto.builder()
-            .title(title3)
-            .icon(icon3)
-            .build();
-
-        WpResponseDto wpResponseDto3 = wpService.createWorkspace(user, wpRequestDto3);
+        // 특정 user의 워크스페이스 전체 조회
+        Long userId = 1L;
+        List<Workspace> user1wps = wpRepository.findAllByUser_Id(userId);
 
         // when
-        wpService.getWorkspaces(user);
+        wpService.getWorkspaces(user1);
 
         // then
-        assertEquals(wpRepository.findAll().size(), 3);
-        assertEquals(wpRequestDto1.getTitle(), wpResponseDto1.getTitle());
-        assertEquals(wpRequestDto2.getTitle(), wpResponseDto2.getTitle());
-        assertEquals(wpRequestDto3.getTitle(), wpResponseDto3.getTitle());
+        Assertions.assertEquals(3, workspaces.size());
+        Assertions.assertEquals(2, user1wps.size());
     }
 }
