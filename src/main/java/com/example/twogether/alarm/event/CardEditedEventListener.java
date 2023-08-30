@@ -1,6 +1,6 @@
 package com.example.twogether.alarm.event;
 
-import com.example.twogether.alarm.dto.AlarmRequestDto;
+import com.example.twogether.alarm.dto.CardEditedRequestDto;
 import com.example.twogether.alarm.entity.Alarm;
 import com.example.twogether.alarm.entity.AlarmTrigger;
 import com.example.twogether.alarm.service.AlarmService;
@@ -14,7 +14,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TriggerEventListener implements ApplicationListener<CardEditedEvent> {
+public class CardEditedEventListener implements ApplicationListener<CardEditedEvent> {
 
     private final AlarmService alarmService;
 
@@ -24,16 +24,15 @@ public class TriggerEventListener implements ApplicationListener<CardEditedEvent
 
         Card card = event.getCard();
         if (!event.getOldContent().equals(event.getNewContent())) {
-            log.info("cardEditedEvent() : 카드 내용이 수정되었습니다.");
+            log.info("cardEditedEvent() : 카드 내용이 수정된 이벤트를 확인했습니다.");
 
-            Alarm alarm = AlarmRequestDto.toEntity(
+            Alarm alarm = CardEditedRequestDto.toEntity(
                 event.getUser(),
                 event.getContent(),
                 "/api/cards/" + card.getId(),
                 AlarmTrigger.CARD_EDITED_EVENT,
                 false
             );
-
             alarmService.createAlarm(alarm);
         }
     }

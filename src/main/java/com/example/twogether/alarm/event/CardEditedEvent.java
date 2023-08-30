@@ -23,10 +23,10 @@ public class CardEditedEvent extends ApplicationEvent {
         this.card = card;
         this.oldContent = oldContent;
         this.newContent = newContent;
-        this.content = generateProcessedContent(oldContent, newContent);
+        this.content = generateContent(oldContent, newContent);
     }
 
-    public static String generateProcessedContent(String oldContent, String newContent) {
+    private String generateContent(String oldContent, String newContent) {
 
         StringBuilder contentBuilder = new StringBuilder();
 

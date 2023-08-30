@@ -1,5 +1,6 @@
 package com.example.twogether.comment.service;
 
+import com.example.twogether.alarm.event.TriggerEventPublisher;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.board.repository.BoardColRepository;
 import com.example.twogether.board.repository.BoardRepository;
@@ -27,7 +28,7 @@ public class CommentService {
     private final CardRepository cardRepository;
     private final BoardRepository boardRepository;
     private final BoardColRepository boardColRepository;
-
+    private final TriggerEventPublisher eventPublisher;
 
     @Transactional
     public void createComment(Long boardId, Long cardId, CommentRequestDto requestDto, User user) {
@@ -37,6 +38,7 @@ public class CommentService {
 
         Comment comment = requestDto.toEntity(writer, card);
         commentRepository.save(comment);
+        eventPublisher.publishCardCommentEvent(writer, card, comment);
     }
 
     @Transactional(readOnly = true)

@@ -1,7 +1,6 @@
 package com.example.twogether.card.service;
 
 import com.example.twogether.alarm.event.TriggerEventPublisher;
-import com.example.twogether.alarm.service.AlarmService;
 import com.example.twogether.card.dto.CardEditRequestDto;
 import com.example.twogether.card.dto.CardResponseDto;
 import com.example.twogether.card.dto.DateRequestDto;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.RejectedExecutionException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +38,6 @@ public class CardService {
     private final ChlItemRepository chlItemRepository;
     private final S3Uploader s3Uploader;
     private final TriggerEventPublisher eventPublisher;
-    private final AlarmService alarmService;
 
     private static final float CYCLE = 128f;
 
@@ -122,11 +119,11 @@ public class CardService {
     }
 
     @Transactional
-    public void uploadFile(Long id, MultipartFile multipartFile) throws IOException {
+    public void uploadFile(User user, Long cardId, MultipartFile multipartFile) throws IOException {
 
         try {
             String attachment = s3Uploader.upload(multipartFile, "Card");
-            Card card = findCardById(id);
+            Card card = findCardById(cardId);
             card.putAttachment(attachment);
         } catch (RejectedExecutionException e) {
             throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);

@@ -48,70 +48,73 @@ public class CardController {
     }
 
     @Operation(summary = "카드 수정", description = "requestDto에 title 혹은 description이 null이라면 수정하지 않고 내버려두도록 설정")
-    @PatchMapping("/cards/{id}")
+    @PatchMapping("/cards/{cardId}")
     private ResponseEntity<ApiResponseDto> editCard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long id,
+        @PathVariable Long cardId,
         @RequestBody CardEditRequestDto requestDto
     ) {
 
-        cardService.editCard(userDetails.getUser(), id, requestDto);
+        cardService.editCard(userDetails.getUser(), cardId, requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 수정"));
     }
 
     @Operation(summary = "카드 삭제", description = "카드가 보관 상태라면 삭제되지 않도록 설정")
-    @DeleteMapping("/cards/{id}")
-    private ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long id) {
+    @DeleteMapping("/cards/{cardId}")
+    private ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long cardId) {
 
-        cardService.deleteCard(id);
+        cardService.deleteCard(cardId);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 삭제"));
     }
 
     @Operation(summary = "카드 보관/복구", description = "카드를 삭제하기 전 보관상태로 만들고, 복구하는 기능")
-    @PutMapping("/cards/{id}/archive")
-    private ResponseEntity<ApiResponseDto> archiveCard(@PathVariable Long id) {
+    @PutMapping("/cards/{cardId}/archive")
+    private ResponseEntity<ApiResponseDto> archiveCard(@PathVariable Long cardId) {
 
-        cardService.archiveCard(id);
+        cardService.archiveCard(cardId);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 보관/복구"));
     }
 
     @Operation(summary = "카드 이동", description = "카드를 이동하면 position 값을 이동하고자 하는 카드와 카드 사이의 "
         + "position 중간 값으로 설정, board 도 바꿀 수 있음.")
-    @PutMapping("/cards/{id}/move")
+    @PutMapping("/cards/{cardId}/move")
     private ResponseEntity<ApiResponseDto> moveCard(
-        @PathVariable Long id,
+        @PathVariable Long cardId,
         @RequestBody MoveCardRequestDto requestDto
     ) {
 
-        cardService.moveCard(id, requestDto);
+        cardService.moveCard(cardId, requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 이동"));
     }
 
     @Operation(summary = "파일 첨부", description = "S3를 사용해 이미지 및 멀티파트 파일을 업로드한다.")
-    @PutMapping("/cards/{id}")
-    private ResponseEntity<ApiResponseDto> uploadFile(@PathVariable Long id,
-        @RequestPart MultipartFile multipartFile) throws IOException {
+    @PutMapping("/cards/{cardId}/file")
+    private ResponseEntity<ApiResponseDto> uploadFile(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long cardId,
+        @RequestPart MultipartFile multipartFile
+    ) throws IOException {
 
-        cardService.uploadFile(id, multipartFile);
+        cardService.uploadFile(userDetails.getUser(), cardId, multipartFile);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "파일 첨부"));
     }
 
     @Operation(summary = "협업 마감일 수정")
-    @PutMapping("/cards/{id}/date")
+    @PutMapping("/cards/{cardId}/date")
     private ResponseEntity<ApiResponseDto> editDate(
-        @PathVariable Long id,
+        @PathVariable Long cardId,
         @RequestBody DateRequestDto requestDto
     ) {
 
-        cardService.editDate(id, requestDto);
+        cardService.editDate(cardId, requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "마감일 수정"));
     }
 
     @Operation(summary = "카드 단일 조회")
-    @GetMapping("/cards/{id}")
-    private ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {
+    @GetMapping("/cards/{cardId}")
+    private ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId) {
 
-        CardResponseDto responseDto = cardService.getCard(id);
+        CardResponseDto responseDto = cardService.getCard(cardId);
         return ResponseEntity.ok().body(responseDto);
     }
 }

@@ -4,16 +4,18 @@ import com.example.twogether.alarm.entity.Alarm;
 import com.example.twogether.alarm.entity.AlarmTrigger;
 import com.example.twogether.user.entity.User;
 
-public class AlarmRequestDto {
+public class InvitedCardColRequestDto {
 
-    public static Alarm toEntity(User user, String content, String url, AlarmTrigger alarmTrigger, boolean isRead) {
+    public static Alarm toEntity(User boardUser, User addedUser, String content, String url, AlarmTrigger alarmTrigger, Long cardId, String cardTitle) {
 
         return Alarm.builder()
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)
-            .isRead(isRead)
-            .receiver(user)
+            .loginUser(boardUser) // 보드의 오너
+            .invitedUser(addedUser)
+            .cardId(cardId)
+            .cardTitle(cardTitle)
             .build();
     }
 }

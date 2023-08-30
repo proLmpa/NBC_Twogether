@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
-    List<Alarm> findAllByReceiver(User user);
+    List<Alarm> findAllByInvitedUser(User user);
 }

@@ -28,27 +28,50 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Alarm extends Timestamped {
 
+    /*공통 필드*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alarm_id")
     private Long id;
 
+    private String url; // 알림의 대상이 되는 페이지로 이동
+
+    @Column(nullable = false)
     @Lob
     private String content;
-
-    private String url; // 알림의 대상이 되는 페이지로 이동
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AlarmTrigger alarmTrigger; // 알림의 원인이 되는 event
 
-    @Column(nullable = false)
-    private Boolean isRead;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User loginUser;
+
+
+    /*Collaborator 공통 필드*/
+    private Long wpId;
+    private String wpTitle;
+    private Long boardId;
+    private String boardTitle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User receiver;
+    private User invitedUser;
+
+
+    /*Added Card Collaborator Event*/
+    private Long cardId;
+    private String cardTitle;
+
+
+    /*CardEdited Event*/
+    @Builder.Default
+    @Column
+    private Boolean isRead = false;
+
 
     public void read(){
         isRead = true;
