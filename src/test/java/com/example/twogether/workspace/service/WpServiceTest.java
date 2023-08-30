@@ -6,7 +6,6 @@ import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.repository.UserRepository;
-import com.example.twogether.user.service.UserService;
 import com.example.twogether.workspace.dto.WpRequestDto;
 import com.example.twogether.workspace.dto.WpResponseDto;
 import com.example.twogether.workspace.entity.Workspace;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -78,7 +76,10 @@ public class WpServiceTest {
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
-        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+        WpRequestDto wpRequestDto = WpRequestDto.builder()
+            .title(editedTitle)
+            .icon(editedIcon)
+            .build();
 
         // when
         WpResponseDto editedWp = wpService.editWorkspace(user1, workspace.getId(), wpRequestDto);
@@ -97,7 +98,10 @@ public class WpServiceTest {
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
-        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+        WpRequestDto wpRequestDto = WpRequestDto.builder()
+            .title(editedTitle)
+            .icon(editedIcon)
+            .build();
 
         // when
         try {
@@ -115,7 +119,10 @@ public class WpServiceTest {
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
-        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+        WpRequestDto wpRequestDto = WpRequestDto.builder()
+            .title(editedTitle)
+            .icon(editedIcon)
+            .build();
 
         // when
         try {
@@ -133,7 +140,10 @@ public class WpServiceTest {
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
-        WpRequestDto wpRequestDto = new WpRequestDto(editedTitle, editedIcon);
+        WpRequestDto wpRequestDto = WpRequestDto.builder()
+            .title(editedTitle)
+            .icon(editedIcon)
+            .build();
 
         // when
         try {

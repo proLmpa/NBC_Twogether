@@ -10,7 +10,6 @@ import lombok.Getter;
 
 @Builder
 @Getter
-@AllArgsConstructor
 public class BoardRequestDto {
     @NotBlank
     private String title;

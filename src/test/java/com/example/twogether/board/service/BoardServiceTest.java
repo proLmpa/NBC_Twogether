@@ -105,7 +105,11 @@ public class BoardServiceTest {
         String editColor = "Edited Color";
         String editInfo = "This is " + user.getNickname() + "'s " + editTitle + " board.";
 
-        BoardRequestDto boardRequestDto = new BoardRequestDto(editTitle, editColor, editInfo);
+        BoardRequestDto boardRequestDto = BoardRequestDto.builder()
+            .title(editTitle)
+            .color(editColor)
+            .info(editInfo)
+            .build();
 
         boardService.editBoard(user, board.getId(), boardRequestDto);
 
@@ -123,7 +127,11 @@ public class BoardServiceTest {
         String editColor = "Edited Color";
         String editInfo = "This is " + user.getNickname() + "'s " + editTitle + " board.";
 
-        BoardRequestDto boardRequestDto = new BoardRequestDto(editTitle, editColor, editInfo);
+        BoardRequestDto boardRequestDto = BoardRequestDto.builder()
+            .title(editTitle)
+            .color(editColor)
+            .info(editInfo)
+            .build();
 
         try {
             boardService.editBoard(user, board.getId(), boardRequestDto);
@@ -140,7 +148,11 @@ public class BoardServiceTest {
         String editColor = "Edited Color";
         String editInfo = "This is " + user.getNickname() + "'s " + editTitle + " board.";
 
-        BoardRequestDto boardRequestDto = new BoardRequestDto(editTitle, editColor, editInfo);
+        BoardRequestDto boardRequestDto = BoardRequestDto.builder()
+            .title(editTitle)
+            .color(editColor)
+            .info(editInfo)
+            .build();
 
         try {
             boardService.editBoard(user, boardId, boardRequestDto);
