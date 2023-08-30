@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,13 @@ public class AlarmController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "알림을 읽기를 성공하셨습니다."));
     }
 
+    @Operation(summary = "알림 삭제")
+    @DeleteMapping(value = "/alarms/{alarmId}")
+    public ResponseEntity<ApiResponseDto> deleteAlarm(@PathVariable Long alarmId) {
+
+        alarmService.deleteAlarm(alarmId);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "알림 삭제를 성공하셨습니다."));
+    }
 
 //    @Operation(summary = "알림 구독", description = "클라이언트의 알림 구독요청을 승인합니다.")
 //    @GetMapping(value = "/alarms", produces = "text/event-stream")

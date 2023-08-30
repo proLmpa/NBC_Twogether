@@ -39,6 +39,14 @@ public class AlarmService {
         alarmRepository.save(alarm);
     }
 
+    @Transactional
+    public void deleteAlarm(Long alarmId) {
+        Alarm alarm = alarmRepository.findById(alarmId).orElseThrow(() ->
+            new CustomException(CustomErrorCode.ALARM_NOT_FOUND));
+
+        alarmRepository.delete(alarm);
+    }
+
 //    private final EmitterRepository emitterRepository;
 //
 //    private static final Long SSE_END_TIME = (60 * 60 * 1000) * 3L;

@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@RestController
-@RequestMapping("/api")
-@RequiredArgsConstructor
 @Tag(name = "카드 API", description = "카드 CRUD, 이동 기능, 카드 라벨 수정, 작업자 할당, 마감일 설정과 관련된 API 정보를 담고 있습니다.")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class CardController {
 
     private final CardService cardService;
@@ -45,14 +45,6 @@ public class CardController {
 
         cardService.addCard(deckId, title);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 생성"));
-    }
-
-    @Operation(summary = "카드 단일 조회")
-    @GetMapping("/cards/{id}")
-    private ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {
-
-        CardResponseDto responseDto = cardService.getCard(id);
-        return ResponseEntity.ok().body(responseDto);
     }
 
     @Operation(summary = "카드 수정", description = "requestDto에 title 혹은 description이 null이라면 수정하지 않고 내버려두도록 설정")
@@ -113,5 +105,13 @@ public class CardController {
 
         cardService.editDate(id, requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "마감일 수정"));
+    }
+
+    @Operation(summary = "카드 단일 조회")
+    @GetMapping("/cards/{id}")
+    private ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {
+
+        CardResponseDto responseDto = cardService.getCard(id);
+        return ResponseEntity.ok().body(responseDto);
     }
 }

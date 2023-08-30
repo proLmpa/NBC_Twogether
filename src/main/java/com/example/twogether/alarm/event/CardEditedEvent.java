@@ -39,8 +39,7 @@ public class CardEditedEvent extends ApplicationEvent {
                 contentBuilder.append(newContent.charAt(newIndex));
                 oldIndex++;
                 newIndex++;
-            }
-            else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
+            } else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
                 contentBuilder.append("<span style=\"background-color: lightyellow;\">").append(oldContent.charAt(oldIndex)).append("</span>");
                 oldIndex++;
             }
@@ -49,11 +48,11 @@ public class CardEditedEvent extends ApplicationEvent {
                 newIndex++;
             }
         }
-
-        while (oldIndex < oldContent.length() && oldContent.charAt(oldIndex) != newContent.charAt(newIndex)) {
+        while (oldIndex < oldContent.length()) {
             contentBuilder.append("<del>").append(oldContent.charAt(oldIndex)).append("</del>");
             oldIndex++;
         }
+
 
         String remove = "</del><del>";
         String replace = "";
