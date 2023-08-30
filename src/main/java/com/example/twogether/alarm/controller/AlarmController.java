@@ -54,15 +54,4 @@ public class AlarmController {
         alarmService.deleteAlarm(alarmId);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "알림 삭제를 성공하셨습니다."));
     }
-
-//    @Operation(summary = "알림 구독", description = "클라이언트의 알림 구독요청을 승인합니다.")
-//    @GetMapping(value = "/alarms", produces = "text/event-stream")
-//    public SseEmitter subscribe(
-//        @AuthenticationPrincipal UserDetailsImpl userDetails,
-//        @PathVariable Long id,
-//        @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId
-//    ) {
-//
-//        return alarmService.subscribe(userDetails.getUser().getId(), lastEventId);
-//    }
 }
