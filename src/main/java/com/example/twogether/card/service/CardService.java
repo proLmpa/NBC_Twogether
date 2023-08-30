@@ -1,5 +1,6 @@
 package com.example.twogether.card.service;
 
+import com.example.twogether.alarm.event.TriggerEventPublisher;
 import com.example.twogether.card.dto.CardEditRequestDto;
 import com.example.twogether.card.dto.CardResponseDto;
 import com.example.twogether.card.dto.DateRequestDto;
@@ -15,11 +16,13 @@ import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.common.s3.S3Uploader;
 import com.example.twogether.deck.entity.Deck;
 import com.example.twogether.deck.repository.DeckRepository;
+import com.example.twogether.user.entity.User;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.RejectedExecutionException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,11 +38,13 @@ public class CardService {
     private final CheckListRepository checkListRepository;
     private final ChlItemRepository chlItemRepository;
     private final S3Uploader s3Uploader;
+    private final TriggerEventPublisher eventPublisher;
 
     private static final float CYCLE = 128f;
 
     @Transactional
     public void addCard(Long deckId, String title) {
+
         float max = findMaxPosition(deckId);
         Deck deck = findDeckById(deckId);
         Card newCard;
@@ -51,44 +56,29 @@ public class CardService {
 
         cardRepository.save(newCard);
     }
+    @Transactional
+    public void editCard(User user, Long id, CardEditRequestDto requestDto) {
 
-    private Card findCardById(Long id) {
-        return cardRepository.findById(id).orElseThrow(() ->
-            new CustomException(CustomErrorCode.CARD_NOT_FOUND)
-        );
-    }
-
-    private Deck findDeckById(Long id) {
-        return deckRepository.findById(id).orElseThrow(() ->
-            new CustomException(CustomErrorCode.DECK_NOT_FOUND)
-        );
-    }
-
-    private float findMaxPosition(Long deckId) {
-        float max = -1;
-        List<Card> cards = cardRepository.findAllByDeck_Id(deckId);
-        if (!cards.isEmpty()) {
-            for (Card card : cards)
-                max = Math.max(max, card.getPosition());
-        }
-        return max;
-    }
-
-    @Transactional(readOnly = true)
-    public CardResponseDto getCard(Long id) {
         Card card = findCardById(id);
-        return CardResponseDto.of(card);
+        String oldContent = card.getContent();
+
+        if (requestDto.getTitle() != null) card.editTitle(requestDto.getTitle());
+        if (requestDto.getContent() != null) card.editContent(requestDto.getContent());
+
+        String newContent = card.getContent();
+        eventPublisher.publishCardEditedEvent(user, card, oldContent, newContent);
     }
 
     @Transactional
-    public void editCard(Long id, CardEditRequestDto requestDto) {
+    public void editDate(Long id, DateRequestDto requestDto) {
+
         Card card = findCardById(id);
-        if (requestDto.getTitle() != null) card.editTitle(requestDto.getTitle());
-        if (requestDto.getDescription() != null) card.editDescription(requestDto.getDescription());
+        card.editDueDate(requestDto.getDueDate());
     }
 
     @Transactional
     public void deleteCard(Long id) {
+
         Card card = findCardById(id);
         if (card.isArchived()) {
             commentRepository.deleteAllByCard_Id(id);
@@ -105,12 +95,14 @@ public class CardService {
 
     @Transactional
     public void archiveCard(Long id) {
+
         Card card = findCardById(id);
         card.archive();
     }
 
     @Transactional
     public void moveCard(Long id, MoveCardRequestDto requestDto) {
+
         Card card = findCardById(id);
         Deck deck = findDeckById(requestDto.getDeckId());
 
@@ -129,6 +121,7 @@ public class CardService {
 
     @Transactional
     public void uploadFile(Long id, MultipartFile multipartFile) throws IOException {
+
         try {
             String attachment = s3Uploader.upload(multipartFile, "Card");
             Card card = findCardById(id);
@@ -138,9 +131,35 @@ public class CardService {
         }
     }
 
-    @Transactional
-    public void editDate(Long id, DateRequestDto requestDto) {
+    @Transactional(readOnly = true)
+    public CardResponseDto getCard(Long id) {
+
         Card card = findCardById(id);
-        card.editDueDate(requestDto.getDueDate());
+        return CardResponseDto.of(card);
+    }
+
+    private Card findCardById(Long id) {
+
+        return cardRepository.findById(id).orElseThrow(() ->
+            new CustomException(CustomErrorCode.CARD_NOT_FOUND)
+        );
+    }
+
+    private Deck findDeckById(Long id) {
+
+        return deckRepository.findById(id).orElseThrow(() ->
+            new CustomException(CustomErrorCode.DECK_NOT_FOUND)
+        );
+    }
+
+    private float findMaxPosition(Long deckId) {
+
+        float max = -1;
+        List<Card> cards = cardRepository.findAllByDeck_Id(deckId);
+        if (!cards.isEmpty()) {
+            for (Card card : cards)
+                max = Math.max(max, card.getPosition());
+        }
+        return max;
     }
 }

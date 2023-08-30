@@ -47,10 +47,13 @@ public class Card extends Timestamped {
     private LocalDateTime dueDate;
 
     @Column
-    private String description;
+    private String content;
 
     @Column
     private String attachment;
+
+    @Column
+    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deck_id", nullable = false)
@@ -74,8 +77,8 @@ public class Card extends Timestamped {
         this.title = title;
     }
 
-    public void editDescription(String description) {
-        this.description = description;
+    public void editContent(String content) {
+        this.content = content;
     }
 
     public void editDueDate(LocalDateTime dueDate) {this.dueDate = dueDate;}
@@ -86,6 +89,10 @@ public class Card extends Timestamped {
 
     public void editPosition(float position) {
         this.position = position;
+    }
+
+    public void editUrl(String url) {
+        this.url = url;
     }
 
     public void moveToDeck(Deck deck) {
