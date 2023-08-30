@@ -4,11 +4,13 @@ import com.example.twogether.board.entity.Board;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.entity.Workspace;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
+@AllArgsConstructor
 public class BoardRequestDto {
     @NotBlank
     private String title;
