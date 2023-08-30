@@ -32,10 +32,6 @@ public class WpServiceTest {
     @Autowired
     private WpService wpService;
     @Autowired
-    private PasswordEncoder encoder;
-    @Autowired
-    private UserService userService;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private WpRepository wpRepository;
@@ -107,7 +103,7 @@ public class WpServiceTest {
         try {
             wpService.editWorkspace(user1, workspace.getId(), wpRequestDto);
         } catch (CustomException e) {
-            Assertions.assertEquals(CustomErrorCode.WORKSPACE_NOT_FOUND, e.getErrorCode());
+            Assertions.assertEquals(CustomErrorCode.NOT_YOUR_WORKSPACE, e.getErrorCode());
         }
     }
 
@@ -133,8 +129,7 @@ public class WpServiceTest {
     @DisplayName("워크스페이스 수정 실패 테스트 3 - 다른 유저가 생성한 워크스페이스를 수정 테스트")
     void editFailWorkspace3() {
         //given
-        Long wpId = 3L;
-        List<Workspace> workspaces = wpRepository.findAll();
+        Long wpId = 1L;
         String editedTitle = "Two Gether 1 - 새 워크스페이스 1 !";
         String editedIcon = "Two Gether 1 - icon 1 - 새 아이콘 1 !";
 
@@ -142,7 +137,7 @@ public class WpServiceTest {
 
         // when
         try {
-            wpService.editWorkspace(user1, wpId, wpRequestDto);
+            wpService.editWorkspace(user2, wpId, wpRequestDto);
         } catch (CustomException e) {
             Assertions.assertEquals(CustomErrorCode.NOT_YOUR_WORKSPACE, e.getErrorCode());
         }
