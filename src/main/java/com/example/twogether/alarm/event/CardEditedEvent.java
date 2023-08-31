@@ -23,56 +23,63 @@ public class CardEditedEvent extends ApplicationEvent {
         this.user = user;
         this.alarmTarget = targetUser;
         this.card = card;
-        this.oldContent = oldContent; // 현재는 사용하고 있지 않은 필드
-        this.newContent = newContent;
-        this.content = newContent;
+         this.oldContent = oldContent; // 카드 내용 수정 전
+        this.newContent = newContent; // 카드 내용 수정후
+        this.content = generateContent(user, card, newContent); // 알림 내용
+    }
+
+    private String generateContent(User user, Card card, String newContent) {
+
+        return user.getNickname() + "님이 "
+            + "\'작업자로 할당되어 있는 "
+            + "카드 ID" + card.getId() + ". " + card.getTitle() + "\'의 내용을 "
+            + newContent + "로 수정하였습니다.";
     }
 
     /* (추후 작업) 추가기능 구현 준비 코드 - 자동 취소선, 형광펜 */
-    private String generateContent(String oldContent, String newContent) {
-
-        StringBuilder contentBuilder = new StringBuilder();
-
-        int oldIndex = 0;
-        int newIndex = 0;
-
-        while (newIndex < newContent.length()) {
-            if (oldContent != null) {
-                if (oldIndex < oldContent.length()
-                    && oldContent.charAt(oldIndex) == newContent.charAt(newIndex)) {
-                    contentBuilder.append(newContent.charAt(newIndex));
-                    oldIndex++;
-                    newIndex++;
-                } else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
-                    contentBuilder.append("<span style=\"background-color: lightyellow;\">")
-                        .append(oldContent.charAt(oldIndex)).append("</span>");
-                    oldIndex++;
-                }
-                while (newIndex < newContent.length()) {
-                    contentBuilder.append(newContent.charAt(newIndex));
-                    newIndex++;
-                }
-            } else {
-                contentBuilder.append("<span style=\"background-color: lightyellow;\">")
-                    .append(newContent.charAt(newIndex)).append("</span>");
-                newIndex++;
-            }
-        }
-        while (oldIndex < oldContent.length()) {
-            contentBuilder.append("<del>").append(oldContent.charAt(oldIndex)).append("</del>");
-            oldIndex++;
-        }
-
-
-        String remove = "</del><del>";
-        String replace = "";
-        int index = contentBuilder.indexOf(remove);
-
-        while (index != -1) {
-            contentBuilder.replace(index, index + remove.length(), replace);
-            index = contentBuilder.indexOf(remove, index + replace.length());
-        }
-
-        return contentBuilder.toString();
-    }
+//    private String generateContent(String oldContent, String newContent) {
+//
+//        StringBuilder contentBuilder = new StringBuilder();
+//
+//        int oldIndex = 0;
+//        int newIndex = 0;
+//
+//        while (newIndex < newContent.length()) {
+//            if (oldContent != null) {
+//                if (oldIndex < oldContent.length()
+//                    && oldContent.charAt(oldIndex) == newContent.charAt(newIndex)) {
+//                    contentBuilder.append(newContent.charAt(newIndex));
+//                    oldIndex++;
+//                    newIndex++;
+//                } else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
+//                    contentBuilder.append("<span style=\"background-color: lightyellow;\">")
+//                        .append(oldContent.charAt(oldIndex)).append("</span>");
+//                    oldIndex++;
+//                }
+//                while (newIndex < newContent.length()) {
+//                    contentBuilder.append(newContent.charAt(newIndex));
+//                    newIndex++;
+//                }
+//            } else {
+//                contentBuilder.append("<span style=\"background-color: lightyellow;\">")
+//                    .append(newContent.charAt(newIndex)).append("</span>");
+//                newIndex++;
+//            }
+//        }
+//        while (oldIndex < oldContent.length()) {
+//            contentBuilder.append("<del>").append(oldContent.charAt(oldIndex)).append("</del>");
+//            oldIndex++;
+//        }
+//
+//        String remove = "</del><del>";
+//        String replace = "";
+//        int index = contentBuilder.indexOf(remove);
+//
+//        while (index != -1) {
+//            contentBuilder.replace(index, index + remove.length(), replace);
+//            index = contentBuilder.indexOf(remove, index + replace.length());
+//        }
+//
+//        return contentBuilder.toString();
+//    }
 }

@@ -33,8 +33,9 @@ public class CardCommentEvent extends ApplicationEvent {
 
     private String generateContent(User editor, Card card, Comment comment) {
 
-        return editor.getNickname() + "님이 작업자로 할당되어 있는 "
-            + "\'ID" + card.getId() + ". " + card.getTitle() + "\' 카드에 "
-            + "댓글 \'ID" + comment.getId() + ". " + comment.getContent() + "\'가 달렸습니다.";
+        return editor.getNickname() + "님이 "
+            + "\'작업자로 할당되어 있는 "
+            + "ID" + card.getId() + ". " + card.getTitle() + " 카드\'에 "
+            + "\'댓글 ID" + comment.getId() + ". " + comment.getContent() + "\'가 달렸습니다.";
     }
 }
