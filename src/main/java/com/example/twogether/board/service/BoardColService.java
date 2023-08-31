@@ -1,5 +1,6 @@
 package com.example.twogether.board.service;
 
+import com.example.twogether.alarm.event.TriggerEventPublisher;
 import com.example.twogether.board.dto.BoardColRequestDto;
 import com.example.twogether.board.dto.BoardsResponseDto;
 import com.example.twogether.board.entity.Board;
@@ -25,7 +26,8 @@ public class BoardColService {
     private final BoardColRepository boardColRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-
+    private final TriggerEventPublisher eventPublisher;
+  
     // 칸반 보드에 협업자 초대 - 허락받아야 초대되는 로직으로 develop 할지 고민 중
     @Transactional
     public void inviteBoardCol(User user, Long boardId, String email) {
@@ -43,6 +45,7 @@ public class BoardColService {
         // 보드 협업자로 등록
         BoardCollaborator foundBoardCol = BoardColRequestDto.toEntity(invitee, board);
         boardColRepository.save(foundBoardCol);
+        eventPublisher.publishInviteBoardColEvent(user, invitee, board);
     }
 
     // 칸반 보드에서 협업자 추방
