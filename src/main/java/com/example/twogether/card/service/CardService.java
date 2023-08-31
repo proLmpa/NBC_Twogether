@@ -71,13 +71,26 @@ public class CardService {
     public void editCard(User user, Long cardId, CardEditRequestDto requestDto) {
 
         Card card = findCardById(cardId);
-        String oldContent = card.getContent();
+        Board board = card.getDeck().getBoard();
 
+        String oldContent = card.getContent();
         if (requestDto.getTitle() != null) card.editTitle(requestDto.getTitle());
         if (requestDto.getContent() != null) card.editContent(requestDto.getContent());
-
         String newContent = card.getContent();
-        eventPublisher.publishCardEditedEvent(user, card, oldContent, newContent);
+
+        // 보드 생성자와 협업자만 카드 마감일 알림 조회 가능
+        List<BoardCollaborator> boardCols = findBoardCol(board);
+        List<AlarmTarget> alarmTargets = new ArrayList<>();
+        for (BoardCollaborator boardCol : boardCols) {
+            if (boardCol.getEmail() != user.getEmail()) {
+                alarmTargets.add(AlarmTargetRequestDto.boardColToEntity(boardCol));
+            }
+        }
+        if (board.getUser().getEmail() != user.getEmail()) {
+            alarmTargets.add(AlarmTargetRequestDto.userToEntity(board.getUser()));
+        }
+
+        eventPublisher.publishCardEditedEvent(user, alarmTargets, card, oldContent, newContent);
     }
 
     @Transactional

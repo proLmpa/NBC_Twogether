@@ -27,6 +27,6 @@ public class InvitedWpColEvent extends ApplicationEvent {
 
         return "워크스페이스 오너(" + invitingUser.getNickname() + ")가 "
             + "당신(" + invitedUser.getNickname() + ")을 "
-            + "[ID" + workspace.getId() + ". " + workspace.getTitle() + "] 워크스페이스에 초대했습니다.";
+            + "\'ID" + workspace.getId() + ". " + workspace.getTitle() + "\' 워크스페이스에 초대했습니다.";
     }
 }

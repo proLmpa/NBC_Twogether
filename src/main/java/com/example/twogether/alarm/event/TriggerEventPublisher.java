@@ -49,10 +49,14 @@ public class TriggerEventPublisher {
 
     // 카드 수정
     @Async
-    public void publishCardEditedEvent(User user, Card card, String oldContent, String newContent) {
+    public void publishCardEditedEvent(User user, List<AlarmTarget> alarmTargets, Card card, String oldContent, String newContent) {
 
-        CardEditedEvent event = new CardEditedEvent(this, user, card, oldContent, newContent);
-        eventPublisher.publishEvent(event);
+        for (AlarmTarget alarmTarget : alarmTargets) {
+
+            User targetUser = alarmTarget.getUser();
+            CardEditedEvent event = new CardEditedEvent(this, user, targetUser, card, oldContent, newContent);
+            eventPublisher.publishEvent(event);
+        }
     }
 
     // 카드 댓글 생성

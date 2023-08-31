@@ -10,22 +10,25 @@ import org.springframework.context.ApplicationEvent;
 public class CardEditedEvent extends ApplicationEvent {
 
     private final User user;
+    private final User alarmTarget;
     private final Card card;
     private final String oldContent;
     private final String newContent;
     private final String content;
 
     @Builder
-    public CardEditedEvent(Object source, User user, Card card, String oldContent, String newContent) {
+    public CardEditedEvent(Object source, User user, User targetUser, Card card, String oldContent, String newContent) {
 
         super(source);
         this.user = user;
+        this.alarmTarget = targetUser;
         this.card = card;
-        this.oldContent = oldContent;
+        this.oldContent = oldContent; // 현재는 사용하고 있지 않은 필드
         this.newContent = newContent;
-        this.content = generateContent(oldContent, newContent);
+        this.content = newContent;
     }
 
+    /* (추후 작업) 추가기능 구현 준비 코드 - 자동 취소선, 형광펜 */
     private String generateContent(String oldContent, String newContent) {
 
         StringBuilder contentBuilder = new StringBuilder();

@@ -6,14 +6,15 @@ import com.example.twogether.user.entity.User;
 
 public class CardEditedRequestDto {
 
-    public static Alarm toEntity(User user, String content, String url, AlarmTrigger alarmTrigger, boolean isRead) {
+    public static Alarm toEntity(User user, User alarmTarget, String content, String url, AlarmTrigger alarmTrigger, boolean isRead) {
 
         return Alarm.builder()
+            .eventMaker(user)
+            .user(alarmTarget)
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)
             .isRead(isRead)
-            .eventMaker(user)
             .build();
     }
 }

@@ -28,6 +28,6 @@ public class InvitedCardColEvent extends ApplicationEvent {
 
         return "보드 오너(" + loginUser.getNickname() + ")가 "
             + "당신(" + addedUser.getNickname() + ")을 "
-            + "[ID" + card.getId() + ". " + card.getTitle() + "] 카드에 작업자로 할당했습니다.";
+            + "\'ID" + card.getId() + ". " + card.getTitle() + "\' 카드에 작업자로 할당했습니다.";
     }
 }
