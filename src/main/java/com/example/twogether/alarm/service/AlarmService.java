@@ -36,7 +36,6 @@ public class AlarmService {
             new CustomException(CustomErrorCode.ALARM_NOT_FOUND));
 
         alarm.read();
-        alarmRepository.save(alarm);
     }
 
     @Transactional(readOnly = true)
