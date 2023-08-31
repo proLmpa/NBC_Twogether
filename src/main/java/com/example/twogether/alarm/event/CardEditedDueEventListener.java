@@ -14,25 +14,24 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CardCommentEventListener implements ApplicationListener<CardCommentEvent> {
+public class CardEditedDueEventListener implements ApplicationListener<CardEditedDueEvent> {
 
     private final AlarmService alarmService;
 
     @Override
     @TransactionalEventListener
-    public void onApplicationEvent(CardCommentEvent event) {
+    public void onApplicationEvent(CardEditedDueEvent event) {
 
         Card card = event.getCard();
-        log.info("cardCommentEvent() : 작업자로 할당된 카드에 댓글이 생성되었습니다.");
+        log.info("cardEditedDueEvent() : 작업자로 할당된 카드의 마감일이 변경되었습니다.");
 
         Alarm alarm = CardExtraRequestDto.toEntity(
             event.getEditor(),
             event.getAlarmTarget(),
             event.getContent(),
-            "/api/boards/" + card.getDeck().getBoard().getId() + "/cards/" + card.getId() + "/comments",
-            AlarmTrigger.CARD_COMMENT_CREATE_EVENT
+            "/api/cards/" + card.getId() + "/date",
+            AlarmTrigger.CARD_EDITED_DUE_EVENT
         );
         alarmService.createAlarm(alarm);
-
     }
 }

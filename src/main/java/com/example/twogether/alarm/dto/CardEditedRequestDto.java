@@ -13,7 +13,7 @@ public class CardEditedRequestDto {
             .url(url)
             .alarmTrigger(alarmTrigger)
             .isRead(isRead)
-            .loginUser(user)
+            .eventMaker(user)
             .build();
     }
 }

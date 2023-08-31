@@ -89,7 +89,7 @@ public class WpColService {
         List<Board> foundAllBoards = findAllBoards(foundWorkspace);
         for (Board foundBoard : foundAllBoards) {
 
-            List<BoardCollaborator> boardCollaborators = boardColRepository.findByBoard(foundBoard);
+            List<BoardCollaborator> boardCollaborators = boardColRepository.findAllByBoard(foundBoard);
             if (boardCollaborators != null && !boardCollaborators.isEmpty()) {
 
                 // 이미 추방된 보드 협업자

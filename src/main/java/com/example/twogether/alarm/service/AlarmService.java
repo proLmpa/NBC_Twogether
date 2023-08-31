@@ -1,6 +1,6 @@
 package com.example.twogether.alarm.service;
 
-import com.example.twogether.alarm.dto.CardsEditedResponseDto;
+import com.example.twogether.alarm.dto.CardEditedsResponseDto;
 import com.example.twogether.alarm.entity.Alarm;
 import com.example.twogether.alarm.repository.AlarmRepository;
 import com.example.twogether.common.error.CustomErrorCode;
@@ -40,9 +40,9 @@ public class AlarmService {
     }
 
     @Transactional(readOnly = true)
-    public CardsEditedResponseDto getAlarms(User user) {
+    public CardEditedsResponseDto getAlarms(User user) {
 
-        List<Alarm> alarms = alarmRepository.findAllByInvitedUser(user);
-        return CardsEditedResponseDto.of(alarms);
+        List<Alarm> alarms = alarmRepository.findAllByUser(user);
+        return CardEditedsResponseDto.of(alarms);
     }
 }

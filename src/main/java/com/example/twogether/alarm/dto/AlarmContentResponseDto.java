@@ -1,6 +1,5 @@
 package com.example.twogether.alarm.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

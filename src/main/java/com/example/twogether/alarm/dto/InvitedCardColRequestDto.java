@@ -12,8 +12,8 @@ public class InvitedCardColRequestDto {
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)
-            .loginUser(boardUser) // 보드의 오너
-            .invitedUser(addedUser)
+            .eventMaker(boardUser) // 보드의 오너
+            .user(addedUser)
             .cardId(cardId)
             .cardTitle(cardTitle)
             .build();

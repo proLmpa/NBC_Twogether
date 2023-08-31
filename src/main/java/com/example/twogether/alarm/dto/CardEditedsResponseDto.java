@@ -7,16 +7,16 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CardsEditedResponseDto {
+public class CardEditedsResponseDto {
 
     private List<CardEditedResponseDto> alarms;
 
-    public static CardsEditedResponseDto of(List<Alarm> alarms) {
+    public static CardEditedsResponseDto of(List<Alarm> alarms) {
 
         List<CardEditedResponseDto> alarmsResponseDto = alarms.stream().map(
             CardEditedResponseDto::of).toList();
 
-        return CardsEditedResponseDto.builder()
+        return CardEditedsResponseDto.builder()
             .alarms(alarmsResponseDto)
             .build();
     }

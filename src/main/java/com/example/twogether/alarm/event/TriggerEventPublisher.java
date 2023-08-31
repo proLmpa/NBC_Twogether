@@ -1,10 +1,15 @@
 package com.example.twogether.alarm.event;
 
+import com.example.twogether.alarm.entity.AlarmTarget;
+import com.example.twogether.alarm.repository.AlarmTargetRepository;
 import com.example.twogether.board.entity.Board;
 import com.example.twogether.card.entity.Card;
+import com.example.twogether.card.entity.CardCollaborator;
 import com.example.twogether.comment.entity.Comment;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.workspace.entity.Workspace;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
@@ -52,8 +57,25 @@ public class TriggerEventPublisher {
 
     // 카드 댓글 생성
     @Async
-    public void publishCardCommentEvent(User user, Card card, Comment comment) {
-        CardCommentEvent event = new CardCommentEvent(this, user, card, comment);
-        eventPublisher.publishEvent(event);
+    public void publishCardCommentEvent(User user, List<AlarmTarget> alarmTargets, Card card, Comment comment) {
+
+        for (AlarmTarget alarmTarget : alarmTargets) {
+
+            User targetUser = alarmTarget.getUser();
+            CardCommentEvent event = new CardCommentEvent(this, user, targetUser, card, comment);
+            eventPublisher.publishEvent(event);
+        }
+    }
+
+    // 카드 마감일 수정
+    @Async
+    public void publishCardEditedDueEvent(User user, List<AlarmTarget> alertTargets, Card card, LocalDateTime oldDue, LocalDateTime newDue) {
+
+        for (AlarmTarget alarmTarget : alertTargets) {
+
+            User targetUser = alarmTarget.getUser();
+            CardEditedDueEvent event = new CardEditedDueEvent(this, user, targetUser, card, oldDue, newDue);
+            eventPublisher.publishEvent(event);
+        }
     }
 }

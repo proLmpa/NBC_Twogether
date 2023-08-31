@@ -12,8 +12,8 @@ public class InvitedWpColRequestDto {
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)
-            .loginUser(invitingUser) // 워크스페이스의 오너
-            .invitedUser(invitedUser)
+            .eventMaker(invitingUser) // 워크스페이스의 오너
+            .user(invitedUser)
             .wpId(wpId)
             .wpTitle(wpTitle)
             .build();

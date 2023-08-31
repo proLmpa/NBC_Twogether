@@ -45,9 +45,12 @@ public class Alarm extends Timestamped {
     private AlarmTrigger alarmTrigger; // 알림의 원인이 되는 event
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user; // 알림을 받는 로그인 유저
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User loginUser;
+    private User eventMaker; // event를 만든 사람
 
 
     /*Collaborator 공통 필드*/
@@ -55,11 +58,6 @@ public class Alarm extends Timestamped {
     private String wpTitle;
     private Long boardId;
     private String boardTitle;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User invitedUser;
 
 
     /*Added Card Collaborator Event*/

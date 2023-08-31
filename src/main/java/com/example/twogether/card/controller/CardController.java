@@ -59,6 +59,18 @@ public class CardController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "카드 수정"));
     }
 
+    @Operation(summary = "협업 마감일 수정")
+    @PutMapping("/cards/{cardId}/date")
+    private ResponseEntity<ApiResponseDto> editDate(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long cardId,
+        @RequestBody DateRequestDto requestDto
+    ) {
+
+        cardService.editDate(userDetails.getUser(), cardId, requestDto);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "마감일 수정"));
+    }
+
     @Operation(summary = "카드 삭제", description = "카드가 보관 상태라면 삭제되지 않도록 설정")
     @DeleteMapping("/cards/{cardId}")
     private ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long cardId) {
@@ -90,24 +102,12 @@ public class CardController {
     @Operation(summary = "파일 첨부", description = "S3를 사용해 이미지 및 멀티파트 파일을 업로드한다.")
     @PutMapping("/cards/{cardId}/file")
     private ResponseEntity<ApiResponseDto> uploadFile(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long cardId,
         @RequestPart MultipartFile multipartFile
     ) throws IOException {
 
-        cardService.uploadFile(userDetails.getUser(), cardId, multipartFile);
+        cardService.uploadFile(cardId, multipartFile);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "파일 첨부"));
-    }
-
-    @Operation(summary = "협업 마감일 수정")
-    @PutMapping("/cards/{cardId}/date")
-    private ResponseEntity<ApiResponseDto> editDate(
-        @PathVariable Long cardId,
-        @RequestBody DateRequestDto requestDto
-    ) {
-
-        cardService.editDate(cardId, requestDto);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "마감일 수정"));
     }
 
     @Operation(summary = "카드 단일 조회")

@@ -34,17 +34,24 @@ public class CardEditedEvent extends ApplicationEvent {
         int newIndex = 0;
 
         while (newIndex < newContent.length()) {
-
-            if (oldIndex < oldContent.length() && oldContent.charAt(oldIndex) == newContent.charAt(newIndex)) {
-                contentBuilder.append(newContent.charAt(newIndex));
-                oldIndex++;
-                newIndex++;
-            } else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
-                contentBuilder.append("<span style=\"background-color: lightyellow;\">").append(oldContent.charAt(oldIndex)).append("</span>");
-                oldIndex++;
-            }
-            while (newIndex < newContent.length()) {
-                contentBuilder.append(newContent.charAt(newIndex));
+            if (oldContent != null) {
+                if (oldIndex < oldContent.length()
+                    && oldContent.charAt(oldIndex) == newContent.charAt(newIndex)) {
+                    contentBuilder.append(newContent.charAt(newIndex));
+                    oldIndex++;
+                    newIndex++;
+                } else if (oldContent.charAt(oldIndex) < newContent.charAt(newIndex)) {
+                    contentBuilder.append("<span style=\"background-color: lightyellow;\">")
+                        .append(oldContent.charAt(oldIndex)).append("</span>");
+                    oldIndex++;
+                }
+                while (newIndex < newContent.length()) {
+                    contentBuilder.append(newContent.charAt(newIndex));
+                    newIndex++;
+                }
+            } else {
+                contentBuilder.append("<span style=\"background-color: lightyellow;\">")
+                    .append(newContent.charAt(newIndex)).append("</span>");
                 newIndex++;
             }
         }

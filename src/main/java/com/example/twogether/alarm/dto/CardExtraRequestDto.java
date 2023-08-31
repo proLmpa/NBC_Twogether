@@ -4,12 +4,13 @@ import com.example.twogether.alarm.entity.Alarm;
 import com.example.twogether.alarm.entity.AlarmTrigger;
 import com.example.twogether.user.entity.User;
 
-public class CardCommentRequestDto {
+public class CardExtraRequestDto {
 
-    public static Alarm toEntity(User loginUser, String content, String url, AlarmTrigger alarmTrigger) {
+    public static Alarm toEntity(User editor, User alarmTarget, String content, String url, AlarmTrigger alarmTrigger) {
 
         return Alarm.builder()
-            .loginUser(loginUser)
+            .eventMaker(editor)
+            .user(alarmTarget)
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)
