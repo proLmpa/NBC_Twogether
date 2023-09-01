@@ -25,7 +25,7 @@ public class SocialLonginController {
         String token = kakaoLoginService.kakaoLogin(code, response);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); //check 토큰은 헤더에 넣어서 전달하는 방식.
 
-        return "redirect:/api/workspaces";
+        return "redirect:/views/workspaces";
     }
 
     @GetMapping("/users/naver/callback") //버튼을 누르게 되면 카카오 서버로부터 리다이렉트되어 인가 코드를 전달받게됨. 해당 URL은 카카오 로그인 홈페이지에서 등록해뒀음.
@@ -34,7 +34,7 @@ public class SocialLonginController {
         String token = naverLoginService.naverLogin(code, response);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); //check 토큰은 헤더에 넣어서 전달하는 방식.
 
-        return "redirect:/api/workspaces";
+        return "redirect:/views/workspaces";
     }
 
 }
