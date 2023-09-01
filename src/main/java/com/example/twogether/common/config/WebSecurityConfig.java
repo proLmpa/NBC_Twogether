@@ -66,13 +66,13 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/kakao/callback").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/naver/callback").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-                .requestMatchers("/api/boards/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/boards/**").permitAll()
                 .requestMatchers("/api/decks/**").permitAll()
                 .requestMatchers("api/cards/**").permitAll()
                 .requestMatchers("/api/labels/**").permitAll()
                 .requestMatchers("/api/alarms/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                 .anyRequest().authenticated()
         );
 

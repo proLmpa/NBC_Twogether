@@ -142,7 +142,7 @@ public class KakaoLoginService {
                 // 기존 회원정보에 카카오 Id 추가
                 kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
             } else {
-                // 신규 회원가입
+                log.info("신규 회원가입");
                 // password: random UUID
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
@@ -160,8 +160,6 @@ public class KakaoLoginService {
             }
 
             userRepository.save(kakaoUser);
-        } else {
-            throw new CustomException(CustomErrorCode.USER_ALREADY_EXISTS);
         }
         return kakaoUser;
     }
