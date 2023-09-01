@@ -64,6 +64,8 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(HttpMethod.GET, "/views/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/kakao/callback").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/naver/callback").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                 .requestMatchers("/api/boards/**").permitAll()
                 .requestMatchers("/api/decks/**").permitAll()
