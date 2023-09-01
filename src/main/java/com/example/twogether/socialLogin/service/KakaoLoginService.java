@@ -1,9 +1,7 @@
-package com.example.twogether.user.service;
+package com.example.twogether.socialLogin.service;
 
-import com.example.twogether.common.error.CustomErrorCode;
-import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.common.jwt.JwtUtil;
-import com.example.twogether.user.dto.KakaoUserInfoDto;
+import com.example.twogether.socialLogin.dto.KakaoUserInfoDto;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
@@ -68,7 +66,7 @@ public class KakaoLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "52f4db5447641a22ec380d3f92260ce5");
-        body.add("redirect_uri", "http://localhost:8080/api/users/kakao/callback");
+        body.add("redirect_uri", "http://localhost:8080/api/social/kakao/callback");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

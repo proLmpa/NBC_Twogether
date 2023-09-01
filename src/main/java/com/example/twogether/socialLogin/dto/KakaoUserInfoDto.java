@@ -1,4 +1,4 @@
-package com.example.twogether.user.dto;
+package com.example.twogether.socialLogin.dto;
 
 import lombok.Builder;
 import lombok.Getter;

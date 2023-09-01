@@ -43,10 +43,10 @@
     <input type="password" id="password" placeholder="password"/>
   </div>
   <button id="loginBtn" onclick="login()">로그인</button>
-  <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=52f4db5447641a22ec380d3f92260ce5&redirect_uri=http://localhost:8080/api/users/kakao/callback&response_type=code'">
+  <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=52f4db5447641a22ec380d3f92260ce5&redirect_uri=http://localhost:8080/api/social/kakao/callback&response_type=code'">
     KAKAO LOGIN
   </button>
-  <button id="login-naver-btn" onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=z4SZ2cx6filEURbIUuq6&redirect_uri=http://localhost:8080/api/users/naver/callback&state=test&response_type=code'">
+  <button id="login-naver-btn" onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=z4SZ2cx6filEURbIUuq6&redirect_uri=http://localhost:8080/api/users/social/callback&state=test&response_type=code'">
     NAVER LOGIN
   </button>
   <div class = "sendSignUpPage">

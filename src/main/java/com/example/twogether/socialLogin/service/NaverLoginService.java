@@ -1,9 +1,9 @@
-package com.example.twogether.user.service;
+package com.example.twogether.socialLogin.service;
 
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
 import com.example.twogether.common.jwt.JwtUtil;
-import com.example.twogether.user.dto.NaverUserInfoDto;
+import com.example.twogether.socialLogin.dto.NaverUserInfoDto;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserRoleEnum;
 import com.example.twogether.user.repository.UserRepository;
@@ -14,9 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
