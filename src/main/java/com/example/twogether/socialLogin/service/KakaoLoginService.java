@@ -35,7 +35,7 @@ public class KakaoLoginService {
     private final JwtUtil jwtUtil;
 
     @Value("${kakao.client.id}")
-    private final String kakaoClientId;
+    private String kakaoClientId;
 
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
         // 1. "인가 코드"로 "액세스 토큰" 요청

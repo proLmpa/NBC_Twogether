@@ -39,7 +39,7 @@ public class NaverLoginService {
     @Value("${naver.secret.key}")
     private String secretKey;
     @Value("${naver.client.id}")
-    private final String naverClientId;
+    private String naverClientId;
 
     public String naverLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 네이버로부터 받은 인가 코드
         // 1. "인가 코드"로 "액세스 토큰" 요청
