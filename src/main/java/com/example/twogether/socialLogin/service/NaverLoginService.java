@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,15 @@ public class NaverLoginService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public String naverLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
+    @Value("${naver.secret.key}")
+    private String secretKey;
+    @Value("${naver.client.id}")
+    private final String naverClientId;
+
+    public String naverLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 네이버로부터 받은 인가 코드
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
-        // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
+        // 2. 토큰으로 네이버 API 호출 : "액세스 토큰"으로 "네이버 사용자 정보" 가져오기
         NaverUserInfoDto naverUserInfo = getNaverUserInfo(accessToken);
         // 3. 필요시 회원가입 아니라면 바로 user가져오기.
         User naverUser = registerNaverUserIfNeeded(naverUserInfo);
@@ -67,8 +73,8 @@ public class NaverLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "z4SZ2cx6filEURbIUuq6");
-        body.add("client_secret", "Vb1AK9ny7h");
+        body.add("client_id", naverClientId);
+        body.add("client_secret", secretKey);
         body.add("code", code);
         body.add("state", "test");
 
@@ -120,7 +126,7 @@ public class NaverLoginService {
         String email = jsonNode.get("response")
             .get("email").asText();
 
-        log.info("카카오 사용자 정보: " + naverId + ", " + nickname + ", " + email);
+        log.info("네이버 사용자 정보: " + naverId + ", " + nickname + ", " + email);
         return NaverUserInfoDto.builder().naverId(naverId).email(email).nickname(nickname).build();
     }
 
@@ -130,12 +136,12 @@ public class NaverLoginService {
         User naverUser = userRepository.findByNaverId(naverId).orElse(null);
 
         if (naverUser == null) {
-            // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
+            // 네이버 사용자 email 동일한 email 가진 회원이 있는지 확인
             String naverEmail = naverUserInfo.getEmail();
             User sameEmailUser = userRepository.findByEmail(naverEmail).orElse(null);
             if (sameEmailUser != null) {
                 naverUser = sameEmailUser;
-                // 기존 회원정보에 카카오 Id 추가
+                // 기존 회원정보에 네이버 Id 추가
                 naverUser = naverUser.naverIdUpdate(naverId);
             } else {
                 // 신규 회원가입
@@ -156,8 +162,6 @@ public class NaverLoginService {
             }
 
             userRepository.save(naverUser);
-        } else {
-            throw new CustomException(CustomErrorCode.USER_ALREADY_EXISTS);
         }
         return naverUser;
     }

@@ -28,7 +28,7 @@ public class SocialLonginController {
         return "redirect:/views/workspace";
     }
 
-    @GetMapping("/social/naver/callback") //버튼을 누르게 되면 카카오 서버로부터 리다이렉트되어 인가 코드를 전달받게됨. 해당 URL은 카카오 로그인 홈페이지에서 등록해뒀음.
+    @GetMapping("/social/naver/callback") //버튼을 누르게 되면 네이버 서버로부터 리다이렉트되어 인가 코드를 전달받게됨. 해당 URL은 네이버 로그인 홈페이지에서 등록해뒀음.
     public String naverLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         String token = naverLoginService.naverLogin(code, response);
