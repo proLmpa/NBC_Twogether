@@ -1,0 +1,43 @@
+#header {
+  background-color: #4d3737; /* Wooden color */
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#header h2 {
+  color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  color: #705c3b; /* Dark brown text color */
+}
+
+.user-info i {
+  margin-right: 5px;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.user-info {
+  position: relative;
+  cursor: pointer;
+}
+
+/* 형광 초록색 알림 아이콘 표시 스타일 */
+.user-info #alarm-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff; /* 형광 초록색 */
+  border-radius: 50%;
+}
+
+#alarm-panel {
+  display: none; /* 초기에는 표시하지 않음 */
+}

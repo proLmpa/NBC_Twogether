@@ -61,16 +61,6 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 수정 성공"));
     }
 
-    @Operation(summary = "회원 탈퇴")
-    @DeleteMapping("/{id}/signout")
-    public ResponseEntity<ApiResponseDto> deleteUserInfo(
-        @PathVariable Long id,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        userService.deleteUserInfo(id, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 탈퇴 성공"));
-    }
-
     @Operation(summary = "사용자 비밀번호 수정")
     @PatchMapping("/password")
     public ResponseEntity<ApiResponseDto> editUserPassword(
@@ -79,5 +69,15 @@ public class UserController {
     ) {
         userService.editUserPassword(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 비밀번호 수정 성공"));
+    }
+
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("/{id}/signout")
+    public ResponseEntity<ApiResponseDto> deleteUserInfo(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUserInfo(id, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 탈퇴 성공"));
     }
 }
