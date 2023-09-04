@@ -53,6 +53,7 @@ public class User {
 
     private String nickname;
     private String introduction;
+    private String icon;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -122,5 +123,9 @@ public class User {
     public User naverIdUpdate(String naverId) {
         this.naverId = naverId;
         return this;
+    }
+  
+    public void editIcon(String icon) {
+        this.icon = icon;
     }
 }
