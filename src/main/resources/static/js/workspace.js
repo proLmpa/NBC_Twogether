@@ -144,6 +144,47 @@ async function createWorkspace() {
   })
 }
 
+function editWorkspace(wId) {
+  // given
+  let title = $('#workspace-title-edited').val()
+  if (title === '') {
+    title = null;
+  }
+  let description = $('#workspace-description-edited').val()
+  if (description === '') {
+    description = null;
+  }
+  const request = {
+    title: title,
+    icon: description
+  }
+
+  // when
+  fetch('/api/workspaces/' + wId, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': Cookies.get('Authorization'),
+      'Refresh-Token': Cookies.get('Refresh-Token')
+    },
+    body: JSON.stringify(request),
+  })
+
+  // then
+  .then(async res => {
+    checkTokenExpired(res)
+    refreshToken(res)
+
+    if(res.status !== 200) {
+      let error = await res.json()
+      alert(error['message'])
+      return
+    }
+    // 생성된 workspace도 노출되도록 하기 위해 함수 호출
+    callMyWorkspaces()
+  });
+}
+
 async function createBoard(wId) {
   // given
   let title = document.getElementById('board-title-' + wId).value
@@ -313,6 +354,10 @@ function createWorkspaceOnOff() {
   $('#create-workspace-form').toggle()
 }
 
+function editWorkspaceOnOff(wId) {
+  $('#edit-workspace-form-' + wId).toggle()
+}
+
 function createBoardOnOff(wId) {
   $('#create-board-btn-' + wId).toggle()
   $('#create-board-form-' + wId).toggle()
@@ -329,7 +374,20 @@ function formMyWorkspace(workspace) {
             <h2>${title}</h2>
             <h3>${introduction}</h3>
             <div class="workspace-control-btns">
-              <button><i class="fas fa-pen"></i></button>
+              <button onclick="editWorkspaceOnOff(${wId})"><i class="fas fa-pen"></i></button>
+              
+              <div id="edit-workspace-form-${wId}" style="display:none">
+                <div>
+                  <label for="workspace-title-edited">Title</label>
+                  <input type="text" id="workspace-title-edited"/>
+                </div>
+                <div>
+                  <label for="workspace-description-edited">Description</label>
+                  <input type="text" id="workspace-description-edited"/>
+                </div>
+                <button id="edit-workspace-btn" onclick="editWorkspace(${wId})">Edit</button>
+              </div>
+    
               <button onclick="openInviteWpCollaborator(${wId})"><i class="fas fa-person"></i></button>
               <button onclick="deleteWorkspace(${wId})"><i class="fas fa-trash"></i></button>
               <div id="invite-wp-collaborator-${wId}" class="invite-collaborator">
