@@ -74,9 +74,9 @@ async function callMyBoard() {
 
             $('#deck-list').append(formDeck(deck))
             for (let card of deck['cards']) {
+                if(card['archived']) continue
                 console.log(card)
-                // todo: 불러온 덱에서 카드 읽어서 나열하기
-                // $('#card-list-' + deck['deckId']).append(formCard(card))
+                $('#card-list-' + deck['deckId']).append(formCard(card))
             }
         }
 
@@ -233,11 +233,13 @@ function formDeck(deck) {
                     </div>
                     
                     <div class="deck-list-add-card-area">
-                        <div class="card-list-${deckId}"></div>
+                        <div class="card-list-${deckId}" id="card-list-${deckId}">
+                            
+                        </div>
                         
                         <!-- todo: 카드 추가 기능 활성화 -->
                         <div class="deck-list-add-card-container">
-                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" href="#" aria-label="카드 생성 열기">
+                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" aria-label="카드 생성 열기">
                                 <i class="fa-solid fa-plus fa-xl"></i>
                                 카드 추가
                             </a>
@@ -272,6 +274,20 @@ function formDeck(deck) {
 function formCard(card) {
     let cardId = card['id']
     let title = card['title']
+
+    return `
+            <ul class="list-card-list">
+              <li>
+                <div class="cards-list" id="cards-list-${cardId}">
+                  <span>
+                    <p class="cards-list-title">
+                      ${title}
+                    </p>
+                  </span>
+                </div>
+              </li>
+            </ul>
+    `
 
 }
 
