@@ -15,6 +15,7 @@
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
             crossorigin="anonymous"></script>
     <script src="/js/workspace.js"></script>
+    <script src="/js/profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
@@ -49,41 +50,47 @@
 
         <!--프로필 정보-->
         <div id="userInfo">
-            Email: <br>
-            <span id="email"></span><br>
+            <span>Email:</span>
+            <div id="email" class="user-info-item"></div>
+            <br>
 
-            Nickname: <br>
-            <span id='nickname'></span>
+            <span>Nickname:</span>
+            <div id='nickname' class="user-info-item"></div>
             <input id="edit-nick-input" class="hide" type="text"/><br>
 
-            Introduction: <br>
-            <span id='introduction'></span>
-            <input id="edit-intro-input" class="hide" type="text"/><br>
+            <span>Introduction:</span>
+            <div id='introduction' class="user-info-item"></div>
+            <textarea id="edit-intro-input" class="hide"></textarea>
 
-            Role: <br>
-            <span id="role"></span>
+            <!--            <span>Role:</span>-->
+            <!--            <div id="role" class="user-info-item"></div>-->
         </div>
-        <button id="change-userInfo-btn">Edit Info</button>
-
-        <button id="save-edit-userInfo-btn" onclick="editUserInfo()" class="hide">Save</button>
-        <button id="cancel-userInfo-btn" onclick="closeEditUserInfoForm()" class="hide">Cancel
-        </button>
+        <div id="profileInfo-btns">
+            <button id="change-userInfo-btn">Edit Info</button>
+            <button id="save-edit-userInfo-btn" onclick="editUserInfo()" class="hide">Save</button>
+            <button id="cancel-userInfo-btn" onclick="closeEditUserInfoForm()" class="hide">Cancel
+            </button>
+        </div>
 
         <br class="hide">
 
+        <br>
+        <hr>
+        <br>
+
         <!--알림-->
 
-        <!--        <div class="alarm-header">-->
-        <!--            <div>-->
-        <!--                <ul id="alarm-list">-->
-        <!--                    &lt;!&ndash; 알림 목록 추가되는 영역 &ndash;&gt;-->
-        <!--                </ul>-->
-        <!--            </div>-->
-        <!--            <button id="read-alarm-btn">-->
-        <!--            </button>-->
-        <!--            <button id="delete-alarm-btn">-->
-        <!--            </button>-->
-        <!--        </div>-->
+        <div class="alarm-header">
+            <div>
+                <ul id="alarm-list">
+                    <!-- 알림 목록 추가되는 영역 -->
+                </ul>
+            </div>
+            <button id="read-alarm-btn">
+            </button>
+            <button id="delete-alarm-btn">
+            </button>
+        </div>
     </div>
 
 

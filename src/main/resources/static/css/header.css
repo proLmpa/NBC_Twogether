@@ -47,10 +47,42 @@
   width: 30%;
 }
 
+#userInfo {
+  padding: 10%;
+}
+
+#userInfo span {
+  font-size: 0.8rem;
+}
+
+#userInfo .user-info-item {
+  font-size: 1.2rem;
+  margin-top: 4%;
+  margin-bottom: 7%;
+}
+
+#userInfo input, textarea {
+  font-family: 'Russo One', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 8%;
+  margin-right: 10%;
+  width: auto;
+  max-width: 90%;
+}
+
 #panel-profileImage {
   display: block;
   width: 100%;
   margin-bottom: 5%;
+}
+
+#profileImage-btns, #change-userImage-btn {
+  margin-left: 10%;
+}
+
+#profileInfo-btns {
+  margin-top: 0;
+  margin-left: 10%;
 }
 
 .hide {
