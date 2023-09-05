@@ -25,28 +25,28 @@
 </head>
 <body>
 <header id="header">
-    <h2 id='title'>Two Gether</h2>
-    <div class="user-info">
-        <i class="fas fa-user-circle"></i>
+    <h2 id='header-title'>Two Gether</h2>
+    <div id="user-profile" onclick="userProfile()">
+        <div id="user-image"> </div>
         <div id="alarm-badge"></div>
-        Email: <span id="email"></span>
-        Nickname: <span id='nickname'></span>
-        Role: <span id="role"></span>
-        <span id='logout' onclick="logout()"><i class="fas fa-sign-out-alt"></i></span>
     </div>
+    <i id="logout" class="fas fa-sign-out-alt" onclick="logout()"></i>
 </header>
 
 <div id="content">
-    <!-- 알림 창 -->
-    <div id="alarm-panel">
+    <div id="user-profile-panel" style="display: none;">
+        <div id="user-info">
+            Email: <span id="email"></span><br>
+            Nickname: <span id='nickname'></span><br>
+            Role: <span id="role"></span>
+        </div>
         <div class="alarm-header">
-            <h3>알림</h3>
-            <button id="close-alarm-btn" >
+            <button id="close-alarm-btn">
                 <i class="fas fa-alarm-times"></i>
             </button>
         </div>
         <ul id="alarm-list" class="alarm-list">
-            <!-- 알림 목록이 여기에 추가됩니다. -->
+            <!-- 알림 목록 추가되는 영역 -->
         </ul>
     </div>
     <nav id="nav">
@@ -80,6 +80,5 @@
         </section>
     </div>
 </div>
-<script src="/js/alarm.js"></script>
 </body>
 </html>
