@@ -12,19 +12,22 @@
   color: white;
 }
 
-.profileImage {
+#header-profileImage {
+  color: whitesmoke;
   position: absolute;
   top: 20px;
   right: 52px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 2px solid whitesmoke;
-  color: whitesmoke;
-  background-color: whitesmoke;
 }
 
-/* 형광 초록색 알림 아이콘 표시 스타일 */
+#logout {
+  position: absolute;
+  top: 20px;
+  right: 17px;
+}
+
 #alarm-badge {
   position: absolute;
   top: 15px;
@@ -36,10 +39,16 @@
   border-radius: 50%;
 }
 
-#logout {
-  position: absolute;
-  top: 20px;
-  right: 17px;
+
+/* user profile and alarm panel */
+#user-profile-panel {
+  width: 30%;
+}
+
+#panel-profileImage {
+  display: block;
+  width: 100%;
+  margin-bottom: 5%;
 }
 
 #alarm-panel {
