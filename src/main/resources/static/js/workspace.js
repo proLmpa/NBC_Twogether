@@ -31,18 +31,18 @@ $(document).ready(function () {
         document.getElementById('edit-nick-input').value = oldNickname;
         document.getElementById('edit-intro-input').value = oldIntroduction;
 
-        $('#nickname, #introduction, #change-userInfo-btn').hide();
+        $('#nickname, #introduction, #change-userInfo-btn, #change-userImage-btn').hide();
         $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').show();
     });
 
     // 사용자 이미지 수정 관련 이벤트 핸들러 추가
     $('#change-userImage-btn').click(function () {
         $('#profileImage-btns').show();
-        $('#change-userImage-btn').hide();
+        $('#change-userImage-btn, #change-userInfo-btn').hide();
     });
     $('#cancel-profileImage-btn').click(function () {
         $('#profileImage-btns').hide();
-        $('#change-userImage-btn').show();
+        $('#change-userImage-btn, #change-userInfo-btn').show();
     })
 
     // 본인 정보 불러오기

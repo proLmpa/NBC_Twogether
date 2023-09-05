@@ -11,15 +11,14 @@
 }
 
 #userInfo .user-info-item {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-top: 4%;
-  margin-bottom: 7%;
 }
 
 #userInfo input, textarea {
   font-family: 'Russo One', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 8%;
+  font-size: 1rem;
+  margin-bottom: 0;
   margin-right: 10%;
   width: auto;
   max-width: 90%;
@@ -31,13 +30,62 @@
   margin-bottom: 5%;
 }
 
-#profileImage-btns, #change-userImage-btn {
+/*긴 버튼*/
+#change-userImage-btn, #change-userInfo-btn {
+  background-color: whitesmoke;
+  color: #333;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 84%;
+  margin-left: 7%;
+  text-align: center;
+}
+#change-userImage-btn:hover, #change-userInfo-btn:hover {
+  color: whitesmoke;
+  background-color: #4e3939;
+}
+
+/*숨겨진 짧은 버튼*/
+#profileImage-btns {
+  margin-left: 5%;
+}
+#profileInfo-btns {
   margin-left: 10%;
 }
 
-#profileInfo-btns {
-  margin-top: 0;
-  margin-left: 10%;
+#profileImage-btns button, #profileInfo-btns button {
+  background-color: whitesmoke;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 500;
+  width: 35%;
+  margin: 15px auto 5px 6%;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#profileImage-btns button:hover, #profileInfo-btns button:hover {
+  color: whitesmoke;
+  background-color: #4e3939;
+}
+
+#change-userInfo-btn {
+  margin-bottom: 50px;
+}
+
+#upload-profileImage-input-container {
+  margin-left: 6%;
 }
 
 .hide {

@@ -40,25 +40,16 @@
         <!--프로필 이미지-->
         <img id="panel-profileImage" class="close-userProfile-panel">
 
-        <div id="profileImage-btns" class="hide">
-            <input type="file" id="upload-profileImage-input" accept="image/*">
-            <button id="default-profileImage-btn" onclick="defaultProfileImage()">Default</button>
-            <button id="save-edit-profileImage-btn" onclick="editProfileImage()">Save
-            </button>
-            <button id="cancel-profileImage-btn">Cancel</button>
-        </div>
-        <button id="change-userImage-btn">Edit Image</button>
-        <br><br>
-
         <!--프로필 정보-->
         <div id="userInfo">
             <span>Email:</span>
             <div id="email" class="user-info-item"></div>
-            <br>
+            <br><br>
 
             <span>Nickname:</span>
             <div id='nickname' class="user-info-item"></div>
-            <input id="edit-nick-input" class="hide" type="text"/><br>
+            <input id="edit-nick-input" class="hide" type="text"/>
+            <br><br>
 
             <span>Introduction:</span>
             <div id='introduction' class="user-info-item"></div>
@@ -67,16 +58,26 @@
             <!--            <span>Role:</span>-->
             <!--            <div id="role" class="user-info-item"></div>-->
         </div>
-        <div id="profileInfo-btns">
-            <button id="change-userInfo-btn">Edit Info</button>
-            <button id="save-edit-userInfo-btn" onclick="editUserInfo()" class="hide">Save</button>
-            <button id="cancel-userInfo-btn" onclick="closeEditUserInfoForm()" class="hide">Cancel
+
+        <div id="profileImage-btns" class="hide">
+            <div id="upload-profileImage-input-container">
+                <input type="file" id="upload-profileImage-input" accept="image/*">
+            </div>
+            <button id="save-edit-profileImage-btn" onclick="editProfileImage()">Save
             </button>
+            <button id="cancel-profileImage-btn" >Cancel</button>
+            <button id="default-profileImage-btn" onclick="defaultProfileImage()" style="width: 78%;">Default</button>
         </div>
 
-        <br class="hide">
+        <div id="profileInfo-btns">
+            <button id="save-edit-userInfo-btn" onclick="editUserInfo()" class="hide" style="margin-left: 0">Save</button>
+            <button id="cancel-userInfo-btn" onclick="closeEditUserInfoForm()" class="hide">Cancel
+            </button>
+        </div><br>
 
-        <br>
+        <button id="change-userImage-btn">Edit Image</button><br>
+        <button id="change-userInfo-btn">Edit Info</button><br>
+
         <hr>
         <br>
 

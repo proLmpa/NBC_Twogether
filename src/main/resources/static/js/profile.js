@@ -140,7 +140,7 @@ function getProfileImage() {
         $('#header-profileImage').attr('src', imageURL);
         $('#panel-profileImage').attr('src', imageURL);
         $('#profileImage-btns').hide();
-        $('#change-userImage-btn').show();
+        $('#change-userImage-btn, #change-userInfo-btn').show();
         closeEditUserInfoForm()
     })
 }
@@ -173,7 +173,7 @@ function defaultProfileImage() {
 function closeEditUserInfoForm() {
     $('#edit-nick-input, #edit-intro-input').val('');
     $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').hide();
-    $('#nickname, #introduction, #change-userInfo-btn').show();
+    $('#nickname, #introduction, #change-userInfo-btn, #change-userImage-btn').show();
 }
 
 // token 관련 재생성, 삭제, 만료 로직
