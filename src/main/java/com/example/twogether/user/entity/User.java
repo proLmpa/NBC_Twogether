@@ -92,7 +92,7 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "eventReceiver")
     private List<Alarm> alarms = new ArrayList<>();
 
     @Builder.Default

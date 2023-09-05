@@ -13,7 +13,7 @@ public class InvitedWpColRequestDto {
             .url(url)
             .alarmTrigger(alarmTrigger)
             .eventMaker(invitingUser) // 워크스페이스의 오너
-            .user(invitedUser)
+            .eventReceiver(invitedUser)
             .wpId(wpId)
             .wpTitle(wpTitle)
             .build();

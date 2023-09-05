@@ -46,7 +46,7 @@ public class Alarm extends Timestamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private User user; // 알림을 받는 로그인 유저
+    private User eventReceiver; // 알림을 받는 로그인 유저
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

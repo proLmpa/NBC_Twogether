@@ -10,7 +10,7 @@ public class CardExtraRequestDto {
 
         return Alarm.builder()
             .eventMaker(editor)
-            .user(alarmTarget)
+            .eventReceiver(alarmTarget)
             .content(content)
             .url(url)
             .alarmTrigger(alarmTrigger)

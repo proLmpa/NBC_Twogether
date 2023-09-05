@@ -13,7 +13,7 @@ public class InvitedCardColRequestDto {
             .url(url)
             .alarmTrigger(alarmTrigger)
             .eventMaker(boardUser) // 보드의 오너
-            .user(addedUser)
+            .eventReceiver(addedUser)
             .cardId(cardId)
             .cardTitle(cardTitle)
             .build();
