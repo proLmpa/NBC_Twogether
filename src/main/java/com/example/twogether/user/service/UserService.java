@@ -2,7 +2,6 @@ package com.example.twogether.user.service;
 
 import com.example.twogether.board.repository.BoardColRepository;
 import com.example.twogether.board.repository.BoardRepository;
-import com.example.twogether.card.entity.Card;
 import com.example.twogether.card.repository.CardLabelRepository;
 import com.example.twogether.card.repository.CardRepository;
 import com.example.twogether.checklist.repository.CheckListRepository;
@@ -15,7 +14,6 @@ import com.example.twogether.deck.repository.DeckRepository;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
-import com.example.twogether.user.dto.UserResponseDto;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserPassword;
 import com.example.twogether.user.entity.UserRoleEnum;
