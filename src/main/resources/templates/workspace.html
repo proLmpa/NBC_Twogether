@@ -26,10 +26,7 @@
 <body>
 <header id="header">
     <h2 id='header-title'>Two Gether</h2>
-    <div id="header-profileImage"
-         style="background: url('https://twogether.s3.ap-northeast-2.amazonaws.com/Icon/faed91e3-e029-45ee-a407-8efdfb178fce.png') no-repeat; background-size: cover; background-color: whitesmoke;"
-         class="close-userProfile-panel">
-    </div>
+    <div id="header-profileImage-container"><img id="header-profileImage"></div>
     <div id="alarm-badge"></div>
     <i id="logout" class="fas fa-sign-out-alt" onclick="logout()"></i>
 </header>
@@ -42,10 +39,12 @@
 
         <div id="profileImage-btns" class="hide">
             <input type="file" id="upload-profileImage-input" accept="image/*">
-            <button id="save-edit-profileImage-btn" onclick="editProfileImage()">Upload Image
+            <button id="default-profileImage-btn" onclick="defaultProfileImage()">Default</button>
+            <button id="save-edit-profileImage-btn" onclick="editProfileImage()">Save
             </button>
-            <button id="default-profileImage-btn">Default Image</button>
+            <button id="cancel-profileImage-btn">Cancel</button>
         </div>
+        <button id="change-userImage-btn">Edit Image</button>
         <br><br>
 
         <!--프로필 정보-->
@@ -64,7 +63,7 @@
             Role: <br>
             <span id="role"></span>
         </div>
-        <button id="change-userInfo-btn">Edit Profile</button>
+        <button id="change-userInfo-btn">Edit Info</button>
 
         <button id="save-edit-userInfo-btn" onclick="editUserInfo()" class="hide">Save</button>
         <button id="cancel-userInfo-btn" onclick="closeEditUserInfoForm()" class="hide">Cancel

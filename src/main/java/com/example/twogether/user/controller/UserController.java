@@ -68,16 +68,6 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 수정 성공"));
     }
 
-    @Operation(summary = "사용자 프로필 사진 수정")
-    @PutMapping("/icon")
-    public ResponseEntity<ApiResponseDto> editIcon(
-        @RequestPart MultipartFile multipartFile,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) throws IOException{
-        userService.editIcon(multipartFile, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "아이콘 수정 성공"));
-    }
-
     @Operation(summary = "사용자 비밀번호 수정")
     @PatchMapping("/password")
     public ResponseEntity<ApiResponseDto> editUserPassword(
@@ -86,6 +76,25 @@ public class UserController {
     ) {
         userService.editUserPassword(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 비밀번호 수정 성공"));
+    }
+
+    @Operation(summary = "사용자 프로필 사진 수정")
+    @PutMapping("/icon")
+    public ResponseEntity<ApiResponseDto> editIcon(
+        @RequestPart MultipartFile multipartFile,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException{
+        userService.editIcon(multipartFile, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "프로필 사진 수정 성공"));
+    }
+
+    @Operation(summary = "사용자 프로필 사진 기본으로 수정")
+    @PutMapping("/default")
+    public ResponseEntity<ApiResponseDto> defaultIcon(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException{
+        userService.defaultIcon(userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "기본 프로필 사진으로 수정 성공"));
     }
 
     @Operation(summary = "회원 탈퇴")

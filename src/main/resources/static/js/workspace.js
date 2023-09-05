@@ -11,18 +11,16 @@ $(document).ready(function () {
     }
 
     // 헤더 : 사진 클릭 이벤트 핸들러 추가
-    $('#header-profileImage').click(function () {
-        $('#userProfile-panel').show();
+    $('#header-profileImage-container').click(function () {
+        if ($('#userProfile-panel').is(':visible'))
+            $('#userProfile-panel').hide();
+        else
+            $('#userProfile-panel').show();
     });
 
     // 개인 프로필 창 : 사진 클릭 이벤트 핸들러 추가
     $('.close-userProfile-panel').click(function () {
         $('#userProfile-panel').hide();
-    });
-
-    // 개인 프로필 창 : 사진 수정 버튼 클릭 이벤트 핸들러 추가
-    $('').click(function () {
-        $().show()
     });
 
     // 사용자 정보 수정 버튼 클릭 이벤트 핸들러 추가
@@ -34,8 +32,18 @@ $(document).ready(function () {
         document.getElementById('edit-intro-input').value = oldIntroduction;
 
         $('#nickname, #introduction, #change-userInfo-btn').hide();
-        $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn,#profileImage-btns').show();
+        $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').show();
     });
+
+    // 사용자 이미지 수정 관련 이벤트 핸들러 추가
+    $('#change-userImage-btn').click(function () {
+        $('#profileImage-btns').show();
+        $('#change-userImage-btn').hide();
+    });
+    $('#cancel-profileImage-btn').click(function () {
+        $('#profileImage-btns').hide();
+        $('#change-userImage-btn').show();
+    })
 
     // 본인 정보 불러오기
     getUserInfo()
@@ -69,6 +77,7 @@ async function getUserInfo() {
         $('#role').text(user.role) // 필요한지?
 
         let imageURL = user.icon;
+        $('#header-profileImage').attr('src', imageURL);
         $('#panel-profileImage').attr('src', imageURL);
 
         // 본인이 생성한 workspace 불러오기
@@ -150,7 +159,7 @@ function editProfileImage() {
 
         if (res.status === 200) {
             alert('프로필 이미지가 업데이트되었습니다.');
-            location.reload();
+            getProfileImage()
         } else {
             const errorData = await res.json();
             alert(errorData.message);
@@ -161,30 +170,55 @@ function editProfileImage() {
     });
 }
 
-function handleFileInputChange(event) {
-    const selectedFile = event.target.files[0];
+function getProfileImage() {
 
-    if (!selectedFile) {
-        alert('파일을 선택해주세요.');
-        return;
-    }
+    // when
+    fetch('/api/users/info', {
+        method: 'GET',
+        headers: {
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        }
+    })
 
-    // FileReader 객체를 사용하여 파일을 읽음
-    const reader = new FileReader();
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
 
-    reader.onload = function (event) {
-        // 파일을 Base64 문자열로 변환
-        const base64String = event.target.result;
+        let user = await res.json()
+        let imageURL = user.icon;
+        $('#header-profileImage').attr('src', imageURL);
+        $('#panel-profileImage').attr('src', imageURL);
+        $('#profileImage-btns').hide();
+        $('#change-userImage-btn').show();
+        closeEditUserInfoForm()
+    })
+}
 
-        // base64String 변수에 파일의 Base64 문자열이 포함됨
-        console.log('파일을 문자열로 변환했습니다:', base64String);
+function defaultProfileImage() {
 
-        // 이제 base64String을 서버로 보낼 수 있음
-        // 여기서는 서버 요청을 보내는 코드를 추가해야 할 것입니다.
-    };
+    // when
+    fetch('/api/users/default', {
+        method: 'PUT',
+        headers: {
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        }
+    })
 
-    // 파일을 읽기 시작
-    reader.readAsDataURL(selectedFile);
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        let user = await res.json()
+        let imageURL = user.icon;
+        $('#header-profileImage').attr('src', imageURL);
+        $('#panel-profileImage').attr('src', imageURL);
+        $('#profileImage-btns').hide();
+        getProfileImage();
+    })
 }
 
 /* alarm */

@@ -112,6 +112,16 @@ public class UserService {
     }
 
     @Transactional
+    public void defaultIcon(User user) throws IOException {
+        try {
+            user.editIcon("https://twogether.s3.ap-northeast-2.amazonaws.com/Icon/faed91e3-e029-45ee-a407-8efdfb178fce.png");
+            userRepository.save(user);
+        } catch (RejectedExecutionException e) {
+            throw new CustomException(CustomErrorCode.ICON_UPLOAD_FAIL);
+        }
+    }
+
+    @Transactional
     public void deleteUserInfo(Long id, User user) {
         User found = findUser(id);
         confirmUser(found, user);
