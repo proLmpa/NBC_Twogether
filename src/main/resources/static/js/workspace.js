@@ -61,7 +61,6 @@ function callMyWorkspaces() {
     refreshToken(res)
 
     let workspaces = await res.json()
-    console.log(workspaces['workspaces'])
 
     for (let workspace of workspaces['workspaces']) {
       let wId = workspace['workspaceId']
@@ -99,7 +98,6 @@ function callColWorkspaces() {
     refreshToken(res)
 
     let workspaces = await res.json()
-    console.log(workspaces['workspaces'])
 
     for (let workspace of workspaces['workspaces']) {
       let wId = workspace['workspaceId']
@@ -300,7 +298,7 @@ async function inviteBoardCollaborator(bId) {
 }
 
 function moveToBoard(bId) {
-
+  window.location.href = BASE_URL + '/views/boards/' + bId
 }
 
 // 순수 javascript 동작
