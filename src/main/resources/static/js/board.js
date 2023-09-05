@@ -3,7 +3,8 @@ const BASE_URL = 'http://localhost:8080'
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
     let auth = Cookies.get('Authorization') ? Cookies.get('Authorization') : ''
-    let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token') : ''
+    let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token')
+        : ''
 
     // access 토큰과 refresh 토큰이 모두 존재하지 않을 때 -- 로그아웃
     if (auth === '' && refresh === '') {
@@ -13,7 +14,6 @@ $(document).ready(function () {
     // 본인 정보 불러오기
     getUserInfo()
 })
-
 
 // fetch API 로직
 async function getUserInfo() {
@@ -65,22 +65,28 @@ async function callMyBoard() {
             return
         }
 
-        $("#deck-list").empty()
+        var decks = $('#deck-list')
+        var archive = $('#archive-container')
+
+        decks.empty()
+        archive.empty()
         let board = await res.json()
         console.log(board)
 
         for (let deck of board['decks']) {
-            if(deck['archived']) continue
-
-            $('#deck-list').append(formDeck(deck))
-            for (let card of deck['cards']) {
-                console.log(card)
-                // todo: 불러온 덱에서 카드 읽어서 나열하기
-                // $('#card-list-' + deck['deckId']).append(formCard(card))
+            if (deck['archived']) {
+                archive.append(formArchived(deck))
+            } else {
+                decks.append(formDeck(deck))
+                for (let card of deck['cards']) {
+                    console.log(card)
+                    // todo: 불러온 덱에서 카드 읽어서 나열하기
+                    // $('#card-list-' + deck['deckId']).append(formCard(card))
+                }
             }
         }
 
-        closeAllListHeaderBtns()
+        closeAllListHeaderOpts()
     })
 }
 
@@ -145,9 +151,38 @@ async function createDeck() {
     })
 }
 
+async function deleteDeck(deckId) {
+    let check = confirm("해당 덱을 삭제하시겠습니까?")
+    if (!check) {
+        return
+    }
+
+    // when
+    await fetch('/api/decks/' + deckId, {
+        method: 'DELETE'
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error.message)
+            return
+        }
+
+        callMyBoard()
+    })
+}
+
 async function archiveDeck(dId) {
     let check = confirm("해당 덱을 보관하시겠습니까?")
-    if(!check) return
+    if (!check) {
+        return
+    }
 
     // when
     await fetch('/api/decks/' + dId + '/archive', {
@@ -169,6 +204,26 @@ async function archiveDeck(dId) {
     })
 }
 
+async function restoreDeck(dId) {
+    // when
+    await fetch('/api/decks/' + dId + '/archive', {
+        method: 'PUT'
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error.message)
+            return
+        }
+
+        callMyBoard()
+    })
+}
 
 // 순수 javascript 동작
 function logout() {
@@ -187,14 +242,15 @@ function formDeck(deck) {
     return `
         <div id="deck-${deckId}" class="deck-list-content">
             <ul class="deck-list-ul">
-                <li id="1">
+                <li>
                     <div class="deck-list-header">
                         <p class="list-header-title">${title}</p>
-                        <a class="list-header-3dot" aria-label="덱 메뉴 생성" onclick="openListHeaderBtns(${deckId})">
+                        <a class="list-header-3dot" aria-label="덱 메뉴 생성" onpointerover="openListHeaderOpts(${deckId})">
                             <i class="fa-solid fa-ellipsis fa-xl"></i></a>
-                        <div id="list-header-btns-${deckId}" class="list-header-btns">
-                            <div class="list-header-options">수정</div>
-                            <div class="list-header-options" onclick="archiveDeck(${deckId})">보관</div>
+                            
+                        <div id="list-header-options-${deckId}" class="list-header-options">
+                            <div class="list-header-option">수정</div>
+                            <div class="list-header-option" onclick="archiveDeck(${deckId})">보관</div>
                         </div>
                     </div>
                     
@@ -208,6 +264,7 @@ function formDeck(deck) {
                                 카드 추가
                             </a>
                         </div>
+                        
                         <!-- todo: 카드 추가 기능 -->
                         <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area">
                             <form class="add-card-name-text-area-form hidden" action="post">
@@ -233,21 +290,42 @@ function formDeck(deck) {
     `
 }
 
+function formArchived(deck) {
+    let deckId = deck['deckId']
+    let title = deck['title']
+
+    return `
+        <li>
+            <span class="archive-item-title">${title}</span>
+            <div class="archive-btns">
+                <button onclick="restoreDeck(${deckId})">복구</button>
+                <button onclick="deleteDeck(${deckId})">삭제</button>
+            </div>
+        </li>
+    `
+}
+
 function formCard(card) {
     let cardId = card['id']
     let title = card['title']
 
 }
 
-function openListHeaderBtns(deckId) {
-    closeAllListHeaderBtns()
-    let listHeaderBtns = document.getElementById('list-header-btns-' + deckId)
-    listHeaderBtns.show()
+function openListHeaderOpts(deckId) {
+    closeAllListHeaderOpts()
+    $('#list-header-options-' + deckId).show()
 }
 
-function closeAllListHeaderBtns() {
-    const listHeaderBtns = document.getElementsByClassName('list-header-btns')
-    listHeaderBtns.hide()
+function closeAllListHeaderOpts() {
+    $('.list-header-options').hide()
+}
+
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
 }
 
 // token 관련 재생성, 삭제, 만료 로직
