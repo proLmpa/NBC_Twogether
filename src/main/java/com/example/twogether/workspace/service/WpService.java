@@ -53,7 +53,8 @@ public class WpService {
 
         Workspace workspace = findWorkspace(id);
         if(workspace.getUser().getId().equals(user.getId())||user.getRole().equals(UserRoleEnum.ADMIN)) {
-            workspace.editPartOfWp(wpRequestDto);
+            if (wpRequestDto.getTitle() != null) workspace.editTitle(wpRequestDto);
+            if (wpRequestDto.getIcon() != null) workspace.editIcon(wpRequestDto);
             return WpResponseDto.of(workspace);
         } else throw new CustomException(CustomErrorCode.NOT_YOUR_WORKSPACE);
     }
@@ -94,9 +95,9 @@ public class WpService {
     }
 
     @Transactional(readOnly = true)
-    public WpResponseDto getWorkspace(Long Id) {
+    public WpResponseDto getWorkspace(Long id) {
 
-        Workspace workspace = findWorkspace(Id);
+        Workspace workspace = findWorkspace(id);
         return WpResponseDto.of(workspace);
     }
 
