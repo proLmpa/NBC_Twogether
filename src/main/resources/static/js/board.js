@@ -169,6 +169,36 @@ async function archiveDeck(dId) {
     })
 }
 
+async function createCard(deckId) {
+    // given
+    let title = document.getElementById('card-title-input-' + deckId).value
+
+    // when
+    await fetch('/api/decks/' + deckId + '/cards', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        },
+        body: title
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error.message)
+            return
+        }
+
+        callMyBoard() // board 다시 부르기
+    })
+}
+
 
 // 순수 javascript 동작
 function logout() {
@@ -178,6 +208,10 @@ function logout() {
 
 function createWorkspaceOnOff() {
     $('#create-workspace-form').toggle()
+}
+
+function createCardOnOff() {
+    $('#create-card-form').toggle()
 }
 
 function formDeck(deck) {
@@ -210,20 +244,22 @@ function formDeck(deck) {
                         </div>
                         <!-- todo: 카드 추가 기능 -->
                         <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area">
-                            <form class="add-card-name-text-area-form hidden" action="post">
+                            <div class="add-card-name-text-area-form hidden">
                                 <input type="text" name="add-cardlist-input"
                                        class="add-cardlist-input"
+                                       id="card-title-input-${deckId}"
                                        placeholder="카드 내용을 입력하세요...">
                                 <div class="horizontal-align">
                                     <button type="submit"
-                                            class="add-cardlist-submit default-button">카드 추가
+                                            class="add-cardlist-submit default-button"
+                                            onclick="createCard(${deckId})">카드 추가
                                     </button>
-                                    <a class="cancel-button cardlist" href="#"
+                                    <a class="cancel-button cardlist"
                                        aria-label="카드 추가 취소">
                                         <i class="fa-solid fa-xmark fa-xl"></i>
                                     </a>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         
                     </div>
@@ -246,7 +282,7 @@ function openListHeaderBtns(deckId) {
 }
 
 function closeAllListHeaderBtns() {
-    const listHeaderBtns = document.getElementsByClassName('list-header-btns')
+    let listHeaderBtns = document.getElementsByClassName('list-header-btns')
     listHeaderBtns.hide()
 }
 
