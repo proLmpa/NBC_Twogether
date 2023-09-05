@@ -85,8 +85,6 @@ async function callMyBoard() {
                 }
             }
         }
-
-        closeAllListHeaderOpts()
     })
 }
 
@@ -151,6 +149,35 @@ async function createDeck() {
     })
 }
 
+async function editDeck(deckId) {
+    // given
+    let title = document.getElementById('edit-deck-title-input-' + deckId).value
+    if(title === '' || title === undefined) {
+        console.log('title is empty')
+        return
+    }
+
+    // when
+    await fetch('/api/decks/' + deckId, {
+        method: 'PUT',
+        body: title
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error.message)
+            return
+        }
+
+        callMyBoard()
+    })
+}
+
 async function deleteDeck(deckId) {
     let check = confirm("해당 덱을 삭제하시겠습니까?")
     if (!check) {
@@ -166,7 +193,6 @@ async function deleteDeck(deckId) {
     .then(async res => {
         checkTokenExpired(res)
         refreshToken(res)
-
 
         if (res.status !== 200) {
             let error = await res.json()
@@ -244,14 +270,20 @@ function formDeck(deck) {
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
-                        <p class="list-header-title">${title}</p>
-                        <a class="list-header-3dot" aria-label="덱 메뉴 생성" onpointerover="openListHeaderOpts(${deckId})">
-                            <i class="fa-solid fa-ellipsis fa-xl"></i></a>
-                            
-                        <div id="list-header-options-${deckId}" class="list-header-options">
-                            <div class="list-header-option">수정</div>
+                        <p class="list-header-title">${title}</p>                            
+                        <a class="list-header-3dot" aria-label="덱 메뉴 생성" onclick="toggleHeaderDots(${deckId})">
+                            <i class="fa-solid fa-ellipsis fa-xl"></i>
+                        </a>                            
+                        <div id="list-header-options-${deckId}" class="list-header-options" style="display:none;">
+                            <div class="list-header-option" onclick="toggleEditDeckTitle(${deckId})">수정</div>
                             <div class="list-header-option" onclick="archiveDeck(${deckId})">보관</div>
                         </div>
+                    </div>
+                    
+                    <div id="edit-deck-title-form-${deckId}" hidden>
+                        <input id="edit-deck-title-input-${deckId}" type="text" class="edit-deck-title-input" placeholder="새로운 덱 제목을 지어주세요..">
+                        <button onclick="editDeck(${deckId})">제출</button>
+                        <button onclick="toggleEditDeckTitle(${deckId})">취소</button>
                     </div>
                     
                     <div class="deck-list-add-card-area">
@@ -311,13 +343,16 @@ function formCard(card) {
 
 }
 
-function openListHeaderOpts(deckId) {
-    closeAllListHeaderOpts()
-    $('#list-header-options-' + deckId).show()
+function toggleHeaderDots(deckId) {
+    $('#list-header-options-' + deckId).toggle()
 }
 
-function closeAllListHeaderOpts() {
-    $('.list-header-options').hide()
+function toggleEditDeckTitle(deckId) {
+    $('#edit-deck-title-form-' + deckId).toggle()
+}
+
+function toggleCreateDeckForm() {
+    $('#create-deck-form').toggle()
 }
 
 function openNav() {
