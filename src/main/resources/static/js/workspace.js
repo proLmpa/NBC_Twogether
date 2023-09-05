@@ -146,11 +146,11 @@ async function createWorkspace() {
 
 function editWorkspace(wId) {
   // given
-  let title = $('#workspace-title-edited').val()
+  let title = $('#workspace-title-edited-' + wId).val()
   if (title === '') {
     title = null;
   }
-  let description = $('#workspace-description-edited').val()
+  let description = $('#workspace-description-edited-' + wId).val()
   if (description === '') {
     description = null;
   }
@@ -175,7 +175,7 @@ function editWorkspace(wId) {
     checkTokenExpired(res)
     refreshToken(res)
 
-    if(res.status !== 200) {
+    if (res.status !== 200) {
       let error = await res.json()
       alert(error['message'])
       return
@@ -218,9 +218,57 @@ async function createBoard(wId) {
   })
 }
 
+function editBoard(boardId) {
+  // given
+  let title = $('#board-title-edited-' + boardId).val()
+  if (title === '') {
+    title = null;
+  }
+  let color = $('#board-color-edited-' + boardId).val()
+  if (color === '') {
+    color = null;
+  }
+  let info = $('#board-info-edited-' + boardId).val()
+  if (info === '') {
+    color = null;
+  }
+  const request = {
+    title: title,
+    color: color,
+    info: info
+  }
+
+  // when
+  fetch('/api/boards/' + boardId, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': Cookies.get('Authorization'),
+      'Refresh-Token': Cookies.get('Refresh-Token')
+    },
+    body: JSON.stringify(request),
+  })
+
+  // then
+  .then(async res => {
+    checkTokenExpired(res)
+    refreshToken(res)
+
+    if (res.status !== 200) {
+      let error = await res.json()
+      alert(error['message'])
+      return
+    }
+    // 생성된 workspace도 노출되도록 하기 위해 함수 호출
+    callMyWorkspaces()
+  });
+}
+
 function deleteWorkspace(wId) {
   let check = confirm("워크스페이스를 삭제하시겠습니까?")
-  if(!check) return
+  if (!check) {
+    return
+  }
 
   // when
   fetch(`/api/workspaces/${wId}`, {
@@ -237,7 +285,7 @@ function deleteWorkspace(wId) {
     checkTokenExpired(res)
     refreshToken(res)
 
-    if(res.status !== 200) {
+    if (res.status !== 200) {
       let error = await res.json()
       alert(error['message'])
       return
@@ -249,7 +297,9 @@ function deleteWorkspace(wId) {
 
 function deleteBoard(bId) {
   let check = confirm("보드를 삭제하시겠습니까?")
-  if(!check) return
+  if (!check) {
+    return
+  }
 
   // when
   fetch(`/api/boards/${bId}`, {
@@ -266,7 +316,7 @@ function deleteBoard(bId) {
     checkTokenExpired(res)
     refreshToken(res)
 
-    if(res.status !== 200) {
+    if (res.status !== 200) {
       let error = await res.json()
       alert(error['message'])
       return
@@ -299,7 +349,7 @@ async function inviteWpCollaborator(wId) {
     checkTokenExpired(res)
     refreshToken(res)
 
-    if(res.status !== 200) {
+    if (res.status !== 200) {
       let error = await res.json()
       alert(error['message'])
     }
@@ -331,7 +381,7 @@ async function inviteBoardCollaborator(bId) {
     checkTokenExpired(res)
     refreshToken(res)
 
-    if(res.status !== 200) {
+    if (res.status !== 200) {
       let error = await res.json()
       alert(error['message'])
     }
@@ -363,6 +413,10 @@ function createBoardOnOff(wId) {
   $('#create-board-form-' + wId).toggle()
 }
 
+function editBoardOnOff(boardId) {
+  $('#edit-board-form-' + boardId).toggle()
+}
+
 function formMyWorkspace(workspace) {
   let title = workspace['title']
   let introduction = workspace['icon']
@@ -378,12 +432,12 @@ function formMyWorkspace(workspace) {
               
               <div id="edit-workspace-form-${wId}" style="display:none">
                 <div>
-                  <label for="workspace-title-edited">Title</label>
-                  <input type="text" id="workspace-title-edited"/>
+                  <label for="workspace-title-edited-${wId}">Title</label>
+                  <input type="text" id="workspace-title-edited-${wId}"/>
                 </div>
                 <div>
-                  <label for="workspace-description-edited">Description</label>
-                  <input type="text" id="workspace-description-edited"/>
+                  <label for="workspace-description-edited-${wId}">Description</label>
+                  <input type="text" id="workspace-description-edited-${wId}"/>
                 </div>
                 <button id="edit-workspace-btn" onclick="editWorkspace(${wId})">Edit</button>
               </div>
@@ -418,7 +472,22 @@ function formMyBoard(board) {
     <div id="board-${boardId}" class="board" onclick="moveToBoard(${boardId})">
       <h3>${title}</h3>
       <div id="board-${boardId}-btns" class="board-btns">
-        <button><i class="fa-regular fa-pen-to-square"></i></button>
+        <button onclick="editBoardOnOff(${boardId})"><i class="fa-regular fa-pen-to-square"></i></button>
+        <div id="edit-board-form-${boardId}" style="display:none">
+          <div>
+            <label for="board-title-edited-${boardId}">보드 이름</label>
+            <input type="text" id="board-title-edited-${boardId}"/>
+          </div>
+          <div>
+            <label for="board-color-edited-${boardId}">보드 색상</label>
+            <input type="text" id="board-color-edited-${boardId}"/>
+          </div>
+          <div>
+            <label for="board-info-edited-${boardId}">보드 정보</label>
+            <input type="text" id="board-info-edited-${boardId}"/>
+          </div>
+          <button id="edit-board-btn" onclick="editBoard(${boardId})">Edit</button>
+        </div>
         <button onclick="openInviteBoardCollab(${boardId})"><i class="fa-solid fa-person"></i></button>
         <button onclick="deleteBoard(${boardId})"><i class="fa-solid fa-trash"></i></button>
         <div id="invite-board-collaborator-${boardId}" class="invite-collaborator">
