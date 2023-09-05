@@ -61,14 +61,14 @@ public class UserController {
     @Operation(summary = "사용자 정보 수정")
     @PatchMapping("/info")
     public ResponseEntity<ApiResponseDto> editUserInfo(
-        @RequestBody EditUserRequestDto requestDto,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestBody EditUserRequestDto requestDto
     ) {
         userService.editUserInfo(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원 정보 수정 성공"));
     }
 
-    @Operation(summary = "사용자 아이콘 수정")
+    @Operation(summary = "사용자 프로필 사진 수정")
     @PutMapping("/icon")
     public ResponseEntity<ApiResponseDto> editIcon(
         @RequestPart MultipartFile multipartFile,

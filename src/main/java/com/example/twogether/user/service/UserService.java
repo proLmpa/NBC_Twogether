@@ -15,6 +15,7 @@ import com.example.twogether.deck.repository.DeckRepository;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
 import com.example.twogether.user.dto.EditUserRequestDto;
 import com.example.twogether.user.dto.SignupRequestDto;
+import com.example.twogether.user.dto.UserResponseDto;
 import com.example.twogether.user.entity.User;
 import com.example.twogether.user.entity.UserPassword;
 import com.example.twogether.user.entity.UserRoleEnum;
@@ -82,6 +83,37 @@ public class UserService {
     }
 
     @Transactional
+    public User editUserPassword(EditPasswordRequestDto requestDto, User user) {
+        User found = findUser(user.getId());
+
+        checkPassword(requestDto.getPassword(), found.getPassword());       // 기존 비밀번호 일치 여부 확인
+        checkRecentPasswords(found.getId(), requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
+
+        // 새 비밀번호 저장
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+        userPasswordRepository.save(UserPassword.builder().password(newPassword).user(found).build());
+        found.editPassword(newPassword);
+
+        // 비밀번호 이력이 3개를 넘는가?
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(found.getId());
+        if(userPasswords.size() >= 3)
+            userPasswordRepository.deleteById(userPasswords.get(0).getId());
+
+        return found;
+    }
+
+    @Transactional
+    public void editIcon(MultipartFile multipartFile, User user) throws IOException {
+        try {
+            String icon = s3Uploader.upload(multipartFile, "Icon");
+            user.editIcon(icon);
+            userRepository.save(user);
+        } catch (RejectedExecutionException e) {
+            throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
+        }
+    }
+
+    @Transactional
     public void deleteUserInfo(Long id, User user) {
         User found = findUser(id);
         confirmUser(found, user);
@@ -116,36 +148,6 @@ public class UserService {
         );
         userPasswordRepository.deleteAllByUser_Id(found.getId());
         userRepository.deleteById(found.getId());
-    }
-
-    @Transactional
-    public User editUserPassword(EditPasswordRequestDto requestDto, User user) {
-        User found = findUser(user.getId());
-
-        checkPassword(requestDto.getPassword(), found.getPassword());       // 기존 비밀번호 일치 여부 확인
-        checkRecentPasswords(found.getId(), requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
-
-        // 새 비밀번호 저장
-        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        userPasswordRepository.save(UserPassword.builder().password(newPassword).user(found).build());
-        found.editPassword(newPassword);
-
-        // 비밀번호 이력이 3개를 넘는가?
-        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(found.getId());
-        if(userPasswords.size() >= 3)
-            userPasswordRepository.deleteById(userPasswords.get(0).getId());
-
-        return found;
-    }
-
-    @Transactional
-    public void editIcon(MultipartFile multipartFile, User user) throws IOException {
-        try {
-            String icon = s3Uploader.upload(multipartFile, "Icon");
-            user.editIcon(icon);
-        } catch (RejectedExecutionException e) {
-            throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
-        }
     }
 
     private void findExistingUserByEmail(String email) {

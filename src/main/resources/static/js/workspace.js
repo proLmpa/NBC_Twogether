@@ -3,22 +3,38 @@ const BASE_URL = 'http://localhost:8080'
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
     let auth = Cookies.get('Authorization') ? Cookies.get('Authorization') : ''
-    let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token')
-        : ''
+    let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token') : ''
 
     // access 토큰과 refresh 토큰이 모두 존재하지 않을 때 -- 로그아웃
     if (auth === '' && refresh === '') {
         window.location.href = BASE_URL + '/views/login'
     }
 
-    // #profileImage 클릭 이벤트 핸들러 추가
+    // 헤더 : 사진 클릭 이벤트 핸들러 추가
     $('#header-profileImage').click(function () {
-        $('#user-profile-panel').show();
+        $('#userProfile-panel').show();
     });
 
-    // user-profile-panel 닫기 버튼 클릭 이벤트 핸들러 추가
-    $('#user-profile-panel').click(function () {
-        $('#user-profile-panel').hide();
+    // 개인 프로필 창 : 사진 클릭 이벤트 핸들러 추가
+    $('.close-userProfile-panel').click(function () {
+        $('#userProfile-panel').hide();
+    });
+
+    // 개인 프로필 창 : 사진 수정 버튼 클릭 이벤트 핸들러 추가
+    $('').click(function () {
+        $().show()
+    });
+
+    // 사용자 정보 수정 버튼 클릭 이벤트 핸들러 추가
+    $('#change-userInfo-btn').click(function () {
+        const oldNickname = $('#nickname').text()
+        const oldIntroduction = $('#introduction').text();
+
+        document.getElementById('edit-nick-input').value = oldNickname;
+        document.getElementById('edit-intro-input').value = oldIntroduction;
+
+        $('#nickname, #introduction, #change-userInfo-btn').hide();
+        $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn,#profileImage-btns').show();
     });
 
     // 본인 정보 불러오기
@@ -49,6 +65,7 @@ async function getUserInfo() {
         let user = await res.json()
         $('#nickname').text(user['nickname'])
         $('#email').text(user.email)
+        $('#introduction').text(user.introduction)
         $('#role').text(user.role) // 필요한지?
 
         let imageURL = user.icon;
@@ -59,6 +76,115 @@ async function getUserInfo() {
         // 본인이 초대된 workspace 불러오기
         callColWorkspaces()
     })
+}
+
+function editUserInfo() {
+    const oldNickname = $('#nickname').text();
+    const oldIntroduction = $('#introduction').text();
+
+    const newNickname = $('#edit-nick-input').val();
+    const newIntroduction = $('#edit-intro-input').val();
+
+    if (!newNickname && !newIntroduction) {
+        // 두 입력 필드가 모두 비어 있으면 아무 작업도 수행하지 않음
+        closeEditUserInfoForm();
+        return;
+    }
+
+    // 수정된 필드만 업데이트할 객체 생성
+    const request = {
+        nickname: newNickname || oldNickname,
+        introduction: newIntroduction || oldIntroduction,
+    };
+
+    fetch('/api/users/info', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        },
+        body: JSON.stringify(request),
+    })
+    .then(async res => {
+        checkTokenExpired(res);
+        refreshToken(res);
+
+        if (res.status === 200) {
+            // 업데이트 성공 시 UI 업데이트
+            $('#nickname').text(request.nickname);
+            $('#introduction').text(request.introduction);
+
+            // 수정 폼 닫기
+            closeEditUserInfoForm();
+        } else {
+            let error = await res.json();
+            alert(error.message);
+        }
+    });
+}
+
+function editProfileImage() {
+    const fileInput = document.getElementById('upload-profileImage-input');
+    const selectedFile = fileInput.files[0];
+
+    if (!selectedFile) {
+        alert('파일을 선택해주세요.');
+        return;
+    }
+
+    // FormData를 사용하여 파일 전송 준비
+    const formData = new FormData();
+    formData.append('multipartFile', selectedFile);
+
+    fetch(BASE_URL + '/api/users/icon', {
+        method: 'PUT',
+        headers: {
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token'),
+        },
+        body: formData,
+    })
+    .then(async (res) => {
+        checkTokenExpired(res);
+
+        if (res.status === 200) {
+            alert('프로필 이미지가 업데이트되었습니다.');
+            location.reload();
+        } else {
+            const errorData = await res.json();
+            alert(errorData.message);
+        }
+    })
+    .catch((error) => {
+        console.error('프로필 이미지 업데이트 실패:', error);
+    });
+}
+
+function handleFileInputChange(event) {
+    const selectedFile = event.target.files[0];
+
+    if (!selectedFile) {
+        alert('파일을 선택해주세요.');
+        return;
+    }
+
+    // FileReader 객체를 사용하여 파일을 읽음
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        // 파일을 Base64 문자열로 변환
+        const base64String = event.target.result;
+
+        // base64String 변수에 파일의 Base64 문자열이 포함됨
+        console.log('파일을 문자열로 변환했습니다:', base64String);
+
+        // 이제 base64String을 서버로 보낼 수 있음
+        // 여기서는 서버 요청을 보내는 코드를 추가해야 할 것입니다.
+    };
+
+    // 파일을 읽기 시작
+    reader.readAsDataURL(selectedFile);
 }
 
 /* alarm */
@@ -612,6 +738,12 @@ function openInviteBoardCollab(bId) {
 
 function closeAllInviteCollaborators() {
     $('.invite-collaborator').hide()
+}
+
+function closeEditUserInfoForm() {
+    $('#edit-nick-input, #edit-intro-input').val('');
+    $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').hide();
+    $('#nickname, #introduction, #change-userInfo-btn').show();
 }
 
 // token 관련 재생성, 삭제, 만료 로직

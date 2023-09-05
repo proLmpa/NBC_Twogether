@@ -41,7 +41,7 @@
 
 
 /* user profile and alarm panel */
-#user-profile-panel {
+#userProfile-panel {
   width: 30%;
 }
 
@@ -53,4 +53,8 @@
 
 #alarm-panel {
   display: none; /* 초기에는 표시하지 않음 */
+}
+
+.hide {
+  display: none;
 }

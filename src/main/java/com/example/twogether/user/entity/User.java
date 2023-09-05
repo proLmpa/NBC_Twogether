@@ -113,6 +113,10 @@ public class User {
         this.introduction = introduction;
     }
 
+    public void editIcon(String icon) {
+        this.icon = icon;
+    }
+
     public void editPassword(String newPassword) {
         this.password = newPassword;
     }
@@ -125,9 +129,5 @@ public class User {
     public User naverIdUpdate(String naverId) {
         this.naverId = naverId;
         return this;
-    }
-  
-    public void editIcon(String icon) {
-        this.icon = icon;
     }
 }
