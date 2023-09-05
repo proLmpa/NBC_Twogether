@@ -33,7 +33,7 @@ public class AlarmController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "알림 삭제를 성공하셨습니다."));
     }
 
-    @Operation(summary = "알림 읽기")
+    @Operation(summary = "알림 읽음 상태로 만들기")
     @PutMapping(value = "/alarms/{alarmId}")
     public ResponseEntity<ApiResponseDto> readAlarm(@PathVariable Long alarmId) {
 

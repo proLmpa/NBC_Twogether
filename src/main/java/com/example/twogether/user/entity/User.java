@@ -53,7 +53,9 @@ public class User {
 
     private String nickname;
     private String introduction;
-    private String icon;
+
+    @Builder.Default
+    private String icon = "https://twogether.s3.ap-northeast-2.amazonaws.com/Icon/faed91e3-e029-45ee-a407-8efdfb178fce.png";
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

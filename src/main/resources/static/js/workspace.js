@@ -1,7 +1,7 @@
 const BASE_URL = 'http://localhost:8080'
 
 // html 로딩 시 바로 실행되는 로직
-$(document).ready(function () {
+$(document).ready(async function () {
     let auth = Cookies.get('Authorization') ? Cookies.get('Authorization') : ''
     let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token')
         : ''
@@ -12,98 +12,103 @@ $(document).ready(function () {
     }
 
     // 본인 정보 불러오기
-    updateUserProfileImage();
-    getUserInfo()
+    // updateUserProfileImage();
+    await getUserInfo();
 })
-
-document.getElementById('user-profile').addEventListener('click', function () {
-    toggleAlarmPanel();
-});
-
-function toggleAlarmPanel() {
-    var alarmPanel = document.getElementById('alarm-panel');
-    if (alarmPanel.style.display === 'block') {
-        alarmPanel.style.display = 'none';
-    } else {
-        alarmPanel.style.display = 'block';
-        getUserInfo()
-    }
-}
-
-function updateUserProfileImage() {
-    $.ajax({
-        url: '/api/users/icon',
-        type: 'PUT',
-        dataType: 'json',
-        success: function (data) {
-            const $userImage = $('#user-image');
-            if (data.profileImageUrl) {
-                // If the user has a profile picture, set it as the background image
-                $userImage.css('background-image',
-                    `url(${data.profileImageUrl})`);
-            } else {
-                // If the user doesn't have a profile picture, use the default image
-                $userImage.css('background-image',
-                    `url('/static/image/user.icon.png')`);
-            }
-        },
-        error: function (error) {
-            console.error('Error fetching user profile image: ' + error);
-        }
-    });
-}
-
-function getUserProfile() {
-}
 
 // fetch API 로직
 async function getUserInfo() {
     // when
-    await fetch('/api/users/info', {
+    const response = await fetch('/api/users/info', {
         method: 'GET',
         headers: {
             'Authorization': Cookies.get('Authorization'),
             'Refresh-Token': Cookies.get('Refresh-Token')
         }
-    })
+    });
 
     // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+    checkTokenExpired(response);
+    refreshToken(response);
 
-        let user = await res.json()
-        $('#nickname').text(user['nickname'])
-        $('#email').text(user.email)
-        $('#role').text(user.role)
+    const user = await response.json();
+    $('#nickname').text(user['nickname']);
+    $('#email').text(user.email);
+    $('#role').text(user.role);
 
-        // 본인이 생성한 workspace 불러오기
-        callMyWorkspaces()
-        // 본인이 초대된 workspace 불러오기
-        callColWorkspaces()
-    })
+    let imageURL = ['user.icon'];
+    let profileImageElement = $('.profileImage');
+    profileImageElement.css('background-image', `url(${imageURL})`);
+
+    // 본인이 생성한 workspace 불러오기
+    await callMyWorkspaces();
+    // 본인이 초대된 workspace 불러오기
+    await callColWorkspaces();
 }
 
-// 초기 알림 개수 (예: 0개)
-let alarmCount = 0;
-
-// 댓글 생성에 대한 알림이 발생할 때마다 호출되는 함수
-function handleNewAlarm() {
-    // 알림 개수 증가
-    alarmCount++;
-
-    // 알림 아이콘에 형광 초록색 배지 표시 및 개수 업데이트
-    alarmBadge.style.display = 'block';
-    alarmBadge.textContent = alarmCount;
+// 순수 javascript 동작
+function logout() {
+    resetToken()
+    window.location.href = BASE_URL + '/views/login'
 }
 
-// 알림 창을 띄우는 동그란 버튼을 클릭할 때 알림 조회 기능을 수행
-alarmButton.addEventListener('click', () => {
-    // 알림 아이콘 클릭 시 알림 조회 기능 추가
-    // 여기에 알림 목록을 표시하거나 관련 동작을 수행하는 코드 추가
-    // 이 예제에서는 알림 개수를 초기화합니다.
-    alarmCount = 0;
-});
+// document.getElementById('user-profile').addEventListener('click', function () {
+//     toggleAlarmPanel();
+// });
+
+// function toggleAlarmPanel() {
+//     var alarmPanel = document.getElementById('alarm-panel');
+//     if (alarmPanel.style.display === 'block') {
+//         alarmPanel.style.display = 'none';
+//     } else {
+//         alarmPanel.style.display = 'block';
+//         getUserInfo()
+//     }
+// }
+
+// function editUserProfileImage() {
+//     $.ajax({
+//         url: '/api/users/icon',
+//         type: 'PUT',
+//         dataType: 'json',
+//         success: function (data) {
+//             const $userImage = $('#user-image');
+//             if (data.profileImageUrl) {
+//                 // If the user has a profile picture, set it as the background image
+//                 $userImage.css('background-image',
+//                     `url(${data.profileImageUrl})`);
+//             } else {
+//                 // If the user doesn't have a profile picture, use the default image
+//                 $userImage.css('background-image',
+//                     `url('/static/image/user.icon.png')`);
+//             }
+//         },
+//         error: function (error) {
+//             console.error('Error fetching user profile image: ' + error);
+//         }
+//     });
+// }
+
+// // 초기 알림 개수 (예: 0개)
+// let alarmCount = 0;
+//
+// // 댓글 생성에 대한 알림이 발생할 때마다 호출되는 함수
+// function handleNewAlarm() {
+//     // 알림 개수 증가
+//     alarmCount++;
+//
+//     // 알림 아이콘에 형광 초록색 배지 표시 및 개수 업데이트
+//     alarmBadge.style.display = 'block';
+//     alarmBadge.textContent = alarmCount;
+// }
+//
+// // 알림 창을 띄우는 동그란 버튼을 클릭할 때 알림 조회 기능을 수행
+// alarmButton.addEventListener('click', () => {
+//     // 알림 아이콘 클릭 시 알림 조회 기능 추가
+//     // 여기에 알림 목록을 표시하거나 관련 동작을 수행하는 코드 추가
+//     // 이 예제에서는 알림 개수를 초기화합니다.
+//     alarmCount = 0;
+// });
 
 function callMyUserProfile() {
     // before
@@ -406,12 +411,6 @@ async function inviteBoardCollaborator(bId) {
 
 function moveToBoard(bId) {
 
-}
-
-// 순수 javascript 동작
-function logout() {
-    resetToken()
-    window.location.href = BASE_URL + '/views/login'
 }
 
 function createWorkspaceOnOff() {
