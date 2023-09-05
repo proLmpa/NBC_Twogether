@@ -26,30 +26,43 @@
 <body>
 <header id="header">
     <h2 id='header-title'>Two Gether</h2>
-    <div class="profileImage"></div>
+    <div id="header-profileImage" style="background: url('https://twogether.s3.ap-northeast-2.amazonaws.com/Icon/faed91e3-e029-45ee-a407-8efdfb178fce.png') no-repeat; background-size: cover; background-color: whitesmoke;" onclick=""></div>
     <div id="alarm-badge"></div>
     <i id="logout" class="fas fa-sign-out-alt" onclick="logout()"></i>
 </header>
 
 <div id="content">
     <div id="user-profile-panel" style="display: none;">
+
+        <!--프로필 이미지-->
+        <img id="panel-profileImage">
+
+        <button id="profileImage-change-btn">프로필 수정</button>
+        <button id="profileImage-default-btn">기본 이미지 사용</button>
+        <br><br>
+
         <div id="user-info">
-            <div class="profileImage"> </div>
-            <button type="button" class="btn photo-reset" id = "photo_reset" data-bs-dismiss="modal">닫기</button>
-            <button type="button" class="btn" id = "photo_submit">변경</button>
             Email: <span id="email"></span><br>
             Nickname: <span id='nickname'></span><br>
             Role: <span id="role"></span>
         </div>
+        <button id="user-info-btn" type="button">사용자 정보 수정</button>
+
         <div class="alarm-header">
-            <button id="close-alarm-btn">
-                <i class="fas fa-alarm-times"></i>
+            <div>
+                <ul id="alarm-list">
+                    <!-- 알림 목록 추가되는 영역 -->
+                </ul>
+            </div>
+            <button id="read-alarm-btn">
+            </button>
+            <button id="delete-alarm-btn">
             </button>
         </div>
-        <ul id="alarm-list" class="alarm-list">
-            <!-- 알림 목록 추가되는 영역 -->
-        </ul>
     </div>
+
+
+
     <nav id="nav">
         <ul id="nav-workspaces">
         </ul>
