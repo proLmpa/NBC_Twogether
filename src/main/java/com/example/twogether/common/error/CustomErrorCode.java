@@ -17,6 +17,10 @@ public enum CustomErrorCode {
     EMAIL_NOT_FOUND("EM003", "인증을 요청받은 메일이 아닙니다."),
     INVALID_CERTIFICATION_NUMBER("EM004", "이메일 인증 번호가 일치하지 않습니다."),
 
+    // Token
+    ACCESS_TOKEN_INVALID("T001", "Access 토큰이 만료되었습니다."),
+    ALL_TOKENS_EXPIRED("T002", "RefreshToken이 만료되었습니다."),
+
     // Workspace
     WORKSPACE_COLLABORATOR_ALREADY_EXISTS("W001", "이미 존재하는 워크스페이스 협업자입니다."),
     WORKSPACE_NOT_FOUND("W002", "존재하지 않는 워크스페이스입니다."),

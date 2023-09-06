@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -58,7 +57,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 UserDetailsImpl userDetails = userDetailsService.loadUserById(memberId);
 
                 redisRefreshToken.removeRefreshToken(refreshToken);
-                accessToken = jwtUtil.createToken(userDetails.getEmail(), userDetails.getUser().getRole());
+                accessToken = jwtUtil.createToken(userDetails.getEmail(),
+                    userDetails.getUser().getRole());
                 refreshToken = jwtUtil.createRefreshToken();
 
                 redisRefreshToken.saveRefreshToken(refreshToken, memberId.toString());
@@ -66,7 +66,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 res.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
             }
 
-            if(!isValid) {
+            if (!isValid) {
                 printAuthenticationFailure(res, false);
                 return;
             }
@@ -108,11 +108,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 실패 메시지 처리
-    private void printAuthenticationFailure(HttpServletResponse res, boolean isFirst) throws IOException {
+    private void printAuthenticationFailure(HttpServletResponse res, boolean isAccessToken)
+        throws IOException {
         res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         res.setContentType(contentType);
         String result = new ObjectMapper().writeValueAsString(
-            new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), isFirst ? "ACCESS_TOKEN_INVALID" : "ALL_TOKENS_EXPIRED"));
+            new ErrorResponseDto(isAccessToken ?
+                CustomErrorCode.ACCESS_TOKEN_INVALID : CustomErrorCode.ALL_TOKENS_EXPIRED));
 
         res.getOutputStream().print(result);
     }
