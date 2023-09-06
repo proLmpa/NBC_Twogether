@@ -1,6 +1,6 @@
 package com.example.twogether.common.exception;
 
-import com.example.twogether.common.dto.ApiResponseDto;
+import com.example.twogether.common.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler({CustomException.class})
-    public ResponseEntity<ApiResponseDto> handlerCustomException(CustomException e) {
-        ApiResponseDto restApiException = new ApiResponseDto(HttpStatus.BAD_REQUEST.value(),
-            e.getMessage());
-        return ResponseEntity.badRequest().body(restApiException);
+    public ResponseEntity<ErrorResponseDto> handlerCustomException(CustomException e) {
+        log.error("[CustomException] {} : {}",
+            e.getErrorCode().getCode(), e.getErrorCode().getErrorMessage());
+        return ErrorResponseDto.error(e);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ApiResponseDto> handlerValicationException(
+    public ResponseEntity<ErrorResponseDto> handlerValidationException(
         MethodArgumentNotValidException ex) {
+
         // Validation 예외처리
         StringBuilder errorMessage = new StringBuilder();
         for (FieldError fieldError : ex.getFieldErrors()) {
@@ -31,7 +32,6 @@ public class GlobalControllerAdvice {
                 .append(fieldError.getDefaultMessage()).append(" ");
         }
 
-        return ResponseEntity.badRequest()
-            .body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), errorMessage.toString()));
+        return ErrorResponseDto.error(HttpStatus.BAD_REQUEST, "V001", errorMessage.toString());
     }
 }

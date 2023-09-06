@@ -6,6 +6,7 @@ import com.example.twogether.common.security.JwtAuthenticationFilter;
 import com.example.twogether.common.security.JwtAuthorizationFilter;
 import com.example.twogether.common.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
+
     private final JwtUtil jwtUtil;
     private final RedisRefreshToken redisRefreshToken;
     private final UserDetailsServiceImpl userDetailsService;
@@ -48,6 +50,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         // CSRF 설정
         http.csrf(AbstractHttpConfigurer::disable);
 
@@ -57,10 +60,18 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests(authorizeHttpRequests ->
             authorizeHttpRequests
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers(HttpMethod.GET, "/views/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/social/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/boards/**").permitAll()
                 .requestMatchers("/api/decks/**").permitAll()
+                .requestMatchers("api/cards/**").permitAll()
+                .requestMatchers("/api/labels/**").permitAll()
+                .requestMatchers("/api/alarms/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                 .anyRequest().authenticated()
         );
 

@@ -1,6 +1,7 @@
 package com.example.twogether.common.security;
 
-import com.example.twogether.common.dto.ApiResponseDto;
+import com.example.twogether.common.dto.ErrorResponseDto;
+import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.jwt.JwtUtil;
 import com.example.twogether.common.redis.RedisRefreshToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,7 +81,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 res.setContentType(contentType);
                 String result = new ObjectMapper().writeValueAsString(
-                    new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "USER_NOT_FOUND"));
+                    new ErrorResponseDto(CustomErrorCode.USER_NOT_FOUND));
 
                 res.getOutputStream().print(result);
                 return;
