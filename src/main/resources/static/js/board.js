@@ -274,13 +274,14 @@ function formDeck(deck) {
 function formCard(card) {
     let cardId = card['id']
     let title = card['title']
+    let cardLabels = card['cardLabels']
 
     return `
             <ul class="list-card-list">
               <li>
                 <div class="cards-list" id="cards-list-${cardId}">
                   <span>
-                    <p class="cards-list-title">
+                    <p class="cards-list-title" id="cards-list-title-${cardId}" onclick="editTitle(${cardId})">
                       ${title}
                     </p>
                   </span>
@@ -288,8 +289,78 @@ function formCard(card) {
               </li>
             </ul>
     `
-
 }
+
+function editTitle(cardId) {
+    // 클릭한 제목 요소 가져오기
+    const titleElement = document.getElementById(`cards-list-title-${cardId}`);
+
+    // 현재 제목 내용 가져오기
+    const currentTitle = titleElement.innerText;
+
+    // 수정 가능한 input 요소 생성
+    const inputElement = document.createElement("input");
+    inputElement.value = currentTitle;
+
+    // 제목을 input 요소로 교체
+    titleElement.innerHTML = "";
+    titleElement.appendChild(inputElement);
+
+    // input 요소에 포커스 설정
+    inputElement.focus();
+
+    inputElement.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const newTitle = inputElement.value;
+            titleElement.innerHTML = newTitle;
+            editCardTitle(cardId, newTitle);
+        }
+    });
+
+    // input 요소에서 포커스가 해제되면 수정 완료 처리
+    inputElement.addEventListener("blur", () => {
+        const newTitle = inputElement.value;
+        titleElement.innerHTML = newTitle;
+        editCardTitle(cardId, newTitle);
+    });
+}
+
+function editCardTitle(cardId, newTitle) {
+    // given
+    let title = newTitle
+    if (title === '') {
+        title = null;
+    }
+    let content = null;
+    const request = {
+        title: newTitle,
+        content: content
+    };
+
+    // when
+    fetch('/api/cards/' + cardId, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        },
+        body: JSON.stringify(request),
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error['message'])
+        }
+    })
+}
+
 
 function openListHeaderBtns(deckId) {
     closeAllListHeaderBtns()
