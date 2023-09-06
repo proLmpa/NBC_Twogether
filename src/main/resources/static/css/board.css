@@ -141,10 +141,6 @@ nav {
     padding: 0 5px;
     box-sizing: border-box;
 }
-.deck {
-    flex:1;
-    box-sizing: border-box;
-}
 
 .add-decklist-button{
     width: 100%;
@@ -182,12 +178,12 @@ nav {
     margin-right: 5px;
 }
 
-.deck .deck-title{
+.deck{
     width: 100%;
-    padding: 10px 5px;
     font-size: 15px;
     font-weight: bold;
     box-sizing: border-box;
+    padding: 0 15px;
 }
 
 .add-card-button{
@@ -218,15 +214,11 @@ nav {
 .board-canvas .deck-list-content {
     /*display: flex;*/
     flex: 1;
-    /*max-width: 310px;*/
     max-width: 310px;
     min-width: 310px;
-    /*width: 310px;*/
-    padding: 0 5px;
     box-sizing: border-box;
     width: 100%;
     border-radius: 10px;
-    /*background-color: #ebecf0;*/
 }
 
 .deck-list-header {

@@ -152,7 +152,7 @@ async function createDeck() {
 async function editDeck(deckId) {
     // given
     let title = document.getElementById('edit-deck-title-input-' + deckId).value
-    if(title === '' || title === undefined) {
+    if (title === '' || title === undefined) {
         console.log('title is empty')
         return
     }
@@ -251,6 +251,34 @@ async function restoreDeck(dId) {
     })
 }
 
+async function moveDeck(dId, prevId, nextId) {
+    // given
+    const request = {
+        prevDeckId: prevId,
+        nextDeckId: nextId
+    }
+
+    // when
+    await fetch('/api/decks/' + dId + '/move', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(request)
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error['message'])
+        }
+    })
+}
+
 // 순수 javascript 동작
 function logout() {
     resetToken()
@@ -266,14 +294,15 @@ function formDeck(deck) {
     let title = deck['title']
 
     return `
-        <div id="deck-${deckId}" class="deck-list-content">
+        <li id="${deckId}" class="deck deck-list-content" draggable="true"
+            ondragstart="dragStart(event)">
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
                         <p class="list-header-title">${title}</p>                            
                         <a class="list-header-3dot" aria-label="덱 메뉴 생성" onclick="toggleHeaderDots(${deckId})">
                             <i class="fa-solid fa-ellipsis fa-xl"></i>
-                        </a>                            
+                        </a>
                         <div id="list-header-options-${deckId}" class="list-header-options" style="display:none;">
                             <div class="list-header-option" onclick="toggleEditDeckTitle(${deckId})">수정</div>
                             <div class="list-header-option" onclick="archiveDeck(${deckId})">보관</div>
@@ -318,7 +347,7 @@ function formDeck(deck) {
                     </div>
                 </li>
             </ul>
-        </div>
+        </li>
     `
 }
 
@@ -361,6 +390,45 @@ function openNav() {
 
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
+}
+
+// drag & drop 관련 로직
+let draggedIndex = null;
+
+function dragStart(event) {
+    const decks = document.querySelectorAll('.deck');
+    draggedIndex = Array.from(decks).indexOf(event.target);
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+
+    const deckList = document.getElementById('deck-list');
+    if (deckList.contains(event.target)) {
+        const dropIndex = Array.from(deckList.children).indexOf(event.target);
+        let currentDeck = deckList.children[draggedIndex]
+        let targetDeck = event.target
+
+        if (currentDeck.id !== targetDeck.id &&
+            currentDeck.classList.contains('deck') &&
+            targetDeck.classList.contains('deck')) {
+            if (draggedIndex < dropIndex) {
+                let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
+                moveDeck(currentDeck.id, targetDeck.id, nextDeckId)
+                .then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
+            } else {
+                let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
+                moveDeck(currentDeck.id, prevDeckId, targetDeck.id)
+                .then(() => deckList.insertBefore(currentDeck, targetDeck))
+            }
+        }
+    }
+
+    draggedIndex = null;
 }
 
 // token 관련 재생성, 삭제, 만료 로직
