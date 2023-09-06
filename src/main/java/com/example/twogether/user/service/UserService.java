@@ -2,7 +2,6 @@ package com.example.twogether.user.service;
 
 import com.example.twogether.board.repository.BoardColRepository;
 import com.example.twogether.board.repository.BoardRepository;
-import com.example.twogether.card.entity.Card;
 import com.example.twogether.card.repository.CardLabelRepository;
 import com.example.twogether.card.repository.CardRepository;
 import com.example.twogether.checklist.repository.CheckListRepository;
@@ -41,15 +40,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
     private final WpRepository wpRepository;
-    private final BoardRepository boardRepository;
-    private final DeckRepository deckRepository;
-    private final CardLabelRepository cardLabelRepository;
-    private final CommentRepository commentRepository;
-    private final CheckListRepository checkListRepository;
-    private final ChlItemRepository chlItemRepository;
-    private final CardRepository cardRepository;
-    private final BoardColRepository boardColRepository;
     private final WpColRepository wpColRepository;
+    private final BoardRepository boardRepository;
+    private final BoardColRepository boardColRepository;
+    private final DeckRepository deckRepository;
+    private final CardRepository cardRepository;
+    private final CommentRepository commentRepository;
+    private final ChlItemRepository chlItemRepository;
+    private final CheckListRepository checkListRepository;
+    private final CardLabelRepository cardLabelRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisEmail redisUtil;
     private final S3Uploader s3Uploader;
@@ -61,8 +60,10 @@ public class UserService {
     public User signup(SignupRequestDto requestDto) {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        if(!redisUtil.hasKey(requestDto.getEmail()) || !redisUtil.isVerified(requestDto.getEmail()))
+        if (!redisUtil.hasKey(requestDto.getEmail()) || !redisUtil.isVerified(
+            requestDto.getEmail())) {
             throw new CustomException(CustomErrorCode.EMAIL_NOT_VERIFIED);
+        }
 
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin() && requestDto.getAdminToken().equals(adminToken)) {
@@ -87,35 +88,7 @@ public class UserService {
         User found = findUser(id);
         confirmUser(found, user);
 
-        wpRepository.findAllByUser_Id(id).forEach(
-            workspace -> {
-                boardRepository.findAllByWorkspace_Id(workspace.getId()).forEach(
-                    board -> {
-                        deckRepository.findAllByBoard_Id(board.getId()).forEach(
-                            deck -> {
-                                cardRepository.findAllByDeck_Id(deck.getId()).forEach(
-                                    card -> {
-                                        commentRepository.deleteAllByCard_Id(card.getId());
-                                        cardLabelRepository.deleteAllByCard_Id(card.getId());
-                                        checkListRepository.findAllByCardId(card.getId()).forEach(
-                                            checkList -> chlItemRepository.deleteAllByCheckList_Id(checkList.getId())
-                                        );
-                                        checkListRepository.deleteAllByCard_Id(card.getId());
-                                        cardRepository.delete(card);
-                                    }
-                                );
-                                deckRepository.delete(deck);
-                            }
-                        );
-                        boardColRepository.deleteAllByBoard_Id(board.getId());
-                        boardRepository.delete(board);
-                    }
-                );
-                wpColRepository.deleteAllByWorkspace_Id(workspace.getId());
-                wpRepository.delete(workspace);
-            }
-        );
-        userPasswordRepository.deleteAllByUser_Id(found.getId());
+        logicallyDelete(user);
         userRepository.deleteById(found.getId());
     }
 
@@ -124,17 +97,21 @@ public class UserService {
         User found = findUser(user.getId());
 
         checkPassword(requestDto.getPassword(), found.getPassword());       // 기존 비밀번호 일치 여부 확인
-        checkRecentPasswords(found.getId(), requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
+        checkRecentPasswords(found.getId(),
+            requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
 
         // 새 비밀번호 저장
         String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        userPasswordRepository.save(UserPassword.builder().password(newPassword).user(found).build());
+        userPasswordRepository.save(
+            UserPassword.builder().password(newPassword).user(found).build());
         found.editPassword(newPassword);
 
         // 비밀번호 이력이 3개를 넘는가?
-        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(found.getId());
-        if(userPasswords.size() >= 3)
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(
+            found.getId());
+        if (userPasswords.size() >= 3) {
             userPasswordRepository.deleteById(userPasswords.get(0).getId());
+        }
 
         return found;
     }
@@ -146,12 +123,6 @@ public class UserService {
             user.editIcon(icon);
         } catch (RejectedExecutionException e) {
             throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
-        }
-    }
-
-    private void findExistingUserByEmail(String email) {
-        if (userRepository.findByEmail(email).orElse(null) != null) {
-            throw new CustomException(CustomErrorCode.USER_ALREADY_EXISTS);
         }
     }
 
@@ -174,11 +145,45 @@ public class UserService {
     }
 
     private void checkRecentPasswords(Long userId, String newPassword) {
-        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(userId);
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(
+            userId);
         userPasswords.forEach(password -> {
             if (passwordEncoder.matches(newPassword, password.getPassword())) {
                 throw new CustomException(CustomErrorCode.PASSWORD_RECENTLY_USED);
             }
         });
+    }
+
+    private void logicallyDelete(User user) {
+        wpRepository.findAllByUser_Id(user.getId()).forEach(
+            workspace -> {
+                boardRepository.findAllByWorkspace_Id(workspace.getId()).forEach(
+                    board -> {
+                        deckRepository.findAllByBoard_Id(board.getId()).forEach(
+                            deck -> {
+                                cardRepository.findAllByDeck_Id(deck.getId()).forEach(
+                                    card -> {
+                                        commentRepository.deleteAllByCard_Id(card.getId());
+                                        cardLabelRepository.deleteAllByCard_Id(card.getId());
+                                        checkListRepository.findAllByCardId(card.getId()).forEach(
+                                            checkList -> chlItemRepository.deleteAllByCheckList_Id(
+                                                checkList.getId())
+                                        );
+                                        checkListRepository.deleteAllByCard_Id(card.getId());
+                                        cardRepository.delete(card);
+                                    }
+                                );
+                                deckRepository.delete(deck);
+                            }
+                        );
+                        boardColRepository.deleteAllByBoard_Id(board.getId());
+                        boardRepository.delete(board);
+                    }
+                );
+                wpColRepository.deleteAllByWorkspace_Id(workspace.getId());
+                wpRepository.delete(workspace);
+            }
+        );
+        userPasswordRepository.deleteAllByUser_Id(user.getId());
     }
 }
