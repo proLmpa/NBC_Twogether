@@ -174,7 +174,11 @@ async function editDeck(deckId) {
             return
         }
 
-        callMyBoard()
+        const deckTitle = document.getElementById('deck-title-' + deckId)
+        deckTitle.innerHTML = title + ' <i class="fas fa-pen">'
+        var editTitle = document.getElementById('edit-deck-title-input-' + deckId)
+        editTitle.value = null
+        toggleEditDeckTitle(deckId)
     })
 }
 
@@ -200,7 +204,7 @@ async function deleteDeck(deckId) {
             return
         }
 
-        callMyBoard()
+        $('#archive-deck-' + deckId).remove()
     })
 }
 
@@ -299,7 +303,7 @@ function formDeck(deck) {
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
-                        <p class="list-header-title" onclick="toggleEditDeckTitle(${deckId})">${title} <i class="fas fa-pen"></i></p>  
+                        <p id="deck-title-${deckId}" class="list-header-title" onclick="toggleEditDeckTitle(${deckId})">${title} <i class="fas fa-pen"></i></p>  
                         <p class="list-header-archive" onclick="archiveDeck(${deckId})"><i class="fa fa-archive" aria-hidden="true"></i></p>
                     </div>
                     
@@ -350,7 +354,7 @@ function formArchived(deck) {
     let title = deck['title']
 
     return `
-        <li>
+        <li id="archive-deck-${deckId}">
             <span class="archive-item-title">${title}</span>
             <div class="archive-btns">
                 <button onclick="restoreDeck(${deckId})">복구</button>
