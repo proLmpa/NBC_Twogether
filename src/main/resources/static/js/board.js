@@ -285,7 +285,7 @@ function logout() {
     window.location.href = BASE_URL + '/views/login'
 }
 
-function createWorkspaceOnOff() {
+function toggleCreateWorkspace() {
     $('#create-workspace-form').toggle()
 }
 
@@ -299,17 +299,11 @@ function formDeck(deck) {
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
-                        <p class="list-header-title">${title}</p>                            
-                        <a class="list-header-3dot" aria-label="덱 메뉴 생성" onclick="toggleHeaderDots(${deckId})">
-                            <i class="fa-solid fa-ellipsis fa-xl"></i>
-                        </a>
-                        <div id="list-header-options-${deckId}" class="list-header-options" style="display:none;">
-                            <div class="list-header-option" onclick="toggleEditDeckTitle(${deckId})">수정</div>
-                            <div class="list-header-option" onclick="archiveDeck(${deckId})">보관</div>
-                        </div>
+                        <p class="list-header-title" onclick="toggleEditDeckTitle(${deckId})">${title} <i class="fas fa-pen"></i></p>  
+                        <p class="list-header-archive" onclick="archiveDeck(${deckId})"><i class="fa fa-archive" aria-hidden="true"></i></p>
                     </div>
                     
-                    <div id="edit-deck-title-form-${deckId}" hidden>
+                    <div id="edit-deck-title-form-${deckId}" class="edit-deck-title-form" style="display:none">
                         <input id="edit-deck-title-input-${deckId}" type="text" class="edit-deck-title-input" placeholder="새로운 덱 제목을 지어주세요..">
                         <button onclick="editDeck(${deckId})">제출</button>
                         <button onclick="toggleEditDeckTitle(${deckId})">취소</button>
@@ -370,10 +364,6 @@ function formCard(card) {
     let cardId = card['id']
     let title = card['title']
 
-}
-
-function toggleHeaderDots(deckId) {
-    $('#list-header-options-' + deckId).toggle()
 }
 
 function toggleEditDeckTitle(deckId) {

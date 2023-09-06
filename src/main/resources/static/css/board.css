@@ -236,20 +236,22 @@ nav {
     font-weight: bold;
     box-sizing: border-box;
 }
-.deck-list-header .list-header-3dot {
+
+.list-header-archive {
+    margin: 10px;
+}
+
+.deck-list-header {
     color: #44546f;
     position: relative;
     padding: 10px 5px;
+    align-items: center;
 }
-.list-header-options {
-    display: flex;
-    flex-direction: column;
-    padding: 0 5px;
-    box-sizing: border-box;
-}
+
 .deck-list-add-card-container {
     display: flex;
 }
+
 .open-add-cardlist-button {
     border-radius: 8px;
     font-size: 14px;
@@ -272,6 +274,11 @@ nav {
 .deck-list-ul .li{
     width: 100%;
     box-sizing: border-box;
+}
+
+.edit-deck-title-form {
+    display: flex;
+    margin-left: 3px;
 }
 
 .edit-deck-title-input {
