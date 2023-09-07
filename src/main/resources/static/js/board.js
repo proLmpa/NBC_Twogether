@@ -2,336 +2,403 @@ const BASE_URL = 'http://localhost:8080'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
-    let auth = Cookies.get('Authorization') ? Cookies.get('Authorization') : ''
-    let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token')
-        : ''
+	let auth = Cookies.get('Authorization') ? Cookies.get('Authorization') : ''
+	let refresh = Cookies.get('Refresh-Token') ? Cookies.get('Refresh-Token')
+		: ''
 
-    // access 토큰과 refresh 토큰이 모두 존재하지 않을 때 -- 로그아웃
-    if (auth === '' && refresh === '') {
-        window.location.href = BASE_URL + '/views/login'
-    }
+	// access 토큰과 refresh 토큰이 모두 존재하지 않을 때 -- 로그아웃
+	if (auth === '' && refresh === '') {
+		window.location.href = BASE_URL + '/views/login'
+	}
 
-    // 본인 정보 불러오기
-    getUserInfo()
+	// 본인 정보 불러오기
+	getUserInfo()
 })
 
 // fetch API 로직
 async function getUserInfo() {
-    // when
-    await fetch('/api/users/info', {
-        method: 'GET',
-        headers: {
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        }
-    })
+	// when
+	await fetch('/api/users/info', {
+		method: 'GET',
+		headers: {
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        let user = await res.json()
-        $('#nickname').text(user['nickname'])
-        $('#email').text(user.email)
-        $('#role').text(user.role)
+		let user = await res.json()
+		$('#nickname').text(user['nickname'])
+		$('#email').text(user.email)
+		$('#role').text(user.role)
 
-        callMyBoard()
-    })
+		callMyBoard()
+	})
 }
 
 async function callMyBoard() {
-    // given
-    let boardId = document.getElementById('boardId').textContent
+	// given
+	let boardId = document.getElementById('boardId').textContent
 
-    // when
-    await fetch('/api/boards/' + boardId, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        }
-    })
+	// when
+	await fetch('/api/boards/' + boardId, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        var decks = $('#deck-list')
-        var archive = $('#archive-container')
+		var decks = $('#deck-list')
+		var archive = $('#archive-container')
 
-        decks.empty()
-        archive.empty()
-        let board = await res.json()
-        console.log(board)
+		decks.empty()
+		archive.empty()
+		let board = await res.json()
+		console.log(board)
 
-        for (let deck of board['decks']) {
-            if (deck['archived']) {
-                archive.append(formArchived(deck))
-            } else {
-                decks.append(formDeck(deck))
-                for (let card of deck['cards']) {
-                    if(card['archived']) continue
-                    $('#card-list-' + deck['deckId']).append(formCard(card))
-                }
-            }
-        }
-    })
+		for (let deck of board['decks']) {
+			if (deck['archived']) {
+				archive.append(formArchived(deck))
+			} else {
+				decks.append(formDeck(deck))
+				for (let card of deck['cards']) {
+					if (card['archived']) {
+						archive.append(formArchived(card))
+					}
+					$('#list-card-list-' + deck['deckId']).append(
+						formCard(card))
+				}
+			}
+		}
+	})
 }
 
 async function createWorkspace() {
-    // given
-    let title = $('#workspace-title').val()
-    let description = $('#workspace-description').val()
-    const request = {
-        title: title,
-        icon: description
-    }
+	// given
+	let title = $('#workspace-title').val()
+	let description = $('#workspace-description').val()
+	const request = {
+		title: title,
+		icon: description
+	}
 
-    // when
-    await fetch('/api/workspaces', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        },
-        body: JSON.stringify(request)
-    })
+	// when
+	await fetch('/api/workspaces', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request)
+	})
 
-    // then
-    .then(res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        // 생성된 workspace도 노출되도록 하기 위해 함수 호출
-        callMyWorkspaces()
-    })
+		// 생성된 workspace도 노출되도록 하기 위해 함수 호출
+		callMyWorkspaces()
+	})
 }
 
 async function createDeck() {
-    // given
-    let boardId = document.getElementById('boardId').textContent
-    let title = document.getElementById('deck-title-input').value
+	// given
+	let boardId = document.getElementById('boardId').textContent
+	let title = document.getElementById('deck-title-input').value
 
-    // when
-    await fetch('/api/boards/' + boardId + '/decks', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        },
-        body: title
-    })
+	// when
+	await fetch('/api/boards/' + boardId + '/decks', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: title
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        callMyBoard() // board 다시 부르기
-    })
+		callMyBoard() // board 다시 부르기
+	})
 }
 
 async function editDeck(deckId) {
-    // given
-    let title = document.getElementById('edit-deck-title-input-' + deckId).value
-    if (title === '' || title === undefined) {
-        console.log('title is empty')
-        return
-    }
+	// given
+	let title = document.getElementById('edit-deck-title-input-' + deckId).value
+	if (title === '' || title === undefined) {
+		console.log('title is empty')
+		return
+	}
 
-    // when
-    await fetch('/api/decks/' + deckId, {
-        method: 'PUT',
-        body: title
-    })
+	// when
+	await fetch('/api/decks/' + deckId, {
+		method: 'PUT',
+		body: title
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        const deckTitle = document.getElementById('deck-title-' + deckId)
-        deckTitle.innerHTML = title + ' <i class="fas fa-pen">'
-        var editTitle = document.getElementById('edit-deck-title-input-' + deckId)
-        editTitle.value = null
-        toggleEditDeckTitle(deckId)
-    })
+		const deckTitle = document.getElementById('deck-title-' + deckId)
+		deckTitle.innerHTML = title + ' <i class="fas fa-pen">'
+		var editTitle = document.getElementById(
+			'edit-deck-title-input-' + deckId)
+		editTitle.value = null
+		toggleEditDeckTitle(deckId)
+	})
 }
 
 async function deleteDeck(deckId) {
-    let check = confirm("해당 덱을 삭제하시겠습니까?")
-    if (!check) {
-        return
-    }
+	let check = confirm("해당 덱을 삭제하시겠습니까?")
+	if (!check) {
+		return
+	}
 
-    // when
-    await fetch('/api/decks/' + deckId, {
-        method: 'DELETE'
-    })
+	// when
+	await fetch('/api/decks/' + deckId, {
+		method: 'DELETE'
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        $('#archive-deck-' + deckId).remove()
-    })
+		$('#archive-deck-' + deckId).remove()
+	})
 }
 
 async function archiveDeck(dId) {
-    let check = confirm("해당 덱을 보관하시겠습니까?")
-    if (!check) {
-        return
-    }
+	let check = confirm("해당 덱을 보관하시겠습니까?")
+	if (!check) {
+		return
+	}
 
-    // when
-    await fetch('/api/decks/' + dId + '/archive', {
-        method: 'PUT'
-    })
+	// when
+	await fetch('/api/decks/' + dId + '/archive', {
+		method: 'PUT'
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        callMyBoard()
-    })
+		callMyBoard()
+	})
 }
 
 async function restoreDeck(dId) {
-    // when
-    await fetch('/api/decks/' + dId + '/archive', {
-        method: 'PUT'
-    })
+	// when
+	await fetch('/api/decks/' + dId + '/archive', {
+		method: 'PUT'
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        callMyBoard() // board 다시 부르기
-    })
+		callMyBoard() // board 다시 부르기
+	})
 }
 
 async function createCard(deckId) {
-    // given
-    let title = document.getElementById('card-title-input-' + deckId).value
+	// given
+	let title = document.getElementById('card-title-input-' + deckId).value
 
-    // when
-    await fetch('/api/decks/' + deckId + '/cards', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        },
-        body: title
-    })
+	// when
+	await fetch('/api/decks/' + deckId + '/cards', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: title
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error.message)
-            return
-        }
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
 
-        callMyBoard()
-    })
+		callMyBoard()
+	})
+}
+
+function editCardTitle(cardId, newTitle) {
+	// given
+	let title = newTitle
+	if (title === '') {
+		title = null;
+	}
+	let content = null;
+	const request = {
+		title: newTitle,
+		content: content
+	};
+
+	// when
+	fetch('/api/cards/' + cardId, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+	})
 }
 
 async function moveDeck(dId, prevId, nextId) {
-    // given
-    const request = {
-        prevDeckId: prevId,
-        nextDeckId: nextId
-    }
+	// given
+	const request = {
+		prevDeckId: prevId,
+		nextDeckId: nextId
+	}
 
-    // when
-    await fetch('/api/decks/' + dId + '/move', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
-    })
+	// when
+	await fetch('/api/decks/' + dId + '/move', {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(request)
+	})
 
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
 
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error['message'])
-        }
-    })
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+	})
 }
 
+async function moveCard(targetDeckId, draggedCardId, prevCardId, nextCardId) {
+	// given
+	const request = {
+		prevCardId: prevCardId,
+		nextCardId: nextCardId,
+		deckId: targetDeckId
+	}
+
+	// when
+	await fetch('/api/cards/' + draggedCardId + '/move', {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(request)
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+	})
+}
 
 // 순수 javascript 동작
 function logout() {
-    resetToken()
-    window.location.href = BASE_URL + '/views/login'
+	resetToken()
+	window.location.href = BASE_URL + '/views/login'
 }
 
 function toggleCreateWorkspace() {
-    $('#create-workspace-form').toggle()
+	$('#create-workspace-form').toggle()
 }
 
 function createCardOnOff() {
-    $('#create-card-form').toggle()
+	$('#create-card-form').toggle()
 }
 
 function formDeck(deck) {
-    let deckId = deck['deckId']
-    let title = deck['title']
+	let deckId = deck['deckId']
+	let title = deck['title']
 
-    return `
+	return `
         <li id="${deckId}" class="deck deck-list-content" draggable="true"
             ondragstart="dragStart(event)">
             <ul class="deck-list-ul">
@@ -349,7 +416,7 @@ function formDeck(deck) {
                     
                     <div class="deck-list-add-card-area">
                         <div class="card-list-${deckId}" id="card-list-${deckId}">
-                            
+                            <ul class="list-card-list" id="list-card-list-${deckId}"></ul>
                         </div>
                         
                         <!-- todo: 카드 추가 기능 활성화 -->
@@ -388,10 +455,10 @@ function formDeck(deck) {
 }
 
 function formArchived(deck) {
-    let deckId = deck['deckId']
-    let title = deck['title']
+	let deckId = deck['deckId']
+	let title = deck['title']
 
-    return `
+	return `
         <li id="archive-deck-${deckId}">
             <span class="archive-item-title">${title}</span>
             <div class="archive-btns">
@@ -403,170 +470,196 @@ function formArchived(deck) {
 }
 
 function formCard(card) {
-    let cardId = card['id']
-    let title = card['title']
-    let cardLabels = card['cardLabels']
+	let cardId = card['id']
+	let title = card['title']
+	let dueDate = card['dueDate']
+	let content = card['content']
+	let attachment = card['attachment']
+	let cardLabels = card['cardLabels']
+	let checkLists = card['checkLists']
+	let comments = card['comments']
+	let collaborators = card['cardCollaborators']
 
-    return `
-            <ul class="list-card-list">
-              <li>
-                <div class="cards-list" id="cards-list-${cardId}">
-                  <span>
-                    <p class="cards-list-title" id="cards-list-title-${cardId}" onclick="editTitle(${cardId})">
-                      ${title}
-                    </p>
-                  </span>
-                </div>
-              </li>
-            </ul>
-    `
+	return`
+			<li class="card-list" id="card-list-${cardId}" onclick="openCardPage(${cardId})">
+			    <span>
+			        <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId}, event)">
+			            ${title}
+			        </p>
+			    </span>
+			</li>
+			<div id="card-page-wrapper">
+				<div id="card-page-${cardId}" class="card-page">
+					<button id="close-card" onclick="closeCard()">닫기</button>
+				    <div class="card-header">
+				        <p class="card-page-title" onclick="editTitle(${cardId})">
+				            ${title}
+				        </p>
+				    </div>
+				    <div class="card-main">
+				        <h2>카드 작업자</h2>
+				        <!--카드 작업자 추가 기능 및 정렬-->
+				        <h2>라벨</h2>
+				        <!--카드 라벨 추가 및 변경 기능-->
+				        <h2>마감일</h2>
+				        <!--카드 라벨 추가 및 수정 기능-->
+				        <h2>카드 설명</h2>
+				        <p class="card-page-content" onclick=""> <!--설명 수정 메서드 추가-->
+				            ${content}
+				        </p>
+				        <!--카드 첨부 파일-->
+				        <h2>첨부 파일</h2>
+				        <!--카드 체크리스트-->
+				        <h2>체크리스트</h2>
+				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
+				        <!--댓글-->
+				        <h2>댓글</h2>
+				        <!--본인 프로필 이미지와 댓글 입력창-->
+				        <!--댓글 쓴 유저의 프로필 이미지와 카드 댓글 목록-->
+					</div>
+					<div class="card-sidebar">
+						<button class="sidebar-button" id="sidebar-button-members">Members</button>
+						<button class="sidebar-button" id="sidebar-button-labels">Labels</button>
+						<button class="sidebar-button" id="sidebar-button-checklist">Checklist</button>
+						<button class="sidebar-button" id="sidebar-button-duedate">Due Date</button>
+						<button class="sidebar-button" id="sidebar-button-attachment">Attachment</button>
+						<button class="sidebar-button" id="sidebar-button-archive">Archive</button>
+					</div>
+				</div>
+			</div>
+	`
 }
 
-function editTitle(cardId) {
-    // 클릭한 제목 요소 가져오기
-    const titleElement = document.getElementById(`cards-list-title-${cardId}`);
+function editTitle(cardId, event) {
+	event.stopPropagation();
+	// 클릭한 제목 요소 가져오기
+	const titleElement = document.getElementById(`card-list-title-${cardId}`);
 
-    // 현재 제목 내용 가져오기
-    const currentTitle = titleElement.innerText;
+	// 현재 제목 내용 가져오기
+	const currentTitle = titleElement.innerText;
 
-    // 수정 가능한 input 요소 생성
-    const inputElement = document.createElement("input");
-    inputElement.value = currentTitle;
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentTitle;
 
-    // 제목을 input 요소로 교체
-    titleElement.innerHTML = "";
-    titleElement.appendChild(inputElement);
+	// 제목을 input 요소로 교체
+	titleElement.innerHTML = "";
+	titleElement.appendChild(inputElement);
 
-    // input 요소에 포커스 설정
-    inputElement.focus();
+	// input 요소에 포커스 설정
+	inputElement.focus();
 
-    inputElement.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            const newTitle = inputElement.value;
-            titleElement.innerHTML = newTitle;
-            editCardTitle(cardId, newTitle);
-        }
-    });
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newTitle = inputElement.value;
+			titleElement.innerHTML = newTitle;
+			editCardTitle(cardId, newTitle);
+		}
+	});
 
-    // input 요소에서 포커스가 해제되면 수정 완료 처리
-    inputElement.addEventListener("blur", () => {
-        const newTitle = inputElement.value;
-        titleElement.innerHTML = newTitle;
-        editCardTitle(cardId, newTitle);
-    });
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newTitle = inputElement.value;
+		titleElement.innerHTML = newTitle;
+		editCardTitle(cardId, newTitle);
+	});
 }
 
-function editCardTitle(cardId, newTitle) {
-    // given
-    let title = newTitle
-    if (title === '') {
-        title = null;
-    }
-    let content = null;
-    const request = {
-        title: newTitle,
-        content: content
-    };
+function openCardPage(cardId) {
+	// 팝업 창을 보이도록 설정
+	var cardPageWrapper = document.getElementById("card-page-wrapper");
+	var cardPage = document.getElementById("card-page-" + cardId);
+	cardPageWrapper.style.display = "block";
+	cardPage.style.display = "block";
+}
 
-    // when
-    fetch('/api/cards/' + cardId, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        },
-        body: JSON.stringify(request),
-    })
-
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
-
-        if (res.status !== 200) {
-            let error = await res.json()
-            alert(error['message'])
-        }
-    })
+function closeCard() {
+	// 팝업 창을 숨김
+	var cardPageWrapper = document.getElementById("card-page-wrapper");
+	var cardPage = document.querySelector(".card-page");
+	cardPageWrapper.style.display = "none";
+	cardPage.style.display = "none";
 }
 
 function toggleEditDeckTitle(deckId) {
-    $('#edit-deck-title-form-' + deckId).toggle()
+	$('#edit-deck-title-form-' + deckId).toggle()
 }
 
 function toggleCreateDeckForm() {
-    $('#create-deck-form').toggle()
+	$('#create-deck-form').toggle()
 }
 
 function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
+	document.getElementById("mySidenav").style.width = "250px";
 }
 
 function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
+	document.getElementById("mySidenav").style.width = "0";
 }
 
 // drag & drop 관련 로직
 let draggedIndex = null;
 
 function dragStart(event) {
-    const decks = document.querySelectorAll('.deck');
-    draggedIndex = Array.from(decks).indexOf(event.target);
+	const decks = document.querySelectorAll('.deck');
+	draggedIndex = Array.from(decks).indexOf(event.target);
 }
 
 function allowDrop(event) {
-    event.preventDefault();
+	event.preventDefault();
 }
 
 function drop(event) {
-    event.preventDefault();
+	event.preventDefault();
 
-    const deckList = document.getElementById('deck-list');
-    if (deckList.contains(event.target)) {
-        const dropIndex = Array.from(deckList.children).indexOf(event.target);
-        let currentDeck = deckList.children[draggedIndex]
-        let targetDeck = event.target
+	const deckList = document.getElementById('deck-list');
+	if (deckList.contains(event.target)) {
+		const dropIndex = Array.from(deckList.children).indexOf(event.target);
+		let currentDeck = deckList.children[draggedIndex]
+		let targetDeck = event.target
 
-        if (currentDeck.id !== targetDeck.id &&
-            currentDeck.classList.contains('deck') &&
-            targetDeck.classList.contains('deck')) {
-            if (draggedIndex < dropIndex) {
-                let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
-                moveDeck(currentDeck.id, targetDeck.id, nextDeckId)
-                .then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
-            } else {
-                let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
-                moveDeck(currentDeck.id, prevDeckId, targetDeck.id)
-                .then(() => deckList.insertBefore(currentDeck, targetDeck))
-            }
-        }
-    }
+		if (currentDeck.id !== targetDeck.id &&
+			currentDeck.classList.contains('deck') &&
+			targetDeck.classList.contains('deck')) {
+			if (draggedIndex < dropIndex) {
+				let nextDeckId = targetDeck.nextElementSibling === null ? 0
+					: targetDeck.nextElementSibling.id
+				moveDeck(currentDeck.id, targetDeck.id, nextDeckId)
+				.then(() => deckList.insertBefore(currentDeck,
+					targetDeck.nextElementSibling))
+			} else {
+				let prevDeckId = targetDeck.previousElementSibling === null ? 0
+					: targetDeck.previousElementSibling.id
+				moveDeck(currentDeck.id, prevDeckId, targetDeck.id)
+				.then(() => deckList.insertBefore(currentDeck, targetDeck))
+			}
+		}
+	}
 
-    draggedIndex = null;
+	draggedIndex = null;
 }
 
 // token 관련 재생성, 삭제, 만료 로직
 function refreshToken(response) {
-    let token = response.headers.get('Authorization')
-    if (token !== null) {
-        resetToken()
-        Cookies.set('Authorization', token, {path: '/'})
-        Cookies.set('Refresh-Token', response.headers.get('Refresh-Token'),
-            {path: '/'})
-    }
+	let token = response.headers.get('Authorization')
+	if (token !== null) {
+		resetToken()
+		Cookies.set('Authorization', token, {path: '/'})
+		Cookies.set('Refresh-Token', response.headers.get('Refresh-Token'),
+			{path: '/'})
+	}
 }
 
 function resetToken() {
-    Cookies.remove('Authorization', {path: '/'})
-    Cookies.remove('Refresh-Token', {path: '/'})
+	Cookies.remove('Authorization', {path: '/'})
+	Cookies.remove('Refresh-Token', {path: '/'})
 }
 
 function checkTokenExpired(res) {
-    if (res.status === 412) {
-        alert('토큰이 만료되었습니다. 다시 로그인해주세요!')
-        resetToken()
-        window.location.href = BASE_URL + '/views/login'
-    }
+	if (res.status === 412) {
+		alert('토큰이 만료되었습니다. 다시 로그인해주세요!')
+		resetToken()
+		window.location.href = BASE_URL + '/views/login'
+	}
 }
