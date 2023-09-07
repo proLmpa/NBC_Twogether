@@ -262,6 +262,9 @@ async function restoreDeck(dId) {
 async function createCard(deckId) {
 	// given
 	let title = document.getElementById('card-title-input-' + deckId).value
+	if (title === '') {
+		title = '카드 제목'
+	}
 
 	// when
 	await fetch('/api/decks/' + deckId + '/cards', {
@@ -293,11 +296,11 @@ function editCardTitle(cardId, newTitle) {
 	// given
 	let title = newTitle
 	if (title === '') {
-		title = null;
+		title = '카드 타이틀을 입력해주세요';
 	}
 	let content = null;
 	const request = {
-		title: newTitle,
+		title: title,
 		content: content
 	};
 
@@ -329,7 +332,7 @@ function editCardContent(cardId, newContent) {
 	let title = null;
 	let content = newContent
 	if (content === '') {
-		content = null;
+		content = '카드 설명을 입력해주세요'
 	}
 	const request = {
 		title: title,
