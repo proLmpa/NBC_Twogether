@@ -174,11 +174,11 @@ public class UserControllerTest {
             .andExpect(status().isBadRequest())
             .andDo(print());
 
-        // when-then-iii. 기존에 사용한 이력이 있는 비밀번호 사용 시도
+        // when-then-iii. 2회 이내에 사용한 이력이 있는 비밀번호 사용 시도
         body = mapper.writeValueAsString(
             EditPasswordRequestDto.builder()
                 .password(newPassword)
-                .newPassword(password)
+                .newPassword(newPassword)
                 .build()
         );
 
