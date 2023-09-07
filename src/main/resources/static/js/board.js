@@ -74,16 +74,17 @@ async function callMyBoard() {
 		console.log(board)
 
 		for (let deck of board['decks']) {
+			$('list-card-list-' + deck['deckId']).empty()
 			if (deck['archived']) {
 				archive.append(formArchived(deck))
 			} else {
 				decks.append(formDeck(deck))
 				for (let card of deck['cards']) {
 					if (card['archived']) {
-						archive.append(formArchived(card))
+						archive.append(formArchivedCard(card))
+					} else {
+						$('#list-card-list-' + deck['deckId']).append(formCard(card))
 					}
-					$('#list-card-list-' + deck['deckId']).append(
-						formCard(card))
 				}
 			}
 		}
@@ -323,6 +324,41 @@ function editCardTitle(cardId, newTitle) {
 	})
 }
 
+function editCardContent(cardId, newContent) {
+	// given
+	let title = null;
+	let content = newContent
+	if (content === '') {
+		content = null;
+	}
+	const request = {
+		title: title,
+		content: content
+	};
+
+	// when
+	fetch('/api/cards/' + cardId, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+	})
+}
+
 async function moveDeck(dId, prevId, nextId) {
 	// given
 	const request = {
@@ -377,6 +413,79 @@ async function moveCard(targetDeckId, draggedCardId, prevCardId, nextCardId) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+	})
+}
+
+async function archiveCard(cardId) {
+	let check = confirm("해당 카드를 보관하시겠습니까?")
+	if (!check) {
+		return
+	}
+
+	// when
+	await fetch('/api/cards/' + cardId + '/archive', {
+		method: 'PUT'
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
+
+		callMyBoard()
+	})
+}
+
+async function restoreCard(cardId) {
+	// when
+	await fetch('/api/cards/' + cardId + '/archive', {
+		method: 'PUT'
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
+
+		callMyBoard() // board 다시 부르기
+	})
+}
+
+async function deleteCard(cardId) {
+	let check = confirm("해당 카드를 삭제하시겠습니까?")
+	if (!check) {
+		return
+	}
+
+	// when
+	await fetch('/api/cards/' + cardId, {
+		method: 'DELETE'
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
+
+		$('#archive-card-' + cardId).remove()
 	})
 }
 
@@ -469,6 +578,21 @@ function formArchived(deck) {
     `
 }
 
+function formArchivedCard(card) {
+	let cardId = card['id']
+	let title = card['title']
+
+	return `
+        <li id="archive-card-${cardId}">
+            <span class="archive-item-title">${title}</span>
+            <div class="archive-btns">
+                <button onclick="restoreCard(${cardId})">복구</button>
+                <button onclick="deleteCard(${cardId})">삭제</button>
+            </div>
+        </li>
+    `
+}
+
 function formCard(card) {
 	let cardId = card['id']
 	let title = card['title']
@@ -488,11 +612,11 @@ function formCard(card) {
 			        </p>
 			    </span>
 			</li>
-			<div id="card-page-wrapper">
+			<div id="card-page-wrapper-${cardId}" class="card-page-wrapper">
 				<div id="card-page-${cardId}" class="card-page">
-					<button id="close-card" onclick="closeCard()">닫기</button>
+					<button id="close-card" onclick="closeCard(${cardId})">닫기</button>
 				    <div class="card-header">
-				        <p class="card-page-title" onclick="editTitle(${cardId})">
+				        <p class="card-page-title" id="card-page-title-${cardId}" onclick="editTitleInCP(${cardId})">
 				            ${title}
 				        </p>
 				    </div>
@@ -500,19 +624,17 @@ function formCard(card) {
 				        <h2>카드 작업자</h2>
 				        <!--카드 작업자 추가 기능 및 정렬-->
 				        <h2>라벨</h2>
-				        <!--카드 라벨 추가 및 변경 기능-->
+				        <!--트렐로 참조-->
 				        <h2>마감일</h2>
-				        <!--카드 라벨 추가 및 수정 기능-->
+				        <!--달력 처럼 보여줄지 그냥 YYYY.MM.dd 꼴로 보여줄지 논의-->
 				        <h2>카드 설명</h2>
-				        <p class="card-page-content" onclick=""> <!--설명 수정 메서드 추가-->
+				        <p class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
 				            ${content}
 				        </p>
-				        <!--카드 첨부 파일-->
 				        <h2>첨부 파일</h2>
-				        <!--카드 체크리스트-->
+				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
 				        <h2>체크리스트</h2>
 				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
-				        <!--댓글-->
 				        <h2>댓글</h2>
 				        <!--본인 프로필 이미지와 댓글 입력창-->
 				        <!--댓글 쓴 유저의 프로필 이미지와 카드 댓글 목록-->
@@ -523,7 +645,7 @@ function formCard(card) {
 						<button class="sidebar-button" id="sidebar-button-checklist">Checklist</button>
 						<button class="sidebar-button" id="sidebar-button-duedate">Due Date</button>
 						<button class="sidebar-button" id="sidebar-button-attachment">Attachment</button>
-						<button class="sidebar-button" id="sidebar-button-archive">Archive</button>
+						<button class="sidebar-button" id="sidebar-button-archive" onclick="archiveCard(${cardId})">Archive</button>
 					</div>
 				</div>
 			</div>
@@ -566,20 +688,92 @@ function editTitle(cardId, event) {
 	});
 }
 
+function editTitleInCP(cardId) {
+	// 클릭한 제목 요소 가져오기
+	const titleElement = document.getElementById(`card-page-title-${cardId}`);
+
+	// 현재 제목 내용 가져오기
+	const currentTitle = titleElement.innerText;
+
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentTitle;
+
+	// 제목을 input 요소로 교체
+	titleElement.innerHTML = "";
+	titleElement.appendChild(inputElement);
+
+	// input 요소에 포커스 설정
+	inputElement.focus();
+
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newTitle = inputElement.value;
+			titleElement.innerHTML = newTitle;
+			editCardTitle(cardId, newTitle);
+		}
+	});
+
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newTitle = inputElement.value;
+		titleElement.innerHTML = newTitle;
+		editCardTitle(cardId, newTitle);
+	});
+}
+
+function editContentInCP(cardId) {
+	// 클릭한 제목 요소 가져오기
+	const contentElement = document.getElementById(`card-page-content-${cardId}`);
+
+	// 현재 제목 내용 가져오기
+	const currentContent = contentElement.innerText;
+
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentContent;
+
+	// 제목을 input 요소로 교체
+	contentElement.innerHTML = "";
+	contentElement.appendChild(inputElement);
+
+	// input 요소에 포커스 설정
+	inputElement.focus();
+
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newContent = inputElement.value;
+			contentElement.innerHTML = newContent;
+			editCardContent(cardId, newContent);
+		}
+	});
+
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newContent = inputElement.value;
+		contentElement.innerHTML = newContent;
+		editCardContent(cardId, newContent);
+	});
+}
+
 function openCardPage(cardId) {
 	// 팝업 창을 보이도록 설정
-	var cardPageWrapper = document.getElementById("card-page-wrapper");
+	var cardPageWrapper = document.getElementById("card-page-wrapper-" + cardId);
 	var cardPage = document.getElementById("card-page-" + cardId);
 	cardPageWrapper.style.display = "block";
 	cardPage.style.display = "block";
 }
 
-function closeCard() {
+function closeCard(cardId) {
 	// 팝업 창을 숨김
-	var cardPageWrapper = document.getElementById("card-page-wrapper");
+	var cardPageWrapper = document.getElementById("card-page-wrapper-" + cardId);
 	var cardPage = document.querySelector(".card-page");
 	cardPageWrapper.style.display = "none";
 	cardPage.style.display = "none";
+
+	callMyBoard().then()
 }
 
 function toggleEditDeckTitle(deckId) {

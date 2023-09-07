@@ -342,7 +342,7 @@ nav {
     padding: 2px 2px 5px 5px;
 }
 /* 팝업 창 스타일링 */
-#card-page-wrapper {
+.card-page-wrapper {
     display: none;
     position: fixed;
     top: 0;
