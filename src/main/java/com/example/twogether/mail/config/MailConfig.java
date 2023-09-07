@@ -25,10 +25,10 @@ public class MailConfig {
     @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean auth;
 
-    @Value("${spring.mail.properties.mail.smtp.auth.startlls.enable}")
+    @Value("${spring.mail.properties.mail.smtp.startlls.enable}")
     private boolean starttlsEnable;
 
-    @Value("${spring.mail.properties.mail.smtp.auth.startlls.required}")
+    @Value("${spring.mail.properties.mail.smtp.startlls.required}")
     private boolean starttlsRequired;
 
     @Value("${spring.mail.properties.mail.smtp.connectiontimeout}")
