@@ -281,14 +281,14 @@ edit-workspace-form {
      flex-direction: column;
      align-items: center;
     border-radius: 10px;
- }
+    z-index:99;
+
+}
 .invite-wp-col-header {
     display: flex;
     width: 100%;
     justify-content: space-between;
     margin-bottom: 5px;
-    z-index:999;
-    position:relative;
 }
 .wp-col-email {
     width:100%;
@@ -352,7 +352,7 @@ edit-workspace-form {
 /* Board Styles */
 .workspace-board-list {
     display : flex;
-    z-index:100;
+    /*z-index:100;*/
 }
 
 .board {
