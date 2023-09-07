@@ -80,7 +80,7 @@ async function callMyBoard() {
                 decks.append(formDeck(deck))
                 for (let card of deck['cards']) {
                     if(card['archived']) continue
-                    $('#card-list-' + deck['deckId']).append(formCard(card))
+                    $('#list-card-list-' + deck['deckId']).append(formCard(card))
                 }
             }
         }
@@ -349,7 +349,7 @@ function formDeck(deck) {
                     
                     <div class="deck-list-add-card-area">
                         <div class="card-list-${deckId}" id="card-list-${deckId}">
-                            
+                        <ul class="list-card-list" id="list-card-list-${deckId}"></ul>
                         </div>
                         
                         <!-- todo: 카드 추가 기능 활성화 -->
@@ -408,23 +408,19 @@ function formCard(card) {
     let cardLabels = card['cardLabels']
 
     return `
-            <ul class="list-card-list">
-              <li>
-                <div class="cards-list" id="cards-list-${cardId}">
-                  <span>
-                    <p class="cards-list-title" id="cards-list-title-${cardId}" onclick="editTitle(${cardId})">
+              <li class="card-list" id="card-list-${cardId}">
+                <span>
+                    <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId})">
                       ${title}
                     </p>
-                  </span>
-                </div>
+                </span>
               </li>
-            </ul>
     `
 }
 
 function editTitle(cardId) {
     // 클릭한 제목 요소 가져오기
-    const titleElement = document.getElementById(`cards-list-title-${cardId}`);
+    const titleElement = document.getElementById(`card-list-title-${cardId}`);
 
     // 현재 제목 내용 가져오기
     const currentTitle = titleElement.innerText;
@@ -546,6 +542,36 @@ function drop(event) {
 
     draggedIndex = null;
 }
+
+async function moveCard(targetDeckId, draggedCardId, prevCardId, nextCardId) {
+    // given
+    const request = {
+        prevCardId: prevCardId,
+        nextCardId: nextCardId,
+        deckId: targetDeckId
+    }
+
+    // when
+    await fetch('/api/cards/' + draggedCardId + '/move', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(request)
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        if (res.status !== 200) {
+            let error = await res.json()
+            alert(error['message'])
+        }
+    })
+}
+
 
 // token 관련 재생성, 삭제, 만료 로직
 function refreshToken(response) {
