@@ -3,7 +3,7 @@ function logout() {
     window.location.href = BASE_URL + '/views/login'
 }
 
-async function getUserInfo() {
+async function callMyUserInfo() {
 
     // when
     await fetch('/api/users/info', {

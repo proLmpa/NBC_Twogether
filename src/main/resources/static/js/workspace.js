@@ -18,12 +18,20 @@ $(document).ready(function () {
             $('#userProfile-panel').show();
     });
 
+    // 헤더 : 알림 버튼 클릭 이벤트 핸들러 추가
+    $('#alarm-button').click(function () {
+        if ($('#alarm-panel').is(':visible'))
+            $('#alarm-panel').hide();
+        else
+            $('#alarm-panel').show();
+    })
+
     // 개인 프로필 창 : 사진 클릭 이벤트 핸들러 추가
     $('.close-userProfile-panel').click(function () {
         $('#userProfile-panel').hide();
     });
 
-    // 사용자 정보 수정 버튼 클릭 이벤트 핸들러 추가
+    // 개인 프로필 창 : 사용자 정보 수정 버튼 클릭 이벤트 핸들러 추가
     $('#change-userInfo-btn').click(function () {
         const oldNickname = $('#nickname').text()
         const oldIntroduction = $('#introduction').text();
@@ -35,7 +43,7 @@ $(document).ready(function () {
         $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').show();
     });
 
-    // 사용자 이미지 수정 관련 이벤트 핸들러 추가
+    // 개인 프로필 창 : 사용자 이미지 수정 관련 이벤트 핸들러 추가
     $('#change-userImage-btn').click(function () {
         $('#profileImage-btns').show();
         $('#change-userImage-btn, #change-userInfo-btn').hide();
@@ -46,7 +54,8 @@ $(document).ready(function () {
     })
 
     // 본인 정보 불러오기
-    getUserInfo()
+    callMyUserInfo()
+    callMyAlarms()
 })
 
 function callMyWorkspaces() {
@@ -466,7 +475,7 @@ function formMyWorkspace(workspace) {
 function formMyBoard(board) {
     let boardId = board['boardId']
     let title = board['title']
-    let color = board['color']
+    let color = board['color'] // ?
 
     return `
     <div id="board-${boardId}" class="board">
@@ -550,7 +559,7 @@ function formColWorkspace(workspace) {
 function formColBoard(board) {
     let boardId = board['boardId']
     let title = board['title']
-    let color = board['color']
+    let color = board['color'] // ?
 
     return `
     <div id="board-${boardId}" class="board" onclick="moveToBoard(${boardId})">

@@ -1,6 +1,6 @@
 package com.example.twogether.alarm.controller;
 
-import com.example.twogether.alarm.dto.CardEditedsResponseDto;
+import com.example.twogether.alarm.dto.AlarmsResponseDto;
 import com.example.twogether.alarm.service.AlarmService;
 import com.example.twogether.common.dto.ApiResponseDto;
 import com.example.twogether.common.security.UserDetailsImpl;
@@ -43,11 +43,11 @@ public class AlarmController {
 
     @Operation(summary = "알림 전체 조회", description = "로그인 시 본인이 가진 알림이 전체 조회되며, 이벤트 리스너가 새로운 알림 생성을 감지할 때마다 수행되는 기능입니다.")
     @GetMapping(value = "/alarms")
-    public ResponseEntity<CardEditedsResponseDto> getAlarms(
+    public ResponseEntity<AlarmsResponseDto> getAlarms(
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        CardEditedsResponseDto alarms = alarmService.getAlarms(userDetails.getUser());
+        AlarmsResponseDto alarms = alarmService.getAlarms(userDetails.getUser());
         return ResponseEntity.ok().body(alarms);
     }
 }

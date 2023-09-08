@@ -102,10 +102,11 @@ public class UserService {
 
     @Transactional
     public void editIcon(MultipartFile multipartFile, User user) throws IOException {
+
+        User target = findUser(user.getId());
         try {
             String icon = s3Uploader.upload(multipartFile, "Icon");
-            user.editIcon(icon);
-            userRepository.save(user);
+            target.editIcon(icon);
         } catch (RejectedExecutionException e) {
             throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
         }

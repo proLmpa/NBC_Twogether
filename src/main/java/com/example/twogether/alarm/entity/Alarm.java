@@ -74,4 +74,7 @@ public class Alarm extends Timestamped {
     public void read(){
         this.isRead = true;
     }
+    public void cancelRead(){
+        this.isRead = false;
+    }
 }

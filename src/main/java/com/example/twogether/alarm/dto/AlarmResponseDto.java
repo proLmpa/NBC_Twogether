@@ -8,15 +8,15 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class CardEditedResponseDto {
+public class AlarmResponseDto {
 
     private Long id;
     private String content;
     private String url;
     private Boolean isRead;
 
-    public static CardEditedResponseDto of(Alarm alarm) {
-        return CardEditedResponseDto.builder()
+    public static AlarmResponseDto of(Alarm alarm) {
+        return AlarmResponseDto.builder()
             .id(alarm.getId())
             .content(alarm.getContent())
             .url(alarm.getUrl())

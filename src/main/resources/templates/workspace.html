@@ -8,7 +8,6 @@
 
     <link rel="stylesheet" type="text/css" href="/css/workspace.css">
     <link rel="stylesheet" type="text/css" href="/css/header.css">
-    <link rel="stylesheet" type="text/css" href="/css/panel.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -31,12 +30,23 @@
     <h2 id='header-title'>Two Gether</h2>
     <div id="header-profileImage-container"><img id="header-profileImage"></div>
     <div id="alarm-badge"></div>
+    <div id="alarm-button">
+        <i class="fas fa-bell"></i>
+    </div>
     <i id="logout" class="fas fa-sign-out-alt" onclick="logout()"></i>
 </header>
 
 <div id="content">
+    <!--알림-->
+    <div id="alarm-panel" style="display: none">
+        <button id="enable">알림 허용</button>
+        <div id="alarm-list-container">
+            <ul id="alarm-list">
+                <!-- 알림 목록 추가되는 영역 -->
+            </ul>
+        </div>
+    </div>
     <div id="userProfile-panel" class="hide">
-
         <!--프로필 이미지-->
         <img id="panel-profileImage" class="close-userProfile-panel">
 
@@ -75,27 +85,11 @@
             </button>
         </div><br>
 
-        <button id="change-userImage-btn">Edit Image</button><br>
         <button id="change-userInfo-btn">Edit Info</button><br>
-
-        <br>
-
-        <!--알림-->
-
-        <div class="alarm-header">
-            <div>
-                <ul id="alarm-list">
-                    <!-- 알림 목록 추가되는 영역 -->
-                </ul>
-            </div>
-            <button id="read-alarm-btn">
-            </button>
-            <button id="delete-alarm-btn">
-            </button>
-        </div>
+        <button id="change-userImage-btn">Edit Image</button><br>
     </div>
 
-
+    <!--워크스페이스-->
     <nav id="nav">
         <ul id="nav-workspaces">
         </ul>
