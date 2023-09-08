@@ -473,7 +473,7 @@ function formMyWorkspace(workspace) {
               <div class="invite-wp-col-header">
 <!--                <h2><em>${title}</em> 워크스페이스에 초대하세요.</h2>-->
                 <h2>워크스페이스에 초대하세요.</h2>
-                <a class="cancel-button-invite-wp-col" onclick="closeAllInviteCollaborators()">
+                <a class="close-button-invite-wp-col" onclick="closeAllInviteCollaborators()">
                 <i class="fa-solid fa-xmark fa-xl"></i>
                 </a>
                 </div>
