@@ -21,10 +21,14 @@
   <!--  js를 jquery와 함께 호출 시 스크립트 실행 순서에 의해 jQuery를 먼저 선언해야 한다. -->
 
   <title>Twogether</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
 </head>
 <body>
 <header id="header">
-  <h2 id='title'>Two Gether</h2>
+  <div onclick="moveToWorkspace()">
+    <h2 id='title'>Two Gether</h2></div>
   <div class="user-info">
     <i class="fas fa-user-circle"></i>
     Email: <span id="email"></span>

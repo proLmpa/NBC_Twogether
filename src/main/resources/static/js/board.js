@@ -39,6 +39,10 @@ async function getUserInfo() {
 		callMyBoard()
 	})
 }
+// 워크스페이스로 이동
+function moveToWorkspace() {
+	window.location.href = BASE_URL + '/views/workspace'
+}
 
 async function callMyBoard() {
 	// given

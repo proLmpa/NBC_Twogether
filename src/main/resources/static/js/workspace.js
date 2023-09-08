@@ -112,6 +112,11 @@ function callColWorkspaces() {
   })
 }
 
+// 워크스페이스로 이동
+function moveToWorkspace() {
+  window.location.reload();
+}
+
 async function createWorkspace() {
   // given
   let title = $('#workspace-title').val()
