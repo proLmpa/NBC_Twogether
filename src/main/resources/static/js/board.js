@@ -83,7 +83,7 @@ async function callMyBoard() {
 					if (card['archived']) {
 						archive.append(formArchivedCard(card))
 					} else {
-						$('#list-card-list-' + deck['deckId']).append(formCard(card))
+						$('#list-card-list-' + deck['deckId']).append(formCard(card, boardId))
 					}
 				}
 			}
@@ -362,6 +362,39 @@ function editCardContent(cardId, newContent) {
 	})
 }
 
+function submitComment(boardId, cardId) {
+	// given
+	let newComment = document.getElementById('comment-input-' + cardId).value
+	if (newComment === '') {
+		return
+	}
+	const request = {
+		content: newComment
+	};
+
+	// when
+	fetch('/api/boards/' + boardId + '/cards/' + cardId + '/comments', {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+	})
+}
+
 async function moveDeck(dId, prevId, nextId) {
 	// given
 	const request = {
@@ -527,7 +560,7 @@ function formDeck(deck) {
                     </div>
                     
                     <div class="deck-list-add-card-area">
-                        <div class="card-list-${deckId}" id="card-list-${deckId}">
+                        <div class="cards" id="cards-${deckId}">
                             <ul class="list-card-list" id="list-card-list-${deckId}"></ul>
                         </div>
                         
@@ -596,7 +629,7 @@ function formArchivedCard(card) {
     `
 }
 
-function formCard(card) {
+function formCard(card, boardId) {
 	let cardId = card['id']
 	let title = card['title']
 	let dueDate = card['dueDate']
@@ -606,6 +639,22 @@ function formCard(card) {
 	let checkLists = card['checkLists']
 	let comments = card['comments']
 	let collaborators = card['cardCollaborators']
+
+	// 댓글 부분
+	let commentsHtml = '';
+	if (comments && comments.length > 0) {
+		commentsHtml = '<h2>댓글</h2>';
+		commentsHtml += '<div class="comment" id="comment-' + cardId + '">';
+		comments.forEach(comment => {
+			commentsHtml += '<div class="comment-item">';
+			commentsHtml += '<img src="' + comment.icon + '" alt="User Icon">';
+			commentsHtml += '<p class="comment-writer">' + comment.writer + '</p>';
+			commentsHtml += '<p class="comment-content">' + comment.content + '</p>';
+			commentsHtml += '<p class="comment-modifiedAt">' + comment.modifiedAt + '</p>';
+			commentsHtml += '</div>';
+		});
+		commentsHtml += '</div>';
+	}
 
 	return`
 			<li class="card-list" id="card-list-${cardId}" onclick="openCardPage(${cardId})">
@@ -638,9 +687,12 @@ function formCard(card) {
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
 				        <h2 style="display: none">체크리스트</h2>
 				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
-				        <h2 style="display: none">댓글</h2>
-				        <!--본인 프로필 이미지와 댓글 입력창-->
-				        <!--댓글 쓴 유저의 프로필 이미지와 카드 댓글 목록-->
+				        ${commentsHtml}
+				        <div class="comment-input">
+				        	<span id="nickname"></span>
+				            <input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
+				            <button onclick="submitComment(${boardId}, ${cardId})">제출</button>
+				        </div>
 					</div>
 					<div class="card-sidebar">
 						<button class="sidebar-button" id="sidebar-button-members" style="display: none">Members</button>
@@ -655,6 +707,7 @@ function formCard(card) {
 	`
 }
 
+// 보드 페이지에서 카드 제목 수정하기
 function editTitle(cardId, event) {
 	event.stopPropagation();
 	// 클릭한 제목 요소 가져오기
@@ -691,6 +744,7 @@ function editTitle(cardId, event) {
 	});
 }
 
+// 카드 페이지에서 카드 제목 수정하기
 function editTitleInCP(cardId) {
 	// 클릭한 제목 요소 가져오기
 	const titleElement = document.getElementById(`card-page-title-${cardId}`);

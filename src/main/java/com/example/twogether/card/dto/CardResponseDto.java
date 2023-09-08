@@ -5,6 +5,7 @@ import com.example.twogether.card.entity.CardCollaborator;
 import com.example.twogether.card.entity.CardLabel;
 import com.example.twogether.checklist.dto.CheckListResponseDto;
 import com.example.twogether.comment.dto.CommentResponseDto;
+import com.example.twogether.label.dto.CardLabelResponseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class CardResponseDto {
     private float position;
     private List<CheckListResponseDto> checkLists;
     private List<CommentResponseDto> comments;
-//    private List<CardLabelResponseDto> cardLabels;
+    private List<CardLabelResponseDto> cardLabels;
     private List<CardColResponseDto> cardCollaborators;
 
     public static CardResponseDto of(Card card) {
@@ -41,11 +42,11 @@ public class CardResponseDto {
             .dueDate(card.getDueDate())
             .attachment(card.getAttachment())
             .position(card.getPosition())
-//            .checkLists(card.getCheckLists().stream().map(CheckListResponseDto:of).toList())
+            .checkLists(card.getCheckLists().stream().map(CheckListResponseDto::of).toList())
             .comments(card.getComments().stream().map(CommentResponseDto::of).toList())
+            .cardLabels(card.getCardLabels().stream().map(CardLabelResponseDto::of).toList())
             .cardCollaborators(card.getCardCollaborators().stream().map(
                 CardColResponseDto::of).toList())
             .build();
     }
-
 }
