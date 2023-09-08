@@ -624,30 +624,30 @@ function formCard(card) {
 				        </p>
 				    </div>
 				    <div class="card-main">
-				        <h2>카드 작업자</h2>
+				        <h2 style="display: none">카드 작업자</h2>
 				        <!--카드 작업자 추가 기능 및 정렬-->
-				        <h2>라벨</h2>
+				        <h2 style="display: none">라벨</h2>
 				        <!--트렐로 참조-->
-				        <h2>마감일</h2>
+				        <h2 style="display: none">마감일</h2>
 				        <!--달력 처럼 보여줄지 그냥 YYYY.MM.dd 꼴로 보여줄지 논의-->
 				        <h2>카드 설명</h2>
 				        <p class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
 				            ${content}
 				        </p>
-				        <h2>첨부 파일</h2>
+				        <h2 style="display: none">첨부 파일</h2>
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
-				        <h2>체크리스트</h2>
+				        <h2 style="display: none">체크리스트</h2>
 				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
-				        <h2>댓글</h2>
+				        <h2 style="display: none">댓글</h2>
 				        <!--본인 프로필 이미지와 댓글 입력창-->
 				        <!--댓글 쓴 유저의 프로필 이미지와 카드 댓글 목록-->
 					</div>
 					<div class="card-sidebar">
-						<button class="sidebar-button" id="sidebar-button-members">Members</button>
-						<button class="sidebar-button" id="sidebar-button-labels">Labels</button>
-						<button class="sidebar-button" id="sidebar-button-checklist">Checklist</button>
-						<button class="sidebar-button" id="sidebar-button-duedate">Due Date</button>
-						<button class="sidebar-button" id="sidebar-button-attachment">Attachment</button>
+						<button class="sidebar-button" id="sidebar-button-members" style="display: none">Members</button>
+						<button class="sidebar-button" id="sidebar-button-labels" style="display: none">Labels</button>
+						<button class="sidebar-button" id="sidebar-button-checklist" style="display: none">Checklist</button>
+						<button class="sidebar-button" id="sidebar-button-duedate" style="display: none">Due Date</button>
+						<button class="sidebar-button" id="sidebar-button-attachment" style="display: none">Attachment</button>
 						<button class="sidebar-button" id="sidebar-button-archive" onclick="archiveCard(${cardId})">Archive</button>
 					</div>
 				</div>
