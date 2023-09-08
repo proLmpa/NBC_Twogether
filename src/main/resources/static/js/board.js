@@ -617,11 +617,16 @@ function formCard(card) {
 			</li>
 			<div id="card-page-wrapper-${cardId}" class="card-page-wrapper">
 				<div id="card-page-${cardId}" class="card-page">
-					<button id="close-card" onclick="closeCard(${cardId})">닫기</button>
+					<button id="close-card" onclick="closeCard(${cardId})"><i class="fa-solid fa-xmark fa-xl"></i></button>
 				    <div class="card-header">
+				    	<i class="fa-regular fa-note-sticky"></i>
 				        <p class="card-page-title" id="card-page-title-${cardId}" onclick="editTitleInCP(${cardId})">
 				            ${title}
 				        </p>
+				        <!--덱타이틀-->
+				        <!--<p class="card-page-deck-title" id="card-page-title-${cardId}" > -->
+				        <!--    ${title}-->
+				        <!--</p>-->
 				    </div>
 				    <div class="card-main">
 				        <h2 style="display: none">카드 작업자</h2>
@@ -630,15 +635,35 @@ function formCard(card) {
 				        <!--트렐로 참조-->
 				        <h2 style="display: none">마감일</h2>
 				        <!--달력 처럼 보여줄지 그냥 YYYY.MM.dd 꼴로 보여줄지 논의-->
-				        <h2>카드 설명</h2>
-				        <p class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
+				        <div class="card-description">
+				        	<div class="card-description-header">
+				    		<i class="fa-regular fa-pen-to-square"></i>
+				        	<h2>카드 설명</h2>
+<!--				        	<div class="card-description-edit">-->
+<!--                            <button id="edit-description">수정</button>-->
+<!--                        	</div>-->
+                        	</div>
+                        	<div class="card-description-content">
+				        	<p class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
 				            ${content}
-				        </p>
+				        	</p>
+				        	</div>
+				        </div>
 				        <h2 style="display: none">첨부 파일</h2>
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
 				        <h2 style="display: none">체크리스트</h2>
 				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
-				        <h2 style="display: none">댓글</h2>
+<!--				        <h2 style="display: none">댓글</h2>-->
+                    	<div class="card-comment">
+    						<div class="card-comment-header">
+    							<i class="fa-solid fa-comments fa-sm"></i>
+								<h2>댓글</h2>
+							</div>
+							<div class="card-comment-content">
+								<input type="text" id="card-comment"
+                                   class="write-card-comment"
+                                   placeholder="Write a comment"/>
+							</div>
 				        <!--본인 프로필 이미지와 댓글 입력창-->
 				        <!--댓글 쓴 유저의 프로필 이미지와 카드 댓글 목록-->
 					</div>

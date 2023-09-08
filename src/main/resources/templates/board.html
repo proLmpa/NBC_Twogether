@@ -40,23 +40,29 @@
 
 <div id="content">
     <nav id="nav">
-        <ul id="nav-boards">
+        <ul id="nav-workspaces">
+<!--            <ul id="nav-workspaces">-->
         </ul>
 
-        <button id="create-workspace" onclick="toggleCreateWorkspace()"><i class="fas fa-plus"></i>
-            Create New Workspace
-        </button>
-
+        <div class="nav-create-workspace-btns">
+            <button class="create-workspace-btns" id="create-workspace" onclick="createWorkspaceOnOff()"><i class="fas fa-plus"></i>
+                워크스페이스 새로 만들기
+            </button>
+        </div>
         <div id="create-workspace-form" style="display:none">
-            <div>
-                <label for="workspace-title">Title</label>
-                <input type="text" id="workspace-title"/>
+            <div class="create-workspace-form-content">
+                <div>
+                    <label for="workspace-title">타이틀</label>
+                    <input type="text" id="workspace-title"/>
+                </div>
+                <div>
+                    <label for="workspace-description">짧은 설명</label>
+                    <input type="text" id="workspace-description"/>
+                </div>
+                <div>
+                    <button class="create-workspace-submit" id="create-workspace-btn" onclick="createWorkspace()">생성</button>
+                </div>
             </div>
-            <div>
-                <label for="workspace-description">Description</label>
-                <input type="text" id="workspace-description"/>
-            </div>
-            <button id="create-workspace-btn" onclick="createWorkspace()">Create</button>
         </div>
     </nav>
 
@@ -70,105 +76,104 @@
 
 <!--    </div>-->
 
-
     <div class="board-canvas">
         <!--페이지 스크롤바-->
         <div id="board" class="board-canvas-scrollbar">
 
-            <!--                        카드 오픈 기능-->
-<!--            <div id="card-detail-page-${cId}" class="card-detail-page">-->
-            <div class="card-detail-page">
-                <a class="card-detail-page-cancel-button" onclick="closeCardDetailPage()">
-                    <i class="fa-solid fa-xmark fa-xl"></i>
-                </a>
-                <div class="card-detail-header">
-                    <!--                <h2><em>${title}</em></h2>-->
-<!--                    <h2><em>${title}</em></h2>-->
-<!--                    <h3>${deckId}</h3>-->
+<!--            &lt;!&ndash;                        카드 오픈 기능&ndash;&gt;-->
+<!--&lt;!&ndash;            <div id="card-detail-page-${cId}" class="card-detail-page">&ndash;&gt;-->
+<!--            <div class="card-detail-page">-->
+<!--                <a class="card-detail-page-cancel-button" onclick="closeCardDetailPage()">-->
+<!--                    <i class="fa-solid fa-xmark fa-xl"></i>-->
+<!--                </a>-->
+<!--                <div class="card-detail-header">-->
+<!--                    &lt;!&ndash;                <h2><em>${title}</em></h2>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <h2><em>${title}</em></h2>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <h3>${deckId}</h3>&ndash;&gt;-->
 
-                    <div class="card-etail-header-title">
-                    <h2><em>카드타이틀</em></h2>
-                    </div>
-                    <div class="card-etail-header-deck-title">
-                    <p>덱타이틀</p>
-                    </div>
-                </div>
-                <div class="card-detail-main">
-                    <div class="card-detail-main-description">
-                        <div class="card-detail-main-description-header">
-                            <h3><em>설명</em></h3>
-                        <div class="card-detail-main-description-edit">
-                            <button>수정</button>
-                        </div>
-                        </div>
-                        <div class="card-detail-main-description-content">
-                            <p>카드 설명 들어갈 자리</p>
-                        </div>
+<!--                    <div class="card-detail-header-title">-->
+<!--                    <h2><em>카드타이틀</em></h2>-->
+<!--                    </div>-->
+<!--                    <div class="card-etail-header-deck-title">-->
+<!--                    <p>덱타이틀</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card-detail-main">-->
+<!--                    <div class="card-detail-main-description">-->
+<!--                        <div class="card-detail-main-description-header">-->
+<!--                            <h3><em>설명</em></h3>-->
+<!--                        <div class="card-detail-main-description-edit">-->
+<!--                            <button>수정</button>-->
+<!--                        </div>-->
+<!--                        </div>-->
+<!--                        <div class="card-detail-main-description-content">-->
+<!--                            <p>카드 설명 들어갈 자리</p>-->
+<!--                        </div>-->
 
-                    </div>
-                    <div class="card-detail-main-comment">
-                        <div class="card-detail-main-comment-header">
-                            <h3><em>댓글</em></h3>
-                        </div>
-                        <div class="card-detail-main-comment-content-write">
-                            <input type="text" id="card-comment"
-                                   class="write-card-comment"
-                                   placeholder="Write a comment"/>
-                        </div>
-                        <div class="card-detail-main-comment-content">
+<!--                    </div>-->
+<!--                    <div class="card-detail-main-comment">-->
+<!--                        <div class="card-detail-main-comment-header">-->
+<!--                            <h3><em>댓글</em></h3>-->
+<!--                        </div>-->
+<!--                        <div class="card-detail-main-comment-content-write">-->
+<!--                            <input type="text" id="card-comment"-->
+<!--                                   class="write-card-comment"-->
+<!--                                   placeholder="Write a comment"/>-->
+<!--                        </div>-->
+<!--                        <div class="card-detail-main-comment-content">-->
 
-                        </div>
-                    </div>
-                </div>
-                <div class="card-detail-side-menu">
-                    <div class="card-detail-side-menu-members">
-                        <a class="change-card-members">
-                            <span class="icon-change-card-members">
-                            </span>
-                            <span class="text-change-card-members">
-                                멤버
-                            </span>
-                        </a>
-                    </div>
-                    <div class="card-detail-side-menu-labels">
-                        <a class="change-card-labels">
-                            <span class="icon-change-card-labels">
-                            </span>
-                            <span class="text-change-card-labels">
-                                라벨
-                            </span>
-                        </a>
-                    </div>
-                    <div class="card-detail-side-menu-checklists">
-                        <a class="change-card-checklists">
-                            <span class="icon-change-card-checklists">
-                            </span>
-                            <span class="text-change-card-checklists">
-                                체크리스트
-                            </span>
-                        </a>
-                    </div>
-                    <div class="card-detail-side-menu-dates">
-                        <a class="change-card-dates">
-                            <span class="icon-change-card-dates">
-                            </span>
-                            <span class="text-change-card-dates">
-                                날짜
-                            </span>
-                        </a>
-                    </div>
-                    <div class="card-detail-side-menu-attaches">
-                        <a class="change-card-attaches">
-                            <span class="icon-change-card-attaches">
-                            </span>
-                            <span class="text-change-card-attaches">
-                                첨부파일
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!---->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card-detail-side-menu">-->
+<!--                    <div class="card-detail-side-menu-members">-->
+<!--                        <a class="change-card-members">-->
+<!--                            <span class="icon-change-card-members">-->
+<!--                            </span>-->
+<!--                            <span class="text-change-card-members">-->
+<!--                                멤버-->
+<!--                            </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="card-detail-side-menu-labels">-->
+<!--                        <a class="change-card-labels">-->
+<!--                            <span class="icon-change-card-labels">-->
+<!--                            </span>-->
+<!--                            <span class="text-change-card-labels">-->
+<!--                                라벨-->
+<!--                            </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="card-detail-side-menu-checklists">-->
+<!--                        <a class="change-card-checklists">-->
+<!--                            <span class="icon-change-card-checklists">-->
+<!--                            </span>-->
+<!--                            <span class="text-change-card-checklists">-->
+<!--                                체크리스트-->
+<!--                            </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="card-detail-side-menu-dates">-->
+<!--                        <a class="change-card-dates">-->
+<!--                            <span class="icon-change-card-dates">-->
+<!--                            </span>-->
+<!--                            <span class="text-change-card-dates">-->
+<!--                                날짜-->
+<!--                            </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="card-detail-side-menu-attaches">-->
+<!--                        <a class="change-card-attaches">-->
+<!--                            <span class="icon-change-card-attaches">-->
+<!--                            </span>-->
+<!--                            <span class="text-change-card-attaches">-->
+<!--                                첨부파일-->
+<!--                            </span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;&ndash;&gt;-->
 
             <ul id="deck-list" class="deck-list-wrapper"
                 ondragover="allowDrop(event)" ondrop="drop(event)">
@@ -217,10 +222,12 @@
         <!--        <a href="#">Services</a>-->
         <!--        <a href="#">Clients</a>-->
         <!--        <a href="#">Contact</a>-->
-
+        <div class="nav-archive">
         <ul id="archive-container"></ul>
-        <div>
-            <a class="board-edit" onclick="openBoardEdit()">
+        </div>
+        <div class="nav-board-setting">
+            <div class="nav-board-edit-btns">
+            <a class="board-edit-btns" onclick="editBoardOnOff(${boardId})">
                 <span class="icon-edit-board">
                     <i class="fa-solid fa-gear"></i>
                 </span>
@@ -228,8 +235,29 @@
                     보드 수정
                 </span>
             </a>
-        </div>
-        <div>
+            </div>
+            <div class="nav-edit-board-content" id="edit-board-form-${boardId}" style="display:none">
+                <div class="edit-board-content">
+                    <div>
+                        <label for="board-title">보드 이름</label>
+                        <input type="text" id="board-title"/>
+                    </div>
+                    <div>
+                        <label for="board-color">보드 색상</label>
+                        <input type="text" id="board-color"/>
+                    </div>
+                    <div>
+                        <label for="board-info">보드 정보</label>
+                        <input type="text" id="board-info"/>
+                    </div>
+                    <div>
+                        <button class="edit-board-submit" id="edit-board-btn" onclick="editBoard(${boardId})">수정</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
             <a class="invite-board-col" onclick="openInviteBoardCollab()">
                 <span class="icon-invite-board-col">
                     <i class="fa-solid fa-gear"></i>
@@ -238,8 +266,8 @@
                     보드 협업자 초대
                 </span>
             </a>
-        </div>
-        <div>
+            </div>
+            <div>
             <a class="board-delete">
                 <span class="icon-board-delete">
                     <i class="fa-solid fa-trash"></i>
@@ -248,11 +276,13 @@
                     보드 삭제
                 </span>
             </a>
+            </div>
         </div>
     </div>
 
-    <span class="open-btn" onclick="openNav()">&#9776;</span>
-</div>
+        <span class="open-btn" onclick="openNav()">&#9776;</span>
+    </div>
+
 <script src="/js/board.js"></script>
 </body>
 </html>
