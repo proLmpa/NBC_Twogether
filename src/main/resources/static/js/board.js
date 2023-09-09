@@ -91,6 +91,36 @@ async function callMyBoard() {
 	})
 }
 
+async function callMyCard(cardId) {
+	// when
+	await fetch('/api/cards/' + cardId, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error.message)
+			return
+		}
+
+		let cardPage = $('#card-page-' + cardId)
+		let card = await res.json()
+
+		cardPage.empty()
+		cardPage.append(formCardPage(card))
+	})
+}
+
 async function createWorkspace() {
 	// given
 	let title = $('#workspace-title').val()
@@ -362,8 +392,9 @@ function editCardContent(cardId, newContent) {
 	})
 }
 
-function submitComment(boardId, cardId) {
+function submitComment(cardId) {
 	// given
+	let boardId = document.getElementById('boardId').textContent
 	let newComment = document.getElementById('comment-input-' + cardId).value
 	if (newComment === '') {
 		return
@@ -392,6 +423,8 @@ function submitComment(boardId, cardId) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
+		callMyCard(cardId).then()
 	})
 }
 
@@ -632,6 +665,22 @@ function formArchivedCard(card) {
 function formCard(card, boardId) {
 	let cardId = card['id']
 	let title = card['title']
+
+	return`
+			<li class="card-list" id="card-list-${cardId}" onclick="callMyCard(${cardId})">
+			    <span>
+			        <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId}, event)">
+			            ${title}
+			        </p>
+			    </span>
+			</li>
+			<div id="card-page-${cardId}"></div>
+	`
+}
+
+function formCardPage(card) {
+	let cardId = card['id']
+	let title = card['title']
 	let dueDate = card['dueDate']
 	let content = card['content']
 	let attachment = card['attachment']
@@ -656,15 +705,8 @@ function formCard(card, boardId) {
 		commentsHtml += '</div>';
 	}
 
-	return`
-			<li class="card-list" id="card-list-${cardId}" onclick="openCardPage(${cardId})">
-			    <span>
-			        <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId}, event)">
-			            ${title}
-			        </p>
-			    </span>
-			</li>
-			<div id="card-page-wrapper-${cardId}" class="card-page-wrapper">
+	return `
+			<div id="card-page-wrapper" class="card-page-wrapper">
 				<div id="card-page-${cardId}" class="card-page">
 					<button id="close-card" onclick="closeCard(${cardId})">닫기</button>
 				    <div class="card-header">
@@ -691,7 +733,7 @@ function formCard(card, boardId) {
 				        <div class="comment-input">
 				        	<span id="nickname"></span>
 				            <input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
-				            <button onclick="submitComment(${boardId}, ${cardId})">제출</button>
+				            <button onclick="submitComment(${cardId})">제출</button>
 				        </div>
 					</div>
 					<div class="card-sidebar">
@@ -705,6 +747,13 @@ function formCard(card, boardId) {
 				</div>
 			</div>
 	`
+}
+
+function closeCard(cardId) {
+	let cardPage = document.getElementById('card-page-' + cardId)
+	while (cardPage.firstChild) {
+		cardPage.removeChild(cardPage.firstChild)
+	}
 }
 
 // 보드 페이지에서 카드 제목 수정하기
@@ -813,24 +862,6 @@ function editContentInCP(cardId) {
 		contentElement.innerHTML = newContent;
 		editCardContent(cardId, newContent);
 	});
-}
-
-function openCardPage(cardId) {
-	// 팝업 창을 보이도록 설정
-	var cardPageWrapper = document.getElementById("card-page-wrapper-" + cardId);
-	var cardPage = document.getElementById("card-page-" + cardId);
-	cardPageWrapper.style.display = "block";
-	cardPage.style.display = "block";
-}
-
-function closeCard(cardId) {
-	// 팝업 창을 숨김
-	var cardPageWrapper = document.getElementById("card-page-wrapper-" + cardId);
-	var cardPage = document.querySelector(".card-page");
-	cardPageWrapper.style.display = "none";
-	cardPage.style.display = "none";
-
-	callMyBoard().then()
 }
 
 function toggleEditDeckTitle(deckId) {
