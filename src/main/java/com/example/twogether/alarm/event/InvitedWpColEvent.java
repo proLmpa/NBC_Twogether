@@ -15,18 +15,17 @@ public class InvitedWpColEvent extends ApplicationEvent {
     private final String content;
 
     @Builder
-    public InvitedWpColEvent(Object source, User invitingUser, User invitedUser, Workspace workspace) {
+    public InvitedWpColEvent(Object source, User editor, User invitedUser, Workspace workspace) {
         super(source);
-        this.invitingUser = invitingUser;
+        this.invitingUser = editor;
         this.invitedUser = invitedUser;
         this.workspace = workspace;
-        this.content = generateContent(invitingUser, invitedUser, workspace);
+        this.content = generateContent(editor, invitedUser, workspace);
     }
 
-    private String generateContent(User invitingUser, User invitedUser, Workspace workspace) {
+    private String generateContent(User editor, User invitedUser, Workspace workspace) {
 
-        return "워크스페이스 오너(" + invitingUser.getNickname() + ")가 "
-            + "당신(" + invitedUser.getNickname() + ")을 "
-            + "\'ID" + workspace.getId() + ". " + workspace.getTitle() + "\' 워크스페이스에 초대했습니다.";
+        return "[ " + editor.getNickname() + "Invited " + invitedUser + " to the Workspace ]\n\n"
+            + "Workspace Title " + workspace.getTitle();
     }
 }

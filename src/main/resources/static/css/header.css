@@ -39,23 +39,7 @@
   right: 17px;
 }
 
-#alarm-button {
-  position: fixed;
-  top: 20px;
-  right: 45px;
-  cursor: pointer;
-}
-
-#alarm-panel {
-  position: fixed;
-  top : 100px;
-  right: 100px;
-  width: 500px;
-  heidht: 650px;
-  background-color: whitesmoke;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
+/*헤더 알림 관련*/
 #alarm-badge {
   position: absolute;
   top: 15px;
@@ -67,10 +51,36 @@
   border-radius: 50%;
 }
 
+#alarm-button {
+  position: fixed;
+  top: 20px;
+  right: 45px;
+  cursor: pointer;
+}
+
+/*알림 창*/
+#alarm-panel {
+  position: fixed;
+  top: 35px;
+  right: 150px;
+  width: 300px;
+  height: auto;
+  background-color: whitesmoke;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 30px;
+}
+
 #alarm-list-container ul {
   list-style-type: none;
 }
 
+#alarm-list li {
+  margin: 20px;
+}
+
+/*개인프로필 창*/
 #userProfile-panel {
   width: 300px;
 }

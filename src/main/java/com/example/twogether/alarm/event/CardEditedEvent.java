@@ -17,23 +17,25 @@ public class CardEditedEvent extends ApplicationEvent {
     private final String content;
 
     @Builder
-    public CardEditedEvent(Object source, User user, User targetUser, Card card, String oldContent, String newContent) {
+    public CardEditedEvent(Object source, User editor, User targetUser, Card card, String oldContent, String newContent) {
 
         super(source);
-        this.user = user;
+        this.user = editor;
         this.alarmTarget = targetUser;
         this.card = card;
          this.oldContent = oldContent; // 카드 내용 수정 전
         this.newContent = newContent; // 카드 내용 수정후
-        this.content = generateContent(user, card, newContent); // 알림 내용
+        this.content = generateContent(editor, card, newContent); // 알림 내용
     }
 
-    private String generateContent(User user, Card card, String newContent) {
+    private String generateContent(User editor, Card card, String newContent) {
 
-        return user.getNickname() + "님이 "
-            + "\'작업자로 할당되어 있는 "
-            + "카드 ID" + card.getId() + ". " + card.getTitle() + "\'의 내용을 "
-            + newContent + "로 수정하였습니다.";
+        return "[ " + editor.getNickname() + "Updated Comment's Content ]\n\n"
+            + "Card Title : " + card.getTitle() + "\n"
+            + "Card Content : \n"
+            + oldContent + "\n"
+            + "→\n"
+            + newContent;
     }
 
     /* (추후 작업) 추가기능 구현 준비 코드 - 자동 취소선, 형광펜 */

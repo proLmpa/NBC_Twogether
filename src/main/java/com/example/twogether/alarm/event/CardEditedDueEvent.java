@@ -33,8 +33,8 @@ public class CardEditedDueEvent extends ApplicationEvent {
 
     private String generateContent(User editor, Card card, LocalDateTime oldDue, LocalDateTime newDue) {
 
-        return editor.getNickname() + "가 "
-            + "\'ID" + card.getId() + ". " + card.getTitle() + "\' 카드의 마감일을 "
-            + oldDue + "에서 " + newDue + "로 수정했습니다.";
+        return "[ " + editor.getNickname() + "Updated Comment's Due Date ]\n\n"
+            + "Card Title : " + card.getTitle() + "\n"
+            + "Comment's Due Date : " + oldDue + " → " + newDue;
     }
 }

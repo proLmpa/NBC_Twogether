@@ -16,18 +16,19 @@ public class InvitedCardColEvent extends ApplicationEvent {
     private final String content;
 
     @Builder
-    public InvitedCardColEvent(Object source, User loginUser, User addedUser, Card card) {
+    public InvitedCardColEvent(Object source, User editor, User invitedUser, Card card) {
         super(source);
-        this.loginUser = loginUser;
-        this.addedUser = addedUser;
+        this.loginUser = editor;
+        this.addedUser = invitedUser;
         this.card = card;
-        this.content = generateContent(loginUser, addedUser, card);
+        this.content = generateContent(editor, invitedUser, card);
     }
 
-    private String generateContent(User loginUser, User addedUser, Card card) {
+    private String generateContent(User editor, User invitedUser, Card card) {
 
-        return "보드 오너(" + loginUser.getNickname() + ")가 "
-            + "당신(" + addedUser.getNickname() + ")을 "
-            + "\'ID" + card.getId() + ". " + card.getTitle() + "\' 카드에 작업자로 할당했습니다.";
+        return "[ " + editor.getNickname() + "Assigned " + invitedUser + " as a Card Worker ]\n\n"
+            + "Workspace Title " + card.getDeck().getBoard().getWorkspace().getTitle() + "\n"
+            + "Board Title : " + card.getDeck().getBoard().getTitle() + "\n"
+            + "Card Title : " + card.getTitle();
     }
 }
