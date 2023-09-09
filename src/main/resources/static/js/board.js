@@ -16,6 +16,27 @@ $(document).ready(function () {
 })
 
 // fetch API 로직
+async function logout() {
+    // when
+    await fetch('/api/users/logout', {
+        method: 'DELETE',
+        headers: {
+            'Authorization': Cookies.get('Authorization'),
+            'Refresh-Token': Cookies.get('Refresh-Token')
+        }
+    })
+
+    // then
+    .then(async res => {
+        checkTokenExpired(res)
+        refreshToken(res)
+
+        resetToken()
+        window.location.href = BASE_URL + '/views/login'
+    })
+}
+
+
 async function getUserInfo() {
     // when
     await fetch('/api/users/info', {
@@ -314,10 +335,6 @@ async function moveDeck(dId, prevId, nextId) {
 
 
 // 순수 javascript 동작
-function logout() {
-    resetToken()
-    window.location.href = BASE_URL + '/views/login'
-}
 
 function toggleCreateWorkspace() {
     $('#create-workspace-form').toggle()

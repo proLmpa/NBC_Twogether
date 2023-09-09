@@ -20,6 +20,7 @@ public enum CustomErrorCode {
     // Token
     ACCESS_TOKEN_INVALID("T001", "Access 토큰이 만료되었습니다."),
     ALL_TOKENS_EXPIRED("T002", "RefreshToken이 만료되었습니다."),
+    REFRESH_TOKEN_NOT_EXISTS("T003", "Refresh 토큰이 존재하지 않습니다."),
 
     // Workspace
     WORKSPACE_COLLABORATOR_ALREADY_EXISTS("W001", "이미 존재하는 워크스페이스 협업자입니다."),

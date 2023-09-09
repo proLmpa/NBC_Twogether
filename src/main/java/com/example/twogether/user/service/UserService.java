@@ -9,7 +9,9 @@ import com.example.twogether.checklist.repository.ChlItemRepository;
 import com.example.twogether.comment.repository.CommentRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.common.jwt.JwtUtil;
 import com.example.twogether.common.redis.RedisEmail;
+import com.example.twogether.common.redis.RedisRefreshToken;
 import com.example.twogether.common.s3.S3Uploader;
 import com.example.twogether.deck.repository.DeckRepository;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
@@ -22,6 +24,7 @@ import com.example.twogether.user.repository.UserPasswordRepository;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +54,7 @@ public class UserService {
     private final CardLabelRepository cardLabelRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisEmail redisUtil;
+    private final RedisRefreshToken redisRefreshToken;
     private final S3Uploader s3Uploader;
 
     @Value("${admin.token}")
@@ -114,6 +118,18 @@ public class UserService {
         }
 
         return found;
+    }
+
+    public void logoutUser(HttpServletRequest req, User user) {
+        findUser(user.getId());
+
+        String refreshToken = req.getHeader(JwtUtil.REFRESH_TOKEN_HEADER);
+
+        if(refreshToken != null && redisRefreshToken.hasKey(refreshToken)) {
+            redisRefreshToken.removeRefreshToken(refreshToken);
+        } else {
+            throw new CustomException(CustomErrorCode.REFRESH_TOKEN_NOT_EXISTS);
+        }
     }
 
     @Transactional
