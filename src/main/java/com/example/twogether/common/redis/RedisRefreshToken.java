@@ -13,7 +13,7 @@ public class RedisRefreshToken {
 
     public void saveRefreshToken(String refreshToken, String memberId) {
         redisTemplate.opsForValue().set(refreshToken, memberId);
-        redisTemplate.expire(refreshToken, 1, TimeUnit.DAYS);
+        redisTemplate.expire(refreshToken, 7, TimeUnit.DAYS);
     }
 
     public boolean hasKey(String refreshToken) {
