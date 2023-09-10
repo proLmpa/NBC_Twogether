@@ -10,6 +10,7 @@ import com.example.twogether.user.dto.UserResponseDto;
 import com.example.twogether.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,16 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody LoginRequestDto requestDto) {
         return null;
+    }
+
+    @Operation(summary = "사용자 로그아웃")
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponseDto> logoutUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        HttpServletRequest request
+    ) {
+        userService.logoutUser(request, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "사용자 로그아웃"));
     }
 
     @Operation(summary = "사용자 본인 정보 조회")
