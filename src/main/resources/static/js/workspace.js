@@ -85,11 +85,14 @@ function callMyWorkspaces() {
     for (let workspace of workspaces['workspaces']) {
       let wId = workspace['workspaceId']
       $('#my-workspaces').append(formMyWorkspace(workspace))
+
       for (let board of workspace['boards']) {
         $('#workspace-board-list-' + wId).append(formMyBoard(board))
       }
+
       for (let collaborator of workspace['wpCollaborators']) {
         console.log(collaborator)
+        $('#invite-wp-col-list-' + wId).append(formCollaborator(wId, collaborator))
       }
       $(`#workspace-board-list-${wId}`).append(formCreateBoard(wId))
     }
@@ -346,7 +349,7 @@ function deleteBoard(bId) {
 
 async function inviteWpCollaborator(wId) {
   // given
-  let email = document.getElementById('wp-collaborator-email-' + wId).value
+  let email = document.getElementById('wp-col-email-' + wId).value
   const request = {
     email: email
   }
@@ -373,6 +376,38 @@ async function inviteWpCollaborator(wId) {
     }
 
     closeAllInviteCollaborators()
+  })
+}
+
+async function cancelWpCollaborator(wId, colId) {
+  // given
+  let colEmail = document.getElementById('col-email-' + colId).innerHTML
+  const request = {
+    email: colEmail
+  }
+
+  // when
+  await fetch('/api/workspaces/' + wId + '/invite', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': Cookies.get('Authorization'),
+      'Refresh-Token': Cookies.get('Refresh-Token')
+    },
+    body: JSON.stringify(request)
+  })
+
+  // then
+  .then(async res => {
+    checkTokenExpired(res)
+    refreshToken(res)
+
+    if (res.status !== 200) {
+      let error = await res.json()
+      alert(error['message'])
+    }
+
+    $('#wp-col-' + colId).remove()
   })
 }
 
@@ -456,15 +491,15 @@ function formMyWorkspace(workspace) {
     
               <button onclick="openInviteWpCollaborator(${wId})"><i class="fas fa-person"></i></button>
               <button onclick="deleteWorkspace(${wId})"><i class="fas fa-trash"></i></button>
-              <div id="invite-wp-collaborator-${wId}" class="invite-collaborator">
+              <div id="invite-wp-col-${wId}" class="invite-collaborator">
                 <h2>Invite collaborator to Workspace(<em>${title}</em>)</h2>
                   <div>
-                    <label for="wp-collaborator-email-${wId}">Col Email</label>
-                    <input type="text" id="wp-collaborator-email-${wId}"/>
+                    <label for="wp-col-email-${wId}">Col Email</label>
+                    <input type="text" id="wp-col-email-${wId}"/>
                   </div>
                   <button onclick="inviteWpCollaborator(${wId})">Invite</button>
                   <button onclick="closeAllInviteCollaborators()">Cancel</button>
-                  <ul id="invite-wp-collaborator-list-${wId}"></ul>
+                  <ul id="invite-wp-col-list-${wId}"></ul>
               </div>
             </div>
           </header>
@@ -473,6 +508,20 @@ function formMyWorkspace(workspace) {
           </div>
         </div>
         `
+}
+
+function formCollaborator(wId, collaborator) {
+  let colId = collaborator['wpColId']
+  let email = collaborator['email']
+  let nickname = collaborator['nickname']
+
+  return `
+      <li id="wp-col-${colId}">
+        <span>${nickname}</span>
+        <span id="col-email-${colId}">${email}</span>
+        <button onclick="cancelWpCollaborator(${wId}, ${colId})">추방</button>
+      </li>
+  `
 }
 
 function formMyBoard(board) {
@@ -573,7 +622,7 @@ function formColBoard(board) {
 
 function openInviteWpCollaborator(wId) {
   closeAllInviteCollaborators()
-  $('#invite-wp-collaborator-' + wId).show()
+  $('#invite-wp-col-' + wId).show()
 }
 
 function openInviteBoardCollab(bId) {
