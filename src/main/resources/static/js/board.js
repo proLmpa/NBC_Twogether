@@ -74,7 +74,6 @@ async function callMyBoard() {
 		console.log(board)
 
 		for (let deck of board['decks']) {
-			$('list-card-list-' + deck['deckId']).empty()
 			if (deck['archived']) {
 				archive.append(formArchived(deck))
 			} else {
@@ -118,6 +117,11 @@ async function callMyCard(cardId) {
 
 		cardPage.empty()
 		cardPage.append(formCardPage(card))
+		// 댓글 추가
+		let commentList = $('#comment-list-' + cardId)
+		for (let comment of card['comments']) {
+			commentList.append(formCommentList(comment))
+		}
 	})
 }
 
@@ -178,7 +182,7 @@ async function createDeck() {
 			return
 		}
 
-		callMyBoard() // board 다시 부르기
+		await callMyBoard() // board 다시 부르기
 	})
 }
 
@@ -412,6 +416,35 @@ function submitComment(cardId) {
 			'Refresh-Token': Cookies.get('Refresh-Token')
 		},
 		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
+async function deleteComment(cardId, commentId) {
+	let check = confirm("해당 댓글을 삭제하시겠습니까?")
+	if (!check) {
+		return
+	}
+
+	fetch('/api/comments/' + commentId, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
 	})
 
 	// then
@@ -686,24 +719,7 @@ function formCardPage(card) {
 	let attachment = card['attachment']
 	let cardLabels = card['cardLabels']
 	let checkLists = card['checkLists']
-	let comments = card['comments']
 	let collaborators = card['cardCollaborators']
-
-	// 댓글 부분
-	let commentsHtml = '';
-	if (comments && comments.length > 0) {
-		commentsHtml = '<h2>댓글</h2>';
-		commentsHtml += '<div class="comment" id="comment-' + cardId + '">';
-		comments.forEach(comment => {
-			commentsHtml += '<div class="comment-item">';
-			commentsHtml += '<img src="' + comment.icon + '" alt="User Icon">';
-			commentsHtml += '<p class="comment-writer">' + comment.writer + '</p>';
-			commentsHtml += '<p class="comment-content">' + comment.content + '</p>';
-			commentsHtml += '<p class="comment-modifiedAt">' + comment.modifiedAt + '</p>';
-			commentsHtml += '</div>';
-		});
-		commentsHtml += '</div>';
-	}
 
 	return `
 			<div id="card-page-wrapper" class="card-page-wrapper">
@@ -729,7 +745,8 @@ function formCardPage(card) {
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
 				        <h2 style="display: none">체크리스트</h2>
 				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
-				        ${commentsHtml}
+				        <h2>댓글</h2>
+				        <div class="comment" id="comment-list-${cardId}"></div>
 				        <div class="comment-input">
 				        	<span id="nickname"></span>
 				            <input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
@@ -746,6 +763,24 @@ function formCardPage(card) {
 					</div>
 				</div>
 			</div>
+	`
+}
+
+function formCommentList(comment) {
+	let cardId = comment['cardId']
+	let commentId = comment['commentId']
+	let writer = comment['writer']
+	let icon = comment['icon']
+	let content = comment['content']
+	let modifiedAt = comment['modifiedAt']
+
+	return`
+		<div class="comment-item" id="comment-${commentId}">
+			<img src=${icon} alt=${writer}>
+			<p class="comment-content">${content}</p>
+			<p class="comment-modifideAt">${modifiedAt}</p>
+			<button class="comment-delete-button" onclick="deleteComment(${cardId}, ${commentId})">댓글 삭제</button>
+		<div>
 	`
 }
 

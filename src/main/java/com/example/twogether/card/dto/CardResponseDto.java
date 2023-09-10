@@ -9,6 +9,7 @@ import com.example.twogether.label.dto.CardLabelResponseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +44,8 @@ public class CardResponseDto {
             .attachment(card.getAttachment())
             .position(card.getPosition())
             .checkLists(card.getCheckLists().stream().map(CheckListResponseDto::of).toList())
-            .comments(card.getComments().stream().map(CommentResponseDto::of).toList())
+            .comments(card.getComments().stream().map(CommentResponseDto::of).
+                sorted(Comparator.comparing(CommentResponseDto::getModifiedAt).reversed()).toList())
             .cardLabels(card.getCardLabels().stream().map(CardLabelResponseDto::of).toList())
             .cardCollaborators(card.getCardCollaborators().stream().map(
                 CardColResponseDto::of).toList())
