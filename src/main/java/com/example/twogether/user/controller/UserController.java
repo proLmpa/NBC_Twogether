@@ -102,7 +102,7 @@ public class UserController {
     @PutMapping("/default")
     public ResponseEntity<ApiResponseDto> defaultIcon(
         @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) throws IOException{
+    ) {
         userService.defaultIcon(userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "기본 프로필 사진으로 수정 성공"));
     }
