@@ -86,14 +86,17 @@ async function callMyBoard() {
 			return
 		}
 
+		var boardTitle = $('#board-title')
 		var decks = $('#deck-list')
 		var archive = $('#archive-container')
 
+		boardTitle.empty()
 		decks.empty()
 		archive.empty()
 		let board = await res.json()
 		console.log(board)
 
+		boardTitle.append(board['title'])
 		for (let deck of board['decks']) {
 			$('list-card-list-' + deck['deckId']).empty()
 			if (deck['archived']) {
