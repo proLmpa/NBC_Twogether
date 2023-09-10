@@ -629,6 +629,61 @@ async function checkItem(cardId, chlItemId) {
 	})
 }
 
+async function deleteCheckList(cardId, checkListId) {
+	let check = confirm("해당 체크리스트를 삭제하시겠습니까?")
+	if (!check) {
+		return
+	}
+
+	// when
+	fetch('/api/checklists/' + checkListId, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
+async function deleteCheckListItem(cardId, chlItemId) {
+	// when
+	fetch('/api/chlItems/' + chlItemId, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
 async function moveDeck(dId, prevId, nextId) {
 	// given
 	const request = {
@@ -963,7 +1018,7 @@ function formCheckList(checkList) {
 	return`
 		<div class="checkList" id="checkList-${checkListId}">
 			<p class="checkList-title" id="checkList-title-${checkListId}" onclick="editCheckListTitleInCP(${cardId}, ${checkListId})">${title}</p>
-			<button class="checkList-delete-button" onclick="deleteCheckList(${checkListId})">삭제</button>
+			<button class="checkList-delete-button" onclick="deleteCheckList(${cardId}, ${checkListId})">삭제</button>
 			<div class="checkList-item-input">
 				<input type="text" id="checkList-item-input-${checkListId}" placeholder="체크박스 작성...">
 				<button onclick="addCheckListItem(${cardId}, ${checkListId})">생성</button>
