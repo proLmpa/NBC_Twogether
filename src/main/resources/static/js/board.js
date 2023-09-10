@@ -82,7 +82,7 @@ async function callMyBoard() {
 					if (card['archived']) {
 						archive.append(formArchivedCard(card))
 					} else {
-						$('#list-card-list-' + deck['deckId']).append(formCard(card, boardId))
+						$('#list-card-list-' + deck['deckId']).append(formCard(card))
 					}
 				}
 			}
@@ -326,11 +326,11 @@ async function createCard(deckId) {
 	})
 }
 
-function editCardTitle(cardId, newTitle) {
+async function editCardTitleB(cardId, newTitle) {
 	// given
 	let title = newTitle
 	if (title === '') {
-		title = '카드 타이틀을 입력해주세요';
+		title = null;
 	}
 	let content = null;
 	const request = {
@@ -358,10 +358,47 @@ function editCardTitle(cardId, newTitle) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+		callMyBoard()
 	})
 }
 
-function editCardContent(cardId, newContent) {
+async function editCardTitleC(cardId, newTitle) {
+	// given
+	let title = newTitle
+	if (title === '') {
+		title = null;
+	}
+	let content = null;
+	const request = {
+		title: title,
+		content: content
+	};
+
+	// when
+	fetch('/api/cards/' + cardId, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+		callMyCard(cardId)
+	})
+}
+
+async function editCardContent(cardId, newContent) {
 	// given
 	let title = null;
 	let content = newContent
@@ -393,10 +430,11 @@ function editCardContent(cardId, newContent) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+		callMyCard(cardId)
 	})
 }
 
-function submitComment(cardId) {
+async function submitComment(cardId) {
 	// given
 	let boardId = document.getElementById('boardId').textContent
 	let newComment = document.getElementById('comment-input-' + cardId).value
@@ -429,6 +467,40 @@ function submitComment(cardId) {
 		}
 
 		callMyCard(cardId).then()
+	})
+}
+
+async function editComment(cardId, commentId, newComment) {
+	// given
+	let content = newComment
+	if (content === '') {
+		content = null
+	}
+	const request = {
+		content: content
+	};
+
+	// when
+	fetch('/api/comments/' + commentId, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+		callMyCard(cardId);
 	})
 }
 
@@ -695,7 +767,7 @@ function formArchivedCard(card) {
     `
 }
 
-function formCard(card, boardId) {
+function formCard(card) {
 	let cardId = card['id']
 	let title = card['title']
 
@@ -777,7 +849,7 @@ function formCommentList(comment) {
 	return`
 		<div class="comment-item" id="comment-${commentId}">
 			<img src=${icon} alt=${writer}>
-			<p class="comment-content">${content}</p>
+			<p class="comment-content" id="comment-content-${commentId}" onclick="editCommentInCP(${cardId}, ${commentId})">${content}</p>
 			<p class="comment-modifideAt">${modifiedAt}</p>
 			<button class="comment-delete-button" onclick="deleteComment(${cardId}, ${commentId})">댓글 삭제</button>
 		<div>
@@ -814,17 +886,23 @@ function editTitle(cardId, event) {
 	inputElement.addEventListener("keydown", (event) => {
 		if (event.key === "Enter") {
 			event.preventDefault();
-			const newTitle = inputElement.value;
+			let newTitle = inputElement.value;
+			if (newTitle === '') {
+				newTitle = currentTitle;
+			}
 			titleElement.innerHTML = newTitle;
-			editCardTitle(cardId, newTitle);
+			editCardTitleB(cardId, newTitle);
 		}
 	});
 
 	// input 요소에서 포커스가 해제되면 수정 완료 처리
 	inputElement.addEventListener("blur", () => {
-		const newTitle = inputElement.value;
+		let newTitle = inputElement.value;
+		if (newTitle === '') {
+			newTitle = currentTitle;
+		}
 		titleElement.innerHTML = newTitle;
-		editCardTitle(cardId, newTitle);
+		editCardTitleB(cardId, newTitle);
 	});
 }
 
@@ -852,7 +930,7 @@ function editTitleInCP(cardId) {
 			event.preventDefault();
 			const newTitle = inputElement.value;
 			titleElement.innerHTML = newTitle;
-			editCardTitle(cardId, newTitle);
+			editCardTitleC(cardId, newTitle);
 		}
 	});
 
@@ -860,7 +938,7 @@ function editTitleInCP(cardId) {
 	inputElement.addEventListener("blur", () => {
 		const newTitle = inputElement.value;
 		titleElement.innerHTML = newTitle;
-		editCardTitle(cardId, newTitle);
+		editCardTitleC(cardId, newTitle);
 	});
 }
 
@@ -886,7 +964,7 @@ function editContentInCP(cardId) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 			const newContent = inputElement.value;
-			contentElement.innerHTML = newContent;
+			contentElement.innerHTML += newContent;
 			editCardContent(cardId, newContent);
 		}
 	});
@@ -894,8 +972,43 @@ function editContentInCP(cardId) {
 	// input 요소에서 포커스가 해제되면 수정 완료 처리
 	inputElement.addEventListener("blur", () => {
 		const newContent = inputElement.value;
-		contentElement.innerHTML = newContent;
+		contentElement.innerHTML += newContent;
 		editCardContent(cardId, newContent);
+	});
+}
+
+function editCommentInCP(cardId, commentId) {
+	// 클릭한 댓글 요소 가져오기
+	const contentElement = document.getElementById(`comment-content-${commentId}`);
+
+	// 현재 댓글 내용 가져오기
+	const currentContent = contentElement.innerText;
+
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentContent;
+
+	// 댓글을 input 요소로 교체
+	contentElement.innerHTML = "";
+	contentElement.appendChild(inputElement);
+
+	// input 요소에 포커스 설정
+	inputElement.focus();
+
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newComment = inputElement.value;
+			contentElement.innerHTML = newComment;
+			editComment(cardId, commentId, newComment);
+		}
+	});
+
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newComment = inputElement.value;
+		contentElement.innerHTML = newComment;
+		editComment(cardId, commentId, newComment);
 	});
 }
 
