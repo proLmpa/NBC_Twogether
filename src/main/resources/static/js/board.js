@@ -122,6 +122,15 @@ async function callMyCard(cardId) {
 		for (let comment of card['comments']) {
 			commentList.append(formCommentList(comment))
 		}
+		// 체크리스트 추가
+		let checkLists = $('#checkList-list-' + cardId)
+		for (let checkList of card['checkLists']) {
+			checkLists.append(formCheckList(checkList))
+			let checkListItems = $('#checkList-items-' + cardId)
+			for (let chlItem of checkList['chlItems']) {
+				checkListItems.append(formCheckListItem(chlItem))
+			}
+		}
 	})
 }
 
@@ -533,6 +542,93 @@ async function deleteComment(cardId, commentId) {
 	})
 }
 
+async function addCheckList(cardId) {
+	// given
+	let title = document.getElementById('checkList-input-' + cardId).value
+
+	const request = {
+		title: title
+	};
+
+	// when
+	fetch('/api/cards/' + cardId + '/checklists', {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
+async function addCheckListItem(cardId, checkListId) {
+	// given
+	let content = document.getElementById('checkList-item-input-' + checkListId).value
+
+	// when
+	fetch('/api/checklists/' + checkListId + '/chlItems', {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: content,
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
+async function checkItem(cardId, chlItemId) {
+	// when
+	fetch('/api/chlItems/' + chlItemId + '/isChecked', {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		callMyCard(cardId).then()
+	})
+}
+
 async function moveDeck(dId, prevId, nextId) {
 	// given
 	const request = {
@@ -790,7 +886,6 @@ function formCardPage(card) {
 	let content = card['content']
 	let attachment = card['attachment']
 	let cardLabels = card['cardLabels']
-	let checkLists = card['checkLists']
 	let collaborators = card['cardCollaborators']
 
 	return `
@@ -815,15 +910,19 @@ function formCardPage(card) {
 				        </p>
 				        <h2 style="display: none">첨부 파일</h2>
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
-				        <h2 style="display: none">체크리스트</h2>
-				        <!--체크리스트 내 체크된 아이템 개수/체크리스트 내 아이템 개수로 달성도 표시-->
+				        <h2>체크리스트</h2>
+				        <div class="checkList-input">
+				            <input type="text" id="checkList-input-${cardId}" placeholder="체크리스트 타이틀 작성...">
+				            <button onclick="addCheckList(${cardId})">생성</button>
+				        </div>
+				        <div class="checkList-list" id="checkList-list-${cardId}"></div>
 				        <h2>댓글</h2>
-				        <div class="comment" id="comment-list-${cardId}"></div>
 				        <div class="comment-input">
-				        	<span id="nickname"></span>
+				        	<span id="nickname"><!--현재 사용자의 닉네임과 아이콘 표시--></span>
 				            <input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
 				            <button onclick="submitComment(${cardId})">제출</button>
 				        </div>
+				        <div class="comment" id="comment-list-${cardId}"></div>
 					</div>
 					<div class="card-sidebar">
 						<button class="sidebar-button" id="sidebar-button-members" style="display: none">Members</button>
@@ -853,6 +952,46 @@ function formCommentList(comment) {
 			<p class="comment-modifideAt">${modifiedAt}</p>
 			<button class="comment-delete-button" onclick="deleteComment(${cardId}, ${commentId})">댓글 삭제</button>
 		<div>
+	`
+}
+
+function formCheckList(checkList) {
+	let cardId = checkList['cardId']
+	let checkListId = checkList['clId']
+	let title = checkList['title']
+
+	return`
+		<div class="checkList" id="checkList-${checkListId}">
+			<p class="checkList-title" id="checkList-title-${checkListId}" onclick="editCheckListTitleInCP(${cardId}, ${checkListId})">${title}</p>
+			<button class="checkList-delete-button" onclick="deleteCheckList(${checkListId})">삭제</button>
+			<div class="checkList-item-input">
+				<input type="text" id="checkList-item-input-${checkListId}" placeholder="체크박스 작성...">
+				<button onclick="addCheckListItem(${cardId}, ${checkListId})">생성</button>
+			</div>
+			<div class="checkList-items" id="checkList-items-${cardId}"></div>
+		</div>
+	`
+}
+
+function formCheckListItem(chlItem) {
+	let cardId = chlItem['cardId']
+	let chlItemId = chlItem['chlItemId']
+	let content = chlItem['content']
+	let checked = chlItem['checked']
+
+	let checkbox = ``
+	if (checked) {
+		checkbox = `<input type="checkbox" id="checkbox-${chlItemId}" onclick="checkItem(${cardId}, ${chlItemId})" checked>`
+	} else {
+		checkbox = `<input type="checkbox" id="checkbox-${chlItemId}" onclick="checkItem(${cardId}, ${chlItemId})">`
+	}
+
+	return`
+		<div class="checkList-item" id="checkList-item-${chlItemId}">
+			${checkbox}
+			<label class="checkbox-title" for="checkbox-${chlItemId}">${content}</label>
+			<button class="Item-delete-button" onclick="deleteCheckListItem(${cardId}, ${chlItemId})">삭제</button>
+		</div>
 	`
 }
 
