@@ -44,8 +44,7 @@ public class CardResponseDto {
             .attachment(card.getAttachment())
             .position(card.getPosition())
             .checkLists(card.getCheckLists().stream().map(CheckListResponseDto::of).toList())
-            .comments(card.getComments().stream().map(CommentResponseDto::of).
-                sorted(Comparator.comparing(CommentResponseDto::getModifiedAt).reversed()).toList())
+            .comments(card.getComments().stream().map(CommentResponseDto::of).toList())
             .cardLabels(card.getCardLabels().stream().map(CardLabelResponseDto::of).toList())
             .cardCollaborators(card.getCardCollaborators().stream().map(
                 CardColResponseDto::of).toList())

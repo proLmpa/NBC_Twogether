@@ -1004,7 +1004,6 @@ function formCommentList(comment) {
 		<div class="comment-item" id="comment-${commentId}">
 			<img src=${icon} alt=${writer}>
 			<p class="comment-content" id="comment-content-${commentId}" onclick="editCommentInCP(${cardId}, ${commentId})">${content}</p>
-			<p class="comment-modifideAt">${modifiedAt}</p>
 			<button class="comment-delete-button" onclick="deleteComment(${cardId}, ${commentId})">댓글 삭제</button>
 		<div>
 	`
