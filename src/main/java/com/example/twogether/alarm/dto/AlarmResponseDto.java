@@ -11,6 +11,7 @@ import lombok.Setter;
 public class AlarmResponseDto {
 
     private Long id;
+    private String title;
     private String content;
     private String url;
     private Boolean isRead;
@@ -18,6 +19,7 @@ public class AlarmResponseDto {
     public static AlarmResponseDto of(Alarm alarm) {
         return AlarmResponseDto.builder()
             .id(alarm.getId())
+            .title(alarm.getTitle())
             .content(alarm.getContent())
             .url(alarm.getUrl())
             .isRead(alarm.getIsRead())

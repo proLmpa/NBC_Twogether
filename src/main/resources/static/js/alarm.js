@@ -105,6 +105,7 @@ function readAlarm(aId) {
 
 function formAlarm(alarm) {
     let aId = alarm['id']
+    let title = alarm['title'];
     let content = alarm['content']
     let isRead = alarm['isRead'];
 
@@ -113,10 +114,11 @@ function formAlarm(alarm) {
     return `
        <li id="alarm-${aId}" class="${readClass}">
           <div>
-            <div>${content}</div>
+            <div id="alarm-title">${title}</div>
+            <div id="alarm-content">${content}</div>
           </div>
-          <button id="read-alarm-btn-${aId}" onclick="readAlarm(${aId})">Read</button>
-          <button id="delete-alarm-btn-${aId}" onclick="deleteAlarm(${aId})">Delete</button>
+          <button id="read-alarm-btn-${aId}" class="alarm-panel-btn" onclick="readAlarm(${aId})">Read</button>
+          <button id="delete-alarm-btn-${aId}" class="alarm-panel-btn" onclick="deleteAlarm(${aId})">Delete</button>
        </li>
         `
 }

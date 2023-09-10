@@ -10,35 +10,53 @@ $(document).ready(function () {
         window.location.href = BASE_URL + '/views/login'
     }
 
+    // 헤더 : 사진 클릭 이벤트 핸들러 추가
+    $('#header-profileImage-container').click(function () {
+        if ($('#userProfile-panel').is(':visible'))
+            $('#userProfile-panel').hide();
+        else
+            $('#userProfile-panel').show();
+    });
+
+    // 헤더 : 알림 버튼 클릭 이벤트 핸들러 추가
+    $('#alarm-button').click(function () {
+        if ($('#alarm-panel').is(':visible'))
+            $('#alarm-panel').hide();
+        else
+            $('#alarm-panel').show();
+    })
+
+    // 개인 프로필 창 : 사진 클릭 이벤트 핸들러 추가
+    $('.close-userProfile-panel').click(function () {
+        $('#userProfile-panel').hide();
+    });
+
+    // 개인 프로필 창 : 사용자 정보 수정 버튼 클릭 이벤트 핸들러 추가
+    $('#change-userInfo-btn').click(function () {
+        const oldNickname = $('#nickname').text()
+        const oldIntroduction = $('#introduction').text();
+
+        document.getElementById('edit-nick-input').value = oldNickname;
+        document.getElementById('edit-intro-input').value = oldIntroduction;
+
+        $('#nickname, #introduction, #change-userInfo-btn, #change-userImage-btn').hide();
+        $('#edit-nick-input, #edit-intro-input, #save-edit-userInfo-btn, #cancel-userInfo-btn').show();
+    });
+
+    // 개인 프로필 창 : 사용자 이미지 수정 관련 이벤트 핸들러 추가
+    $('#change-userImage-btn').click(function () {
+        $('#profileImage-btns').show();
+        $('#change-userImage-btn, #change-userInfo-btn').hide();
+    });
+    $('#cancel-profileImage-btn').click(function () {
+        $('#profileImage-btns').hide();
+        $('#change-userImage-btn, #change-userInfo-btn').show();
+    })
+
     // 본인 정보 불러오기
-    getUserInfo()
+    callMyUserInfo()
+    callMyAlarms()
 })
-
-
-// fetch API 로직
-async function getUserInfo() {
-    // when
-    await fetch('/api/users/info', {
-        method: 'GET',
-        headers: {
-            'Authorization': Cookies.get('Authorization'),
-            'Refresh-Token': Cookies.get('Refresh-Token')
-        }
-    })
-
-    // then
-    .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
-
-        let user = await res.json()
-        $('#nickname').text(user['nickname'])
-        $('#email').text(user.email)
-        $('#role').text(user.role)
-
-        callMyBoard()
-    })
-}
 
 async function callMyBoard() {
     // given
@@ -248,28 +266,4 @@ function openListHeaderBtns(deckId) {
 function closeAllListHeaderBtns() {
     const listHeaderBtns = document.getElementsByClassName('list-header-btns')
     listHeaderBtns.hide()
-}
-
-// token 관련 재생성, 삭제, 만료 로직
-function refreshToken(response) {
-    let token = response.headers.get('Authorization')
-    if (token !== null) {
-        resetToken()
-        Cookies.set('Authorization', token, {path: '/'})
-        Cookies.set('Refresh-Token', response.headers.get('Refresh-Token'),
-            {path: '/'})
-    }
-}
-
-function resetToken() {
-    Cookies.remove('Authorization', {path: '/'})
-    Cookies.remove('Refresh-Token', {path: '/'})
-}
-
-function checkTokenExpired(res) {
-    if (res.status === 412) {
-        alert('토큰이 만료되었습니다. 다시 로그인해주세요!')
-        resetToken()
-        window.location.href = BASE_URL + '/views/login'
-    }
 }

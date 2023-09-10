@@ -12,6 +12,7 @@ public class InvitedWpColEvent extends ApplicationEvent {
     private final User invitingUser;
     private final User invitedUser;
     private final Workspace workspace;
+    private final String title;
     private final String content;
 
     @Builder
@@ -20,12 +21,12 @@ public class InvitedWpColEvent extends ApplicationEvent {
         this.invitingUser = editor;
         this.invitedUser = invitedUser;
         this.workspace = workspace;
-        this.content = generateContent(editor, invitedUser, workspace);
+        this.title = "Invited to the Workspace";
+        this.content = generateContent(workspace);
     }
 
-    private String generateContent(User editor, User invitedUser, Workspace workspace) {
+    private String generateContent(Workspace workspace) {
 
-        return "[ " + editor.getNickname() + "Invited " + invitedUser + " to the Workspace ]\n\n"
-            + "Workspace Title " + workspace.getTitle();
+        return "Workspace Title : " + workspace.getTitle();
     }
 }

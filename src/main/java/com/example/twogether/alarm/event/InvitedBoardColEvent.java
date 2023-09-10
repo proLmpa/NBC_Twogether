@@ -13,6 +13,7 @@ public class InvitedBoardColEvent extends ApplicationEvent {
     private final User invitingUser;
     private final User invitedUser;
     private final Board board;
+    private final String title;
     private final String content;
 
     @Builder
@@ -21,13 +22,13 @@ public class InvitedBoardColEvent extends ApplicationEvent {
         this.invitingUser = editor;
         this.invitedUser = invitedUser;
         this.board = board;
-        this.content = generateContent(editor, invitedUser, board);
+        this.title = "Invited to thd Board";
+        this.content = generateContent(board);
     }
 
-    private String generateContent(User editor, User invitedUser, Board board) {
+    private String generateContent(Board board) {
 
-        return "[ " + editor.getNickname() + "Invited " + invitedUser + " to the Board ]\n\n"
-            + "Workspace Title " + board.getWorkspace().getTitle() + "\n"
+        return "Workspace Title : " + board.getWorkspace().getTitle() + "<br>"
             + "Board Title : " + board.getTitle();
     }
 }

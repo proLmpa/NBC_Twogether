@@ -13,6 +13,7 @@ public class InvitedCardColEvent extends ApplicationEvent {
     private final User loginUser;
     private final User addedUser;
     private final Card card;
+    private final String title;
     private final String content;
 
     @Builder
@@ -21,14 +22,14 @@ public class InvitedCardColEvent extends ApplicationEvent {
         this.loginUser = editor;
         this.addedUser = invitedUser;
         this.card = card;
-        this.content = generateContent(editor, invitedUser, card);
+        this.title = "Assigned as a Card Worker";
+        this.content = generateContent(card);
     }
 
-    private String generateContent(User editor, User invitedUser, Card card) {
+    private String generateContent(Card card) {
 
-        return "[ " + editor.getNickname() + "Assigned " + invitedUser + " as a Card Worker ]\n\n"
-            + "Workspace Title " + card.getDeck().getBoard().getWorkspace().getTitle() + "\n"
-            + "Board Title : " + card.getDeck().getBoard().getTitle() + "\n"
+        return "Workspace Title : " + card.getDeck().getBoard().getWorkspace().getTitle() + "<br>"
+            + "Board Title : " + card.getDeck().getBoard().getTitle() + "<br>"
             + "Card Title : " + card.getTitle();
     }
 }

@@ -14,6 +14,7 @@ public class CardEditedEvent extends ApplicationEvent {
     private final Card card;
     private final String oldContent;
     private final String newContent;
+    private final String title;
     private final String content;
 
     @Builder
@@ -25,16 +26,16 @@ public class CardEditedEvent extends ApplicationEvent {
         this.card = card;
          this.oldContent = oldContent; // 카드 내용 수정 전
         this.newContent = newContent; // 카드 내용 수정후
-        this.content = generateContent(editor, card, newContent); // 알림 내용
+        this.title = "Updated Comment's Content";
+        this.content = generateContent(card, newContent); // 알림 내용
     }
 
-    private String generateContent(User editor, Card card, String newContent) {
+    private String generateContent(Card card, String newContent) {
 
-        return "[ " + editor.getNickname() + "Updated Comment's Content ]\n\n"
-            + "Card Title : " + card.getTitle() + "\n"
-            + "Card Content : \n"
-            + oldContent + "\n"
-            + "→\n"
+        return "Card Title : " + card.getTitle() + "<br>"
+            + "Card Content : <br>"
+            + "<span id='oldContent'>" + oldContent + "</span><br>"
+            + "→<br>"
             + newContent;
     }
 
