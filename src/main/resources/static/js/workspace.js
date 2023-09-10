@@ -221,52 +221,6 @@ async function createBoard(wId) {
   })
 }
 
-function editBoard(boardId) {
-  // given
-  let title = $('#board-title-edited-' + boardId).val()
-  if (title === '') {
-    title = null;
-  }
-  let color = $('#board-color-edited-' + boardId).val()
-  if (color === '') {
-    color = null;
-  }
-  let info = $('#board-info-edited-' + boardId).val()
-  if (info === '') {
-    color = null;
-  }
-  const request = {
-    title: title,
-    color: color,
-    info: info
-  }
-
-  // when
-  fetch('/api/boards/' + boardId, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': Cookies.get('Authorization'),
-      'Refresh-Token': Cookies.get('Refresh-Token')
-    },
-    body: JSON.stringify(request),
-  })
-
-  // then
-  .then(async res => {
-    checkTokenExpired(res)
-    refreshToken(res)
-
-    if (res.status !== 200) {
-      let error = await res.json()
-      alert(error['message'])
-      return
-    }
-    // 생성된 workspace도 노출되도록 하기 위해 함수 호출
-    callMyWorkspaces()
-  });
-}
-
 function deleteWorkspace(wId) {
   let check = confirm("워크스페이스를 삭제하시겠습니까?")
   if (!check) {
@@ -426,85 +380,82 @@ function formMyWorkspace(workspace) {
   let wId = workspace['workspaceId']
 
   return `
-       <div id="workspace-${wId}" class="workspace">
-       <div>
+    <div id="workspace-${wId}" class="workspace">
+        <div>
           <header>
-          <div class="workspace-control">
-          <div class="workspace-control-header">
-            <div class="workspace-control-title-des">
+            <div class="workspace-control">
+                <div class="workspace-control-header">
+                    <div class="workspace-control-title-des">
 
             <h2>${title}</h2>
 <!--              <div class="workspace-control-des">-->
               <h3>${introduction}</h3>
 <!--              <div>-->
-            </div>
-            <div class="workspace-control-btns">
-            <div class="edit-workspace-control">
+                    </div>
+                    <div class="workspace-control-btns">
+                        <div class="edit-workspace-control">
               <button class="" onclick="editWorkspaceOnOff(${wId})"><i class="fas fa-pen"></i></button>
 <!--              <div class="edit-workspace-content">-->
-              <div class="edit-workspace-content" id="edit-workspace-form-${wId}" style="display:none">
-                <div class="edit-workspace-content-title">
+                            <div class="edit-workspace-content" id="edit-workspace-form-${wId}" style="display:none">
+                                <div class="edit-workspace-content-title">
                   <label for="workspace-title-edited-${wId}">타이틀</label>
                   <input type="text" id="workspace-title-edited-${wId}"/>                 
-                </div>
-                <div class="edit-workspace-content-description">
+                                </div>
+                                <div class="edit-workspace-content-description">
                   <label for="workspace-description-edited-${wId}">짧은 설명</label>
                   <input type="text" id="workspace-description-edited-${wId}"/>
-                </div>
-                <div>
+                                </div>
+                                <div>
                 <button class="edit-workspace-content-submit" id="edit-workspace-btn" onclick="editWorkspace(${wId})">수정</button>
-                </div>
-              </div>
-              </div>
-              <div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
               <button onclick="openInviteWpCollaborator(${wId})"><i class="fas fa-person"></i></button>
-              </div>
-              <div>
+                        </div>
+                        <div>
               <button onclick="deleteWorkspace(${wId})"><i class="fas fa-trash"></i></button>
-              </div>
-              </div>
+                        </div>
+                    </div>
               
-              </div>
+                </div>
 <!--                            </div>-->
-
-            
-              </div>
+            </div>
               
               
               
-              <div class="invite-wp-col-bg">
+            <div class="invite-wp-col-bg">
 <!--              <div class="invite-wp-col>">-->
-              <div id="invite-wp-collaborator-${wId}" class="invite-collaborator">
-              <div class="invite-wp-col-header">
+                <div id="invite-wp-collaborator-${wId}" class="invite-collaborator">
+                    <div class="invite-wp-col-header">
 <!--                <h2><em>${title}</em> 워크스페이스에 초대하세요.</h2>-->
                 <h2>워크스페이스에 초대하세요.</h2>
                 <a class="close-button-invite-wp-col" onclick="closeAllInviteCollaborators()">
                 <i class="fa-solid fa-xmark fa-xl"></i>
                 </a>
-                </div>
-                  <div class="wp-col-email">
+                    </div>
+                    <div class="wp-col-email">
 <!--                    <label for="wp-collaborator-email-${wId}">Col Email</label>-->
                     <input type="text" id="wp-collaborator-email-${wId}"
                     class="invite-wp-col-input"
                     placeholder="초대할 이메일을 입력하세요..."/>
-                  </div>
-                  <div>
+                    </div>
+                    <div>
                   <button class="invite-wp-col-btn" onclick="inviteWpCollaborator(${wId})">초대</button>
 <!--                  <button onclick="closeAllInviteCollaborators()">Cancel</button>-->
-                  <div>
+                        <div>
                   <ul id="invite-wp-collaborator-list-${wId}"></ul>
+                        </div>
+                    </div>
               </div>
-              </div>
-<!--              </div>-->
-            </div>
+                </div>
           </header>
           <hr>
-          <div>
-            <div id="workspace-board-list-${wId}" class="workspace-board-list"></div>
-          </div>
-        </div>
-        </div>
-        `
+                <div>
+                    <div id="workspace-board-list-${wId}" class="workspace-board-list"></div>
+                </div>
+            </div>
+        </div>       `
 }
 
 function formMyBoard(board) {
