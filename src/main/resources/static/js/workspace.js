@@ -388,14 +388,11 @@ function formMyWorkspace(workspace) {
                     <div class="workspace-control-title-des">
 
             <h2>${title}</h2>
-<!--              <div class="workspace-control-des">-->
               <h3>${introduction}</h3>
-<!--              <div>-->
                     </div>
                     <div class="workspace-control-btns">
                         <div class="edit-workspace-control">
               <button class="" onclick="editWorkspaceOnOff(${wId})"><i class="fas fa-pen"></i></button>
-<!--              <div class="edit-workspace-content">-->
                             <div class="edit-workspace-content" id="edit-workspace-form-${wId}" style="display:none">
                                 <div class="edit-workspace-content-title">
                   <label for="workspace-title-edited-${wId}">타이틀</label>
@@ -419,30 +416,25 @@ function formMyWorkspace(workspace) {
                     </div>
               
                 </div>
-<!--                            </div>-->
             </div>
               
               
               
             <div class="invite-wp-col-bg">
-<!--              <div class="invite-wp-col>">-->
                 <div id="invite-wp-collaborator-${wId}" class="invite-collaborator">
                     <div class="invite-wp-col-header">
-<!--                <h2><em>${title}</em> 워크스페이스에 초대하세요.</h2>-->
                 <h2>워크스페이스에 초대하세요.</h2>
                 <a class="close-button-invite-wp-col" onclick="closeAllInviteCollaborators()">
                 <i class="fa-solid fa-xmark fa-xl"></i>
                 </a>
                     </div>
                     <div class="wp-col-email">
-<!--                    <label for="wp-collaborator-email-${wId}">Col Email</label>-->
                     <input type="text" id="wp-collaborator-email-${wId}"
                     class="invite-wp-col-input"
                     placeholder="초대할 이메일을 입력하세요..."/>
                     </div>
                     <div>
                   <button class="invite-wp-col-btn" onclick="inviteWpCollaborator(${wId})">초대</button>
-<!--                  <button onclick="closeAllInviteCollaborators()">Cancel</button>-->
                         <div>
                   <ul id="invite-wp-collaborator-list-${wId}"></ul>
                         </div>
