@@ -628,3 +628,86 @@ nav {
     /*padding-top: 60px;*/
 }
 
+/*보드초대*/
+.invite-collaborator {
+    width: 500px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px 25px 10px 25px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    z-index:99;
+
+}
+.invite-board-col-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.board-col-email {
+    width:100%;
+    text-aglin:center
+}
+.close-button-invite-board-col {
+    color: #44546f;
+    position: relative;
+    padding: 3px 1px;
+    display:inline-block;
+}
+.board-col-input {
+    /*display: flex;*/
+    /*!*max-width: 100%;*!*/
+    /*flex-grow: 1;*/
+    /*margin-bottom: 8px;*/
+    overflow: visible;
+    /*background-color: var(--ds-surface, #ffffff);*/
+    margin: auto;
+}
+.invite-board-col-input {
+    width: 100%;
+    padding:8px 10px;
+    margin-bottom:5px;
+    border:1px solid #C4DB37;
+    box-shadow: inset 0 0 0 2px #C4DB37 ;
+    border-radius: 3px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.invite-collaborator label,
+.invite-collaborator input,
+.invite-collaborator button {
+    margin: 5px 0;
+}
+
+.invite-board-col-btn {
+    /*border-radius: 8px;*/
+    font-size: 14px;
+    /*display: block;*/
+    /*flex: 1 0 auto;*/
+    /*margin: 8px 0 8px 8px;*/
+    /*padding: 4px 8px 4px 6px;*/
+    /*position: relative;*/
+    /*text-decoration: none;*/
+    padding:6px 13px;
+    font-weight: bold;
+    /*color:#fff;*/
+    border:0;
+    border-radius: 3px;
+    background-color: #705c3b;
+    color:white;
+    cursor: pointer;
+}
+.invite-board-col-header .invite-board-col-btn:hover {
+    background-color: #3e3131;
+    color: white;
+    box-shadow: 5px 5px #724123;
+}

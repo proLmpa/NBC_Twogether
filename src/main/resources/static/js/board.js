@@ -125,6 +125,143 @@ async function createWorkspace() {
 	})
 }
 
+function editBoardOnOff() {
+	$('#edit-board-form').toggle()
+}
+
+function closeEditBoard() {
+	$('#edit-board-form').hide()
+}
+
+function editBoard() {
+	//given
+	let boardId = document.getElementById('boardId').textContent
+
+	let title = document.getElementById('board-title-edited').value
+	if (title === '') {
+		title = null;
+	}
+	let color = document.getElementById('board-color-edited').value
+	if (color === '') {
+		color = null;
+	}
+	let info = document.getElementById('board-info-edited').value
+	if (info === '') {
+		info = null;
+	}
+
+	console.log(title)
+
+	const request = {
+		title: title,
+		color: color,
+		info: info
+	}
+
+	// when
+	fetch('/api/boards/' + boardId, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+		// then
+		.then(async res => {
+			checkTokenExpired(res)
+			refreshToken(res)
+
+			if (res.status !== 200) {
+				let error = await res.json()
+				alert(error['message'])
+				return
+			}
+
+			closeEditBoard()
+			await callMyBoard()
+		});
+}
+function openInviteBoardCollab() {
+	closeAllInviteCollaborators()
+	$('#invite-board-collaborator').show()
+}
+
+function closeAllInviteCollaborators() {
+	$('.invite-collaborator').hide()
+}
+
+async function inviteBoardCollaborator() {
+	// given
+	let boardId = document.getElementById('boardId').textContent
+
+
+	let email = document.getElementById('board-collaborator-email').value
+	const request = {
+		email: email
+	}
+
+	// when
+	await fetch('/api/boards/' + boardId + '/invite', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request)
+	})
+
+		// then
+		.then(async res => {
+			checkTokenExpired(res)
+			refreshToken(res)
+
+			if (res.status !== 200) {
+				let error = await res.json()
+				alert(error['message'])
+			}
+
+			closeAllInviteCollaborators()
+			await callMyBoard()
+		})
+}
+
+function deleteBoard() {
+	let boardId = document.getElementById('boardId').textContent
+
+	let check = confirm("보드를 삭제하시겠습니까?")
+	if (!check) {
+		return
+	}
+
+	// when
+	fetch(`/api/boards/${boardId}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		}
+	})
+
+		// then
+		.then(async res => {
+			checkTokenExpired(res)
+			refreshToken(res)
+
+			if (res.status !== 200) {
+				let error = await res.json()
+				alert(error['message'])
+				return
+			}
+
+			moveToWorkspace()
+		})
+}
+
 async function createDeck() {
 	// given
 	let boardId = document.getElementById('boardId').textContent
