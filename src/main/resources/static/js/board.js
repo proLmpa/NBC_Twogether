@@ -69,14 +69,22 @@ async function callMyBoard() {
 			return
 		}
 
+		var boardTitle =$('#board-title')
+
 		var decks = $('#deck-list')
 		var archive = $('#archive-container')
 
+		boardTitle.empty()
 		decks.empty()
 		archive.empty()
 		let board = await res.json()
 		console.log(board)
 
+		for(let boardCollaborator of board['boardCollaborators']) {
+			$('#invite-board-collaborator-list').append(formBoardCollaborator(boardId,boardCollaborator))
+		}
+
+		boardTitle.append(board['title'])
 		for (let deck of board['decks']) {
 			$('list-card-list-' + deck['deckId']).empty()
 			if (deck['archived']) {
@@ -229,6 +237,20 @@ async function inviteBoardCollaborator() {
 		})
 }
 
+function formBoardCollaborator(boardId,boardCollaborator) {
+	let boardColId = boardCollaborator['boardColId']
+	let email = boardCollaborator['email']
+	let nickname = boardCollaborator['nickname']
+
+	return `
+				<li id="board-col-${boardColId}">
+				<span>${nickname}</span>
+				<span id="board-col-email-${boardColId}">${email}</span>
+				<button onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
+				</li>
+				`
+}
+
 function deleteBoard() {
 	let boardId = document.getElementById('boardId').textContent
 
@@ -262,6 +284,39 @@ function deleteBoard() {
 		})
 }
 
+function deleteBoardCollaborator(boardId,boardColId) {
+	//given
+	let boardColEmail = document.getElementById('board-col-email-' + boardColId).innerHTML
+
+	const request = {
+		email: boardColEmail
+	}
+
+	// when
+	fetch('/api/boards/' + boardId + '/invite', {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+
+		$('#board-col-' + boardColId).remove()
+	})
+
+}
 async function createDeck() {
 	// given
 	let boardId = document.getElementById('boardId').textContent
