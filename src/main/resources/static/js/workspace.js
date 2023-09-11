@@ -82,9 +82,12 @@ function callMyWorkspaces() {
 
     let workspaces = await res.json()
 
+
     for (let workspace of workspaces['workspaces']) {
       let wId = workspace['workspaceId']
       $('#my-workspaces').append(formMyWorkspace(workspace))
+      $('#nav-workspaces').append(formNavMyWorkspace(workspace))
+
 
       for (let board of workspace['boards']) {
         $('#workspace-board-list-' + wId).append(formMyBoard(board))
@@ -125,6 +128,7 @@ function callColWorkspaces() {
     for (let workspace of workspaces['workspaces']) {
       let wId = workspace['workspaceId']
       $('#col-workspaces').append(formColWorkspace(workspace))
+      $('#nav-col-workspaces').append(formNavColWorkspace(workspace))
       for (let board of workspace['boards']) {
         $('#workspace-board-list-' + wId).append(formColBoard(board))
       }
@@ -301,6 +305,7 @@ function deleteBoard(bId) {
       alert(error['message'])
       return
     }
+
     // 생성된 workspace도 노출되도록 하기 위해 함수 호출
     callMyWorkspaces()
   })
@@ -465,19 +470,47 @@ function formMyWorkspace(workspace) {
             </div>
         </div>       `
 }
+function formNavMyWorkspace(workspace) {
+  let title = workspace['title']
+  let wId = workspace['workspaceId']
 
+  return `
+    <li id="workspace-${wId}">
+      <div class="wp-lists"
+        <span>${title}</span>
+      </div>
+    </li>
+    `
+}
+function formNavColWorkspace(workspace) {
+  let title = workspace['title']
+  let wId = workspace['workspaceId']
+
+
+  return `
+    <li id="workspace-${wId}">
+      <div class="col-wp-lists"
+        <span>${title}</span>
+      </div>
+    </li>
+    `
+}
 function formMyBoard(board) {
   let boardId = board['boardId']
   let title = board['title']
   let color = board['color']
 
   return `
-    <div id="board-${boardId}" class="board">
-      <h3 onclick="moveToBoard(${boardId})">${title}</h3>
+    <div id="board-${boardId}" class="board" >
+      <div class="move-to-board" onclick="moveToBoard(${boardId})">
+      <h3>${title}</h3>
+      </div>
       <div id="board-${boardId}-btns" class="board-btns">
-        <button onclick="deleteBoard(${boardId})"><i class="fa-solid fa-trash"></i></button>
+        <button id=delete-board-btn onclick="deleteBoard(${boardId})"
+        ><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
+    
   `
 }
 function formCollaborator(wId, collaborator) {
@@ -528,7 +561,7 @@ function formColWorkspace(workspace) {
   let wId = workspace['workspaceId']
 
   return `
-       <div id="workspace-${wId}" class="workspace">
+       <div id="workspace-${wId}" class="col-workspace">
           <header>
             <h2>${title}</h2>
             <h3>${introduction}</h3>
@@ -547,7 +580,9 @@ function formColBoard(board) {
 
   return `
     <div id="board-${boardId}" class="board" onclick="moveToBoard(${boardId})">
+    <div class="move-to-board">
       <h3>${title}</h3>
+     </div>
     </div>
   `
 }
