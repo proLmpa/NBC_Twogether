@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://52.78.70.219'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
@@ -444,6 +445,7 @@ function formMyWorkspace(workspace) {
               
             <div class="invite-wp-col-bg">
                 <div id="invite-wp-col-${wId}" class="invite-collaborator">
+
                     <div class="invite-wp-col-header">
                 <h2>워크스페이스에 초대하세요.</h2>
                 <a class="close-button-invite-wp-col" onclick="closeAllInviteCollaborators()">
@@ -459,6 +461,7 @@ function formMyWorkspace(workspace) {
                     <hr>
                     <div class="wp-col-list">
                       <ul id="invite-wp-col-list-${wId}"></ul>
+
                     </div>
               </div>
                 </div>
@@ -481,6 +484,7 @@ function formNavMyWorkspace(workspace) {
       </div>
     </li>
     `
+
 }
 function formNavColWorkspace(workspace) {
   let title = workspace['title']

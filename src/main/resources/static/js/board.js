@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://52.78.70.219'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
@@ -36,7 +37,6 @@ async function logout() {
     })
 }
 
-
 async function getUserInfo() {
 	// when
 	await fetch('/api/users/info', {
@@ -65,6 +65,7 @@ function moveToWorkspace() {
 	window.location.href = BASE_URL + '/views/workspace'
 }
 
+// Board 관련 로직
 async function callMyBoard() {
 	// given
 	let boardId = document.getElementById('boardId').textContent
@@ -158,7 +159,7 @@ async function callMyCard(cardId) {
 		let checkLists = $('#checkList-list-' + cardId)
 		for (let checkList of card['checkLists']) {
 			checkLists.append(formCheckList(checkList))
-			let checkListItems = $('#checkList-items-' + cardId)
+			let checkListItems = $('#checkList-items-' + checkList['clId'])
 			for (let chlItem of checkList['chlItems']) {
 				checkListItems.append(formCheckListItem(chlItem))
 			}
@@ -315,7 +316,6 @@ function formBoardCollaborator(boardId,boardCollaborator) {
 				          </div>
 				<button class="col-delete-btn" onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
 				        </div>
-
 				</li>
 				`
 }
@@ -766,10 +766,7 @@ async function deleteComment(cardId, commentId) {
 
 async function addCheckList(cardId) {
 	// given
-	let title = document.getElementById('checkList-input-' + cardId).value
-	if (title === '') {
-		title = 'Checklist'
-	}
+	let title = 'CheckList'
 
 	const request = {
 		title: title
@@ -920,11 +917,6 @@ async function editChlItem(cardId, chlItemId, newContent) {
 }
 
 async function deleteCheckList(cardId, checkListId) {
-	let check = confirm("해당 체크리스트를 삭제하시겠습니까?")
-	if (!check) {
-		return
-	}
-
 	// when
 	fetch('/api/checklists/' + checkListId, {
 		method: "DELETE",
@@ -1105,6 +1097,9 @@ async function deleteCard(cardId) {
 }
 
 // 순수 javascript 동작
+function moveToWorkspace() {
+	window.location.href = BASE_URL + '/views/workspace'
+}
 
 function toggleCreateWorkspace() {
 	$('#create-workspace-form').toggle()
@@ -1124,8 +1119,8 @@ function formDeck(deck) {
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
-                        <p id="deck-title-${deckId}" class="list-header-title" onclick="toggleEditDeckTitle(${deckId})">${title} <i class="fas fa-pen"></i></p>  
-                        <p class="list-header-archive" onclick="archiveDeck(${deckId})"><i class="fa fa-archive" aria-hidden="true"></i></p>
+                        <div id="deck-title-${deckId}" class="list-header-title" onclick="toggleEditDeckTitle(${deckId})">${title} <i class="fas fa-pen"></i></div>  
+                        <div class="list-header-archive" onclick="archiveDeck(${deckId})"><i class="fa fa-archive" aria-hidden="true"></i></div>
                     </div>
                     
                     <div id="edit-deck-title-form-${deckId}" class="edit-deck-title-form" style="display:none">
@@ -1140,16 +1135,16 @@ function formDeck(deck) {
                         </div>
                         
                         <!-- todo: 카드 추가 기능 활성화 -->
-                        <div class="deck-list-add-card-container">
-                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" href="#" aria-label="카드 생성 열기">
+                        <div class="deck-list-add-card-container" id="add-card-button-${deckId}" onclick="toggleCreateCard(${deckId})">
+                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" aria-label="카드 생성 열기">
                                 <i class="fa-solid fa-plus fa-xl"></i>
                                 카드 추가
                             </a>
                         </div>
                         
                         <!-- todo: 카드 추가 기능 -->
-                        <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area">
-                            <form class="add-card-name-text-area-form hidden" action="post">
+                        <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area" hidden>
+                            <div class="add-card-name-text-area-form">
                                 <input type="text" name="add-cardlist-input"
                                        class="add-cardlist-input"
                                        id="card-title-input-${deckId}"
@@ -1160,11 +1155,11 @@ function formDeck(deck) {
                                             onclick="createCard(${deckId})">카드 추가
                                     </button>
                                     <a class="cancel-button cardlist"
-                                       aria-label="카드 추가 취소">
+                                       aria-label="카드 추가 취소"  onclick="toggleCreateCard(${deckId})">
                                         <i class="fa-solid fa-xmark fa-xl"></i>
                                     </a>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         
                     </div>
@@ -1210,11 +1205,11 @@ function formCard(card) {
 
 	return`
 			<li class="card-list" id="card-list-${cardId}" onclick="callMyCard(${cardId})">
-			    <span>
-			        <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId}, event)">
-			            ${title}
-			        </p>
-			    </span>
+				<div class="card-list-title" id="card-list-title-${cardId}">
+			    	<span onclick="editTitle(${cardId}, event)">
+						${title}
+					</span>
+			    </div>
 			</li>
 			<div id="card-page-${cardId}"></div>
 	`
@@ -1235,13 +1230,9 @@ function formCardPage(card) {
 					<button id="close-card" onclick="closeCard(${cardId})"><i class="fa-solid fa-xmark fa-xl"></i></button>
 				    <div class="card-header">
 				    	<i class="fa-regular fa-note-sticky"></i>
-				        <p class="card-page-title" id="card-page-title-${cardId}" onclick="editTitleInCP(${cardId})">
+				        <div class="card-page-title" id="card-page-title-${cardId}" onclick="editTitleInCP(${cardId})">
 				            ${title}
-				        </p>
-				        <!--덱타이틀-->
-				        <!--<p class="card-page-deck-title" id="card-page-title-${cardId}" > -->
-				        <!--    ${title}-->
-				        <!--</p>-->
+				        </div>
 				    </div>
 				    <div class="card-main">
 				        <h2 style="display: none">카드 작업자</h2>
@@ -1254,24 +1245,16 @@ function formCardPage(card) {
 				        	<div class="card-description-header">
 				    		<i class="fa-regular fa-pen-to-square"></i>
 				        	<h2>카드 설명</h2>
-<!--				        	<div class="card-description-edit">-->
-<!--                            <button id="edit-description">수정</button>-->
-<!--                        	</div>-->
                         	</div>
                         	<div class="card-description-content">
-				        	<p class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
+				        	<div class="card-page-content" id="card-page-content-${cardId}" onclick="editContentInCP(${cardId})"> <!--설명 수정 메서드 추가-->
 				            ${content}
-				        	</p>
+				        	</div>
 				        	</div>
 				        </div>
 				        <h2 style="display: none">첨부 파일</h2>
 				        <!--첨부파일이 없으면 파일을 올릴 수 있도록 드래그 할 수 있는 공간이 있고, 있다면 파일 형식에 따라 보여주기-->
 
-				        <h2>체크리스트</h2>
-				        <div class="checkList-input">
-				            <input type="text" id="checkList-input-${cardId}" placeholder="체크리스트 타이틀 작성...">
-				            <button onclick="addCheckList(${cardId})">생성</button>
-				        </div>
 				        <div class="checkList-list" id="checkList-list-${cardId}"></div>
 				        
 				        	<div class="card-comment">
@@ -1311,8 +1294,8 @@ function formCommentList(comment) {
 	return`
 		<div class="comment-item" id="comment-${commentId}">
 			<img src=${icon} alt=${writer}>
-			<p class="comment-content" id="comment-content-${commentId}" onclick="editCommentInCP(${cardId}, ${commentId})">${content}</p>
-			<button class="comment-delete-button" onclick="deleteComment(${cardId}, ${commentId})">댓글 삭제</button>
+			<div class="comment-content" id="comment-content-${commentId}" onclick="editCommentInCP(${cardId}, ${commentId})">${content}</div>
+			<i class="fa-solid fa-circle-xmark cp-delete-button delete-comment" onclick="deleteComment(${cardId}, ${commentId})"></button>
 		<div>
 	`
 }
@@ -1324,13 +1307,16 @@ function formCheckList(checkList) {
 
 	return`
 		<div class="checkList" id="checkList-${checkListId}">
-			<p class="checkList-title" id="checkList-title-${checkListId}" onclick="editCheckListTitleInCP(${cardId}, ${checkListId})">${title}</p>
-			<button class="checkList-delete-button" onclick="deleteCheckList(${cardId}, ${checkListId})">삭제</button>
+			<div class="card-checklist-header">
+				<i class="fa-regular fa-square-check"></i>
+				<div class="checkList-title" id="checkList-title-${checkListId}" onclick="editCheckListTitleInCP(${cardId}, ${checkListId})">${title}</div>
+				<i class="fa-solid fa-circle-xmark cp-delete-button" onclick="deleteCheckList(${cardId}, ${checkListId})"></i>
+			</div>
 			<div class="checkList-item-input">
 				<input type="text" id="checkList-item-input-${checkListId}" placeholder="체크박스 작성...">
 				<button onclick="addCheckListItem(${cardId}, ${checkListId})">생성</button>
 			</div>
-			<div class="checkList-items" id="checkList-items-${cardId}"></div>
+			<div class="checkList-items" id="checkList-items-${checkListId}"></div>
 		</div>
 	`
 }
@@ -1352,8 +1338,8 @@ function formCheckListItem(chlItem) {
 		<div class="checkList-item" id="checkList-item-${chlItemId}">
 			${checkbox}
 			<!--label로 설정하면 클릭 시 체크박스만 체크되고 content 수정이 안되는 문제가 있어 p로 변경하였습니다.-->
-			<p class="checkbox-title" id="checkbox-title-${chlItemId}" onclick="editChlItemInCP(${cardId}, ${chlItemId})">${content}</p>
-			<button class="Item-delete-button" onclick="deleteCheckListItem(${cardId}, ${chlItemId})">삭제</button>
+			<div class="checkbox-title" id="checkbox-title-${chlItemId}" onclick="editChlItemInCP(${cardId}, ${chlItemId})">${content}</div>
+			<i class="fa-solid fa-circle-xmark cp-delete-button" onclick="deleteCheckListItem(${cardId}, ${chlItemId})"></i>
 		</div>
 	`
 }
@@ -1590,7 +1576,13 @@ function toggleEditDeckTitle(deckId) {
 }
 
 function toggleCreateDeckForm() {
-    $('#create-deck-form').toggle()
+	$('.add-decklist-button').toggle();
+    $('#create-deck-form').toggle();
+}
+
+function toggleCreateCard(deckId) {
+	$('#add-card-name-text-area-form-' + deckId).toggle();
+	$('#add-card-button-' + deckId).toggle();
 }
 
 function openNav() {
