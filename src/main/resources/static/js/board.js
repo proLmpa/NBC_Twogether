@@ -29,10 +29,7 @@ async function logout() {
 
     // then
     .then(async res => {
-        checkTokenExpired(res)
-        refreshToken(res)
-
-        resetToken()
+		resetToken()
         window.location.href = BASE_URL + '/views/login'
     })
 }
