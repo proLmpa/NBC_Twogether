@@ -914,11 +914,6 @@ async function editChlItem(cardId, chlItemId, newContent) {
 }
 
 async function deleteCheckList(cardId, checkListId) {
-	let check = confirm("해당 체크리스트를 삭제하시겠습니까?")
-	if (!check) {
-		return
-	}
-
 	// when
 	fetch('/api/checklists/' + checkListId, {
 		method: "DELETE",
@@ -1134,16 +1129,16 @@ function formDeck(deck) {
                         </div>
                         
                         <!-- todo: 카드 추가 기능 활성화 -->
-                        <div class="deck-list-add-card-container">
-                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" href="#" aria-label="카드 생성 열기">
+                        <div class="deck-list-add-card-container" id="add-card-button-${deckId}" onclick="toggleCreateCard(${deckId})">
+                            <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" aria-label="카드 생성 열기">
                                 <i class="fa-solid fa-plus fa-xl"></i>
                                 카드 추가
                             </a>
                         </div>
                         
                         <!-- todo: 카드 추가 기능 -->
-                        <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area">
-                            <form class="add-card-name-text-area-form hidden" action="post">
+                        <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area" hidden>
+                            <div class="add-card-name-text-area-form">
                                 <input type="text" name="add-cardlist-input"
                                        class="add-cardlist-input"
                                        id="card-title-input-${deckId}"
@@ -1154,11 +1149,11 @@ function formDeck(deck) {
                                             onclick="createCard(${deckId})">카드 추가
                                     </button>
                                     <a class="cancel-button cardlist"
-                                       aria-label="카드 추가 취소">
+                                       aria-label="카드 추가 취소"  onclick="toggleCreateCard(${deckId})">
                                         <i class="fa-solid fa-xmark fa-xl"></i>
                                     </a>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         
                     </div>
@@ -1584,7 +1579,13 @@ function toggleEditDeckTitle(deckId) {
 }
 
 function toggleCreateDeckForm() {
-    $('#create-deck-form').toggle()
+	$('.add-decklist-button').toggle();
+    $('#create-deck-form').toggle();
+}
+
+function toggleCreateCard(deckId) {
+	$('#add-card-name-text-area-form-' + deckId).toggle();
+	$('#add-card-button-' + deckId).toggle();
 }
 
 function openNav() {
