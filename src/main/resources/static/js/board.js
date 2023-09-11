@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:8080'
-// const BASE_URL = 'http://52.78.70.219'
+// const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://www.twogetherwork.com'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
@@ -28,7 +28,7 @@ async function logout() {
     })
 
     // then
-    .then(async res => {
+    .then(() => {
 		resetToken()
         window.location.href = BASE_URL + '/views/login'
     })
@@ -56,10 +56,6 @@ async function getUserInfo() {
 
 		callMyBoard()
 	})
-}
-// 워크스페이스로 이동
-function moveToWorkspace() {
-	window.location.href = BASE_URL + '/views/workspace'
 }
 
 // Board 관련 로직
@@ -1672,14 +1668,12 @@ function dropCard(event) {
 		const nextCard = event.target.id
 		const prevCard = event.target.previousElementSibling === null ? '-0' : event.target.previousElementSibling.id
 		const deck = event.target.parentNode.id
-		const cardList = document.getElementById(deck)
 
 		moveCard(deck.split('-')[3], currCard.split('-')[1], prevCard.split('-')[1], nextCard.split('-')[1])
         .then(() => callMyBoard())
 	} else if (event.target.classList.contains('list-card-list')) {
 		const card = draggedCard.id
 		const cardListId = event.target.id
-		const cardList = document.getElementById(cardListId)
 
 		moveCard(cardListId.split('-')[3], card.split('-')[1], 0, 0)
 		.then(() => callMyBoard())
