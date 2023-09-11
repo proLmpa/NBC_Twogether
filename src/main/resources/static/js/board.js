@@ -57,6 +57,10 @@ async function getUserInfo() {
 		callMyBoard()
 	})
 }
+// 워크스페이스로 이동
+function moveToWorkspace() {
+	window.location.href = BASE_URL + '/views/workspace'
+}
 
 // Board 관련 로직
 async function callMyBoard() {
@@ -301,9 +305,14 @@ function formBoardCollaborator(boardId,boardCollaborator) {
 
 	return `
 				<li id="board-col-${boardColId}">
+				        <div class="board-col-lists">
+          <div class="board-col-lists-email">
+
 				<span>${nickname}</span>
 				<span id="board-col-email-${boardColId}">${email}</span>
-				<button onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
+				          </div>
+				<button class="col-delete-btn" onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
+				        </div>
 				</li>
 				`
 }
