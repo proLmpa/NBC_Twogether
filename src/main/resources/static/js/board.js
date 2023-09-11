@@ -622,6 +622,7 @@ async function editCardTitleC(cardId, newTitle) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
 		callMyCard(cardId)
 	})
 }
@@ -658,6 +659,7 @@ async function editCardContent(cardId, newContent) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
 		callMyCard(cardId)
 	})
 }
@@ -728,6 +730,7 @@ async function editComment(cardId, commentId, newComment) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
 		callMyCard(cardId);
 	})
 }
@@ -790,6 +793,7 @@ async function addCheckList(cardId) {
 			alert(error['message'])
 		}
 
+		console.log(6)
 		callMyCard(cardId).then()
 	})
 }
@@ -824,6 +828,7 @@ async function editCheckListTitle(cardId, chlId, newTitle) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
 		callMyCard(cardId);
 	})
 }
@@ -909,6 +914,7 @@ async function editChlItem(cardId, chlItemId, newContent) {
 			let error = await res.json()
 			alert(error['message'])
 		}
+
 		callMyCard(cardId);
 	})
 }
@@ -1207,8 +1213,8 @@ function formCard(card) {
 						${title}
 					</span>
 			    </div>
-				<div id="card-page-${cardId}"></div>
 			</li>
+			<div id="card-page-${cardId}"></div>
 	`
 }
 
@@ -1292,7 +1298,7 @@ function formCommentList(comment) {
 		<div class="comment-item" id="comment-${commentId}">
 			<img src=${icon} alt=${writer}>
 			<div class="comment-content" id="comment-content-${commentId}" onclick="editCommentInCP(${cardId}, ${commentId})">${content}</div>
-			<i class="fa-solid fa-circle-xmark cp-delete-button delete-comment" onclick="deleteComment(${cardId}, ${commentId})"></button>
+			<i class="fa-solid fa-circle-xmark cp-delete-button delete-comment" onclick="deleteComment(${cardId}, ${commentId})"></i>
 		<div>
 	`
 }
@@ -1669,18 +1675,14 @@ function dropCard(event) {
 		const cardList = document.getElementById(deck)
 
 		moveCard(deck.split('-')[3], currCard.split('-')[1], prevCard.split('-')[1], nextCard.split('-')[1])
-		.then(() => {
-			callMyBoard()
-		});
+        .then(() => callMyBoard())
 	} else if (event.target.classList.contains('list-card-list')) {
 		const card = draggedCard.id
 		const cardListId = event.target.id
 		const cardList = document.getElementById(cardListId)
 
 		moveCard(cardListId.split('-')[3], card.split('-')[1], 0, 0)
-		.then(() => {
-			callMyBoard()
-		})
+		.then(() => callMyBoard())
 	}
 
 	draggedCard = null
