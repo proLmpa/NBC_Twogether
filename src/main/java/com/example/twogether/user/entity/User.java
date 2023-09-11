@@ -94,16 +94,12 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "eventReceiver")
+    @OneToMany(mappedBy = "user")
     private List<Alarm> alarms = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<AlarmTarget> alarmTargets = new ArrayList<>();
-
-    /**
-     * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
-     */
 
     /**
      * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
@@ -119,6 +115,10 @@ public class User {
 
     public void editPassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void editRole(UserRoleEnum userRoleEnum) {
+        this.role = userRoleEnum;
     }
 
     public User kakaoIdUpdate(Long kakaoId) {

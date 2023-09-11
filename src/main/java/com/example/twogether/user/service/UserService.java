@@ -9,6 +9,9 @@ import com.example.twogether.checklist.repository.ChlItemRepository;
 import com.example.twogether.comment.repository.CommentRepository;
 import com.example.twogether.common.error.CustomErrorCode;
 import com.example.twogether.common.exception.CustomException;
+import com.example.twogether.common.jwt.JwtUtil;
+import com.example.twogether.common.redis.RedisEmail;
+import com.example.twogether.common.redis.RedisRefreshToken;
 import com.example.twogether.common.s3.S3Uploader;
 import com.example.twogether.deck.repository.DeckRepository;
 import com.example.twogether.user.dto.EditPasswordRequestDto;
@@ -21,6 +24,7 @@ import com.example.twogether.user.repository.UserPasswordRepository;
 import com.example.twogether.user.repository.UserRepository;
 import com.example.twogether.workspace.repository.WpColRepository;
 import com.example.twogether.workspace.repository.WpRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -39,16 +43,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserPasswordRepository userPasswordRepository;
     private final WpRepository wpRepository;
-    private final BoardRepository boardRepository;
-    private final DeckRepository deckRepository;
-    private final CardLabelRepository cardLabelRepository;
-    private final CommentRepository commentRepository;
-    private final CheckListRepository checkListRepository;
-    private final ChlItemRepository chlItemRepository;
-    private final CardRepository cardRepository;
-    private final BoardColRepository boardColRepository;
     private final WpColRepository wpColRepository;
+    private final BoardRepository boardRepository;
+    private final BoardColRepository boardColRepository;
+    private final DeckRepository deckRepository;
+    private final CardRepository cardRepository;
+    private final CommentRepository commentRepository;
+    private final ChlItemRepository chlItemRepository;
+    private final CheckListRepository checkListRepository;
+    private final CardLabelRepository cardLabelRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisEmail redisUtil;
+    private final RedisRefreshToken redisRefreshToken;
     private final S3Uploader s3Uploader;
 
     @Value("${admin.token}")
@@ -56,11 +62,12 @@ public class UserService {
 
     @Transactional
     public User signup(SignupRequestDto requestDto) {
-        String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        // 사용자 존재 여부 확인
-        findExistingUserByEmail(email);
+        if (!redisUtil.hasKey(requestDto.getEmail()) || !redisUtil.isVerified(
+            requestDto.getEmail())) {
+            throw new CustomException(CustomErrorCode.EMAIL_NOT_VERIFIED);
+        }
 
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin() && requestDto.getAdminToken().equals(adminToken)) {
@@ -85,28 +92,30 @@ public class UserService {
         User found = findUser(user.getId());
 
         checkPassword(requestDto.getPassword(), found.getPassword());       // 기존 비밀번호 일치 여부 확인
-        checkRecentPasswords(found.getId(), requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
+        checkRecentPasswords(found.getId(),
+            requestDto.getNewPassword());   // 바로 직전 혹은 기존에 사용 중인 비밀번호인지 확인
 
         // 새 비밀번호 저장
         String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        userPasswordRepository.save(UserPassword.builder().password(newPassword).user(found).build());
+        userPasswordRepository.save(
+            UserPassword.builder().password(newPassword).user(found).build());
         found.editPassword(newPassword);
 
         // 비밀번호 이력이 3개를 넘는가?
-        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(found.getId());
-        if(userPasswords.size() >= 3)
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(
+            found.getId());
+        if (userPasswords.size() >= 3) {
             userPasswordRepository.deleteById(userPasswords.get(0).getId());
+        }
 
         return found;
     }
 
     @Transactional
     public void editIcon(MultipartFile multipartFile, User user) throws IOException {
-
-        User target = findUser(user.getId());
         try {
             String icon = s3Uploader.upload(multipartFile, "Icon");
-            target.editIcon(icon);
+            user.editIcon(icon);
         } catch (RejectedExecutionException e) {
             throw new CustomException(CustomErrorCode.S3_FILE_UPLOAD_FAIL);
         }
@@ -123,47 +132,25 @@ public class UserService {
         }
     }
 
+    public void logoutUser(HttpServletRequest req, User user) {
+        findUser(user.getId());
+
+        String refreshToken = req.getHeader(JwtUtil.REFRESH_TOKEN_HEADER);
+
+        if(refreshToken != null && redisRefreshToken.hasKey(refreshToken)) {
+            redisRefreshToken.removeRefreshToken(refreshToken);
+        } else {
+            throw new CustomException(CustomErrorCode.REFRESH_TOKEN_NOT_EXISTS);
+        }
+    }
+
     @Transactional
     public void deleteUserInfo(Long id, User user) {
         User found = findUser(id);
         confirmUser(found, user);
 
-        wpRepository.findAllByUser_Id(id).forEach(
-            workspace -> {
-                boardRepository.findAllByWorkspace_Id(workspace.getId()).forEach(
-                    board -> {
-                        deckRepository.findAllByBoard_Id(board.getId()).forEach(
-                            deck -> {
-                                cardRepository.findAllByDeck_Id(deck.getId()).forEach(
-                                    card -> {
-                                        commentRepository.deleteAllByCard_Id(card.getId());
-                                        cardLabelRepository.deleteAllByCard_Id(card.getId());
-                                        checkListRepository.findAllByCardId(card.getId()).forEach(
-                                            checkList -> chlItemRepository.deleteAllByCheckList_Id(checkList.getId())
-                                        );
-                                        checkListRepository.deleteAllByCard_Id(card.getId());
-                                        cardRepository.delete(card);
-                                    }
-                                );
-                                deckRepository.delete(deck);
-                            }
-                        );
-                        boardColRepository.deleteAllByBoard_Id(board.getId());
-                        boardRepository.delete(board);
-                    }
-                );
-                wpColRepository.deleteAllByWorkspace_Id(workspace.getId());
-                wpRepository.delete(workspace);
-            }
-        );
-        userPasswordRepository.deleteAllByUser_Id(found.getId());
+        logicallyDelete(user);
         userRepository.deleteById(found.getId());
-    }
-
-    private void findExistingUserByEmail(String email) {
-        if (userRepository.findByEmail(email).orElse(null) != null) {
-            throw new CustomException(CustomErrorCode.USER_ALREADY_EXISTS);
-        }
     }
 
     private User findUser(Long id) {
@@ -185,10 +172,45 @@ public class UserService {
     }
 
     private void checkRecentPasswords(Long userId, String newPassword) {
-        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(userId);
+        List<UserPassword> userPasswords = userPasswordRepository.findAllByUser_IdOrderByCreatedAt(
+            userId);
         userPasswords.forEach(password -> {
-            if (passwordEncoder.matches(newPassword, password.getPassword()))
+            if (passwordEncoder.matches(newPassword, password.getPassword())) {
                 throw new CustomException(CustomErrorCode.PASSWORD_RECENTLY_USED);
+            }
         });
+    }
+
+    private void logicallyDelete(User user) {
+        wpRepository.findAllByUser_Id(user.getId()).forEach(
+            workspace -> {
+                boardRepository.findAllByWorkspace_Id(workspace.getId()).forEach(
+                    board -> {
+                        deckRepository.findAllByBoard_Id(board.getId()).forEach(
+                            deck -> {
+                                cardRepository.findAllByDeck_Id(deck.getId()).forEach(
+                                    card -> {
+                                        commentRepository.deleteAllByCard_Id(card.getId());
+                                        cardLabelRepository.deleteAllByCard_Id(card.getId());
+                                        checkListRepository.findAllByCardId(card.getId()).forEach(
+                                            checkList -> chlItemRepository.deleteAllByCheckList_Id(
+                                                checkList.getId())
+                                        );
+                                        checkListRepository.deleteAllByCard_Id(card.getId());
+                                        cardRepository.delete(card);
+                                    }
+                                );
+                                deckRepository.delete(deck);
+                            }
+                        );
+                        boardColRepository.deleteAllByBoard_Id(board.getId());
+                        boardRepository.delete(board);
+                    }
+                );
+                wpColRepository.deleteAllByWorkspace_Id(workspace.getId());
+                wpRepository.delete(workspace);
+            }
+        );
+        userPasswordRepository.deleteAllByUser_Id(user.getId());
     }
 }
