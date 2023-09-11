@@ -352,10 +352,10 @@ nav {
 
 .list-card-list li {
     width: 100%;
-    margin-bottom: 5px;
+    margin: 13px 0;
 }
 
-.card-list {
+.card {
     width: 100%;
     padding: 7px 10px;
     border: 1px solid lightgray;
@@ -365,7 +365,7 @@ nav {
     box-shadow: 0 1px 1px #091e4240, 0 0 1px #091e424f;
 }
 
-.card-list-title {
+.card-title {
     width: auto;
     font-size: 16px;
     padding: 2px 2px 5px 5px;
@@ -750,6 +750,12 @@ nav {
 /* hover 시 버튼 스타일 (선택 사항) */
 .sidebar-button:hover {
     background-color: #ccc; /* hover 시 배경색 변경 (선택 사항) */
+}
+
+.drag-over {
+    border: 4px dashed lightgray;
+    background-color: darkgray;
+    transition: border 0.15s, background-color 0.15s;
 }
 
 /*보드초대*/

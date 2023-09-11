@@ -1103,7 +1103,7 @@ function formDeck(deck) {
 
     return `
         <li id="deck-${deckId}" class="deck deck-list-content" draggable="true"
-            ondragstart="dragStart(event)" ondragleave="dragleave(event)">
+            ondragstart="dragDeck(event)" ondragleave="dragleave(event)">
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
@@ -1119,8 +1119,8 @@ function formDeck(deck) {
                     
                     <div class="deck-list-add-card-area">
                         <div class="cards" id="cards-${deckId}">
-                            <ul class="list-card-list" id="list-card-list-${deckId}" 
-                				ondragover="allowDropCard(event)" ondragleave="dragLeaveCard(event)" ondrop="dropCard(event)"></ul>
+                            <ul class="list-card-list" id="list-card-list-${deckId}" ondragover="allowDropCard(event)"
+                             ondragleave="dragLeaveCard(event)" ondrop="dropCard(event)"></ul>
                         </div>
                         
                         <div class="deck-list-add-card-container" id="add-card-button-${deckId}" onclick="toggleCreateCard(${deckId})">
@@ -1191,14 +1191,15 @@ function formCard(card) {
 	let title = card['title']
 
 	return`
-			<li class="card-list" id="card-list-${cardId}" onclick="callMyCard(${cardId})">
-				<div class="card-list-title" id="card-list-title-${cardId}">
+			<li class="card" id="card-${cardId}" onclick="callMyCard(${cardId})"
+			  draggable="true" ondragstart="dragCard(event)">
+				<div class="card-title" id="card-title-${cardId}">
 			    	<span onclick="editTitle(${cardId}, event)">
 						${title}
 					</span>
 			    </div>
+				<div id="card-page-${cardId}"></div>
 			</li>
-			<div id="card-page-${cardId}"></div>
 	`
 }
 
@@ -1343,7 +1344,7 @@ function closeCard(cardId) {
 function editTitle(cardId, event) {
 	event.stopPropagation();
 	// 클릭한 제목 요소 가져오기
-	const titleElement = document.getElementById(`card-list-title-${cardId}`);
+	const titleElement = document.getElementById(`card-title-${cardId}`);
 
 	// 현재 제목 내용 가져오기
 	const currentTitle = titleElement.innerText;
@@ -1582,27 +1583,15 @@ function closeNav() {
 
 // drag & drop 관련 로직
 let draggedDeckIndex = null;
-let draggedCard = null;
 
-function dragStart(event) {
+function dragDeck(event) {
     const decks = document.querySelectorAll('.deck');
     draggedDeckIndex = Array.from(decks).indexOf(event.target);
-}
-
-function dragStartCard(event) {
-	const cardLists = document.querySelectorAll('.card-list');
-	draggedCardIndex = Array.from(cardLists).indexOf(event.target)
-
 }
 
 function allowDrop(event) {
     event.preventDefault();
 }
-
-function allowDropCard(event) {
-	event.preventDefault();
-}
-
 function dragleave(event) {
 	event.preventDefault();
 }
@@ -1611,7 +1600,7 @@ function drop(event) {
     event.preventDefault();
 
     const deckList = document.getElementById('deck-list');
-    if (deckList.contains(event.target)) {
+    if (deckList.contains(event.target) && event.target.classList.contains('deck')) {
         const dropIndex = Array.from(deckList.children).indexOf(event.target);
         let currentDeck = deckList.children[draggedDeckIndex]
         let targetDeck = event.target
@@ -1638,35 +1627,54 @@ function drop(event) {
     draggedDeckIndex = null;
 }
 
+let draggedCard = null;
+
+function dragCard(event) {
+	draggedCard = event.target;
+}
+
+function allowDropCard(event) {
+	event.preventDefault();
+	if (event.target.classList.contains('card') ||
+        event.target.classList.contains('list-card-list')) {
+		event.target.classList.add('drag-over');
+	}
+}
+
+function dragLeaveCard(event) {
+	if (event.target.classList.contains('card') ||
+        event.target.classList.contains('list-card-list')) {
+		event.target.classList.remove('drag-over');
+	}
+}
+
 function dropCard(event) {
 	event.preventDefault();
+	event.target.classList.remove('drag-over');
 
-	const deckList = document.getElementById('deck-list');
-	if (deckList.contains(event.target)) {
-		const dropIndex = Array.from(deckList.children).indexOf(event.target);
-		let currentDeck = deckList.children[draggedDeckIndex]
-		let targetDeck = event.target
-		let curId = currentDeck.id.split('-')[1]
-		let tarId = targetDeck.id.split('-')[1]
+	if(event.target.classList.contains('card')) {
+		const currCard = draggedCard.id
+		const nextCard = event.target.id
+		const prevCard = event.target.previousElementSibling === null ? '-0' : event.target.previousElementSibling.id
+		const deck = event.target.parentNode.id
+		const cardList = document.getElementById(deck)
 
-		if (curId !== tarId &&
-			currentDeck.classList.contains('deck') &&
-			targetDeck.classList.contains('deck')) {
-			if (draggedDeckIndex < dropIndex) {
-				let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
+		moveCard(deck.split('-')[3], currCard.split('-')[1], prevCard.split('-')[1], nextCard.split('-')[1])
+		.then(() => {
+			callMyBoard()
+		});
+	} else if (event.target.classList.contains('list-card-list')) {
+		const card = draggedCard.id
+		const cardListId = event.target.id
+		const cardList = document.getElementById(cardListId)
 
-				moveDeck(curId, tarId, nextDeckId)
-				.then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
-			} else {
-				let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
-
-				moveDeck(curId, prevDeckId, tarId)
-				.then(() => deckList.insertBefore(currentDeck, targetDeck))
-			}
-		}
+		moveCard(cardListId.split('-')[3], card.split('-')[1], 0, 0)
+		.then(() => {
+			callMyBoard()
+		})
 	}
 
-	draggedDeckIndex = null;
+	draggedCard = null
 }
 
 // token 관련 재생성, 삭제, 만료 로직
