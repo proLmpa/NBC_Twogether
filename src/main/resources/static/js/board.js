@@ -307,9 +307,15 @@ function formBoardCollaborator(boardId,boardCollaborator) {
 
 	return `
 				<li id="board-col-${boardColId}">
+				        <div class="board-col-lists">
+          <div class="board-col-lists-email">
+
 				<span>${nickname}</span>
 				<span id="board-col-email-${boardColId}">${email}</span>
-				<button onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
+				          </div>
+				<button class="col-delete-btn" onclick="deleteBoardCollaborator(${boardId},${boardColId})">추방</button>
+				        </div>
+
 				</li>
 				`
 }
