@@ -1110,8 +1110,8 @@ function formDeck(deck) {
     let title = deck['title']
 
     return `
-        <li id="${deckId}" class="deck deck-list-content" draggable="true"
-            ondragstart="dragStart(event)">
+        <li id="deck-${deckId}" class="deck deck-list-content" draggable="true"
+            ondragstart="dragStart(event)" ondragleave="dragleave(event)">
             <ul class="deck-list-ul">
                 <li>
                     <div class="deck-list-header">
@@ -1127,10 +1127,10 @@ function formDeck(deck) {
                     
                     <div class="deck-list-add-card-area">
                         <div class="cards" id="cards-${deckId}">
-                            <ul class="list-card-list" id="list-card-list-${deckId}"></ul>
+                            <ul class="list-card-list" id="list-card-list-${deckId}" 
+                				ondragover="allowDropCard(event)" ondragleave="dragLeaveCard(event)" ondrop="dropCard(event)"></ul>
                         </div>
                         
-                        <!-- todo: 카드 추가 기능 활성화 -->
                         <div class="deck-list-add-card-container">
                             <a id="open-add-cardlist-button-${deckId}" class="open-add-cardlist-button" href="#" aria-label="카드 생성 열기">
                                 <i class="fa-solid fa-plus fa-xl"></i>
@@ -1138,7 +1138,6 @@ function formDeck(deck) {
                             </a>
                         </div>
                         
-                        <!-- todo: 카드 추가 기능 -->
                         <div id="add-card-name-text-area-form-${deckId}" class="deck-list-add-card-name-text-area">
                             <div class="add-card-name-text-area-form hidden">
                                 <input type="text" name="add-cardlist-input"
@@ -1157,7 +1156,6 @@ function formDeck(deck) {
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </li>
             </ul>
@@ -1200,7 +1198,8 @@ function formCard(card) {
 	let title = card['title']
 
 	return`
-			<li class="card-list" id="card-list-${cardId}" onclick="callMyCard(${cardId})">
+			<li class="card-list" id="card-list-${cardId}" onclick="callMyCard(${cardId})" draggable="true"
+			    ondragstart="dragStartCard(event)" ondrop="dropCard(event)">
 			    <span>
 			        <p class="card-list-title" id="card-list-title-${cardId}" onclick="editTitle(${cardId}, event)">
 			            ${title}
@@ -1593,15 +1592,30 @@ function closeNav() {
 }
 
 // drag & drop 관련 로직
-let draggedIndex = null;
+let draggedDeckIndex = null;
+let draggedCard = null;
 
 function dragStart(event) {
     const decks = document.querySelectorAll('.deck');
-    draggedIndex = Array.from(decks).indexOf(event.target);
+    draggedDeckIndex = Array.from(decks).indexOf(event.target);
+}
+
+function dragStartCard(event) {
+	const cardLists = document.querySelectorAll('.card-list');
+	draggedCardIndex = Array.from(cardLists).indexOf(event.target)
+
 }
 
 function allowDrop(event) {
     event.preventDefault();
+}
+
+function allowDropCard(event) {
+	event.preventDefault();
+}
+
+function dragleave(event) {
+	event.preventDefault();
 }
 
 function drop(event) {
@@ -1610,25 +1624,60 @@ function drop(event) {
     const deckList = document.getElementById('deck-list');
     if (deckList.contains(event.target)) {
         const dropIndex = Array.from(deckList.children).indexOf(event.target);
-        let currentDeck = deckList.children[draggedIndex]
+        let currentDeck = deckList.children[draggedDeckIndex]
         let targetDeck = event.target
+		let curId = currentDeck.id.split('-')[1]
+		let tarId = targetDeck.id.split('-')[1]
 
-        if (currentDeck.id !== targetDeck.id &&
+        if (curId !== tarId &&
             currentDeck.classList.contains('deck') &&
             targetDeck.classList.contains('deck')) {
-            if (draggedIndex < dropIndex) {
+            if (draggedDeckIndex < dropIndex) {
                 let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
-                moveDeck(currentDeck.id, targetDeck.id, nextDeckId)
+
+                moveDeck(curId, tarId, nextDeckId)
                 .then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
             } else {
                 let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
-                moveDeck(currentDeck.id, prevDeckId, targetDeck.id)
+
+                moveDeck(curId, prevDeckId, tarId)
                 .then(() => deckList.insertBefore(currentDeck, targetDeck))
             }
         }
     }
 
-    draggedIndex = null;
+    draggedDeckIndex = null;
+}
+
+function dropCard(event) {
+	event.preventDefault();
+
+	const deckList = document.getElementById('deck-list');
+	if (deckList.contains(event.target)) {
+		const dropIndex = Array.from(deckList.children).indexOf(event.target);
+		let currentDeck = deckList.children[draggedDeckIndex]
+		let targetDeck = event.target
+		let curId = currentDeck.id.split('-')[1]
+		let tarId = targetDeck.id.split('-')[1]
+
+		if (curId !== tarId &&
+			currentDeck.classList.contains('deck') &&
+			targetDeck.classList.contains('deck')) {
+			if (draggedDeckIndex < dropIndex) {
+				let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
+
+				moveDeck(curId, tarId, nextDeckId)
+				.then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
+			} else {
+				let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
+
+				moveDeck(curId, prevDeckId, tarId)
+				.then(() => deckList.insertBefore(currentDeck, targetDeck))
+			}
+		}
+	}
+
+	draggedDeckIndex = null;
 }
 
 // token 관련 재생성, 삭제, 만료 로직
