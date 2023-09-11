@@ -1267,13 +1267,20 @@ function formCardPage(card) {
 				            <button onclick="addCheckList(${cardId})">생성</button>
 				        </div>
 				        <div class="checkList-list" id="checkList-list-${cardId}"></div>
-				        <h2>댓글</h2>
-				        <div class="comment-input">
-				        	<span id="nickname"><!--현재 사용자의 닉네임과 아이콘 표시--></span>
-				            <input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
-				            <button onclick="submitComment(${cardId})">제출</button>
-				        </div>
-				        <div class="comment" id="comment-list-${cardId}"></div>
+				        
+				        	<div class="card-comment">
+    								<div class="card-comment-header">
+    									<i class="fa-solid fa-comments fa-sm"></i>
+				        			<h2>댓글</h2>
+				        		</div>
+				        		<div class="card-comment-content">
+				        			<div class="comment-input">
+				        				<span id="nickname"><!--현재 사용자의 닉네임과 아이콘 표시--></span>
+				            		<input type="text" id="comment-input-${cardId}" placeholder="댓글 작성...">
+				            		<button onclick="submitComment(${cardId})">제출</button>
+				        			</div>
+				        		</div>	
+				        		<div class="comment" id="comment-list-${cardId}"></div>
 					</div>
 					<div class="card-sidebar">
 						<button class="sidebar-button" id="sidebar-button-members" style="display: none">Members</button>
