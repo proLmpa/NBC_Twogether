@@ -9,5 +9,4 @@ public class TwogetherApplication {
     public static void main(String[] args) {
         SpringApplication.run(TwogetherApplication.class, args);
     }
-
 }
