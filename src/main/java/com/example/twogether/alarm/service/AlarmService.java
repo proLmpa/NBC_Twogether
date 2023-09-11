@@ -45,7 +45,7 @@ public class AlarmService {
     @Transactional(readOnly = true)
     public AlarmsResponseDto getAlarms(User user) {
 
-        List<Alarm> alarms = alarmRepository.findAllByEventReceiver(user);
+        List<Alarm> alarms = alarmRepository.findAllByUser(user);
         return AlarmsResponseDto.of(alarms);
     }
 }

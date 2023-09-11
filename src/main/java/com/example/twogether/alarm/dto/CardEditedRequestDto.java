@@ -10,7 +10,7 @@ public class CardEditedRequestDto {
 
         return Alarm.builder()
             .eventMaker(user)
-            .eventReceiver(alarmTarget)
+            .user(alarmTarget)
             .title(title)
             .content(content)
             .url(url)

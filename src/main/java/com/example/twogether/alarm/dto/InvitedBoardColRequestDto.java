@@ -14,7 +14,7 @@ public class InvitedBoardColRequestDto {
             .url(url)
             .alarmTrigger(alarmTrigger)
             .eventMaker(invitingUser) // 보드의 오너
-            .eventReceiver(invitedUser)
+            .user(invitedUser)
             .build();
     }
 }
