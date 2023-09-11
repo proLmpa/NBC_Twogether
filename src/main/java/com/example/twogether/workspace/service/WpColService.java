@@ -42,6 +42,9 @@ public class WpColService {
         Workspace foundWorkspace = findWpById(wpId);
         checkWorkspacePermissions(foundWorkspace, user, email);
 
+        // workspaceCollaborators 필드를 로드하여 Lazy Loading을 강제로 발생시키기
+        foundWorkspace.loadWorkspaceCollaborators();
+
         // 이미 등록된 사용자 초대당하기 불가
         if (wpColRepository.existsByWorkspaceAndEmail(foundWorkspace, email)) {
             throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
@@ -115,6 +118,7 @@ public class WpColService {
     // 초대된 워크스페이스 전체 조회
     @Transactional(readOnly = true)
     public WpsResponseDto getWpCols(User user) {
+
         List<Workspace> AllWorkspaces = findAllWpsByEmail(user.getEmail());
         List<Workspace> invitedWorkspaces = new ArrayList<>();
 
@@ -127,6 +131,7 @@ public class WpColService {
 
     private Workspace findWpById(Long wpId) {
 
+        // return wpRepository.findByIdWithCollaborators(wpId).orElseThrow(() ->
         return wpRepository.findById(wpId).orElseThrow(() ->
             new CustomException(CustomErrorCode.WORKSPACE_NOT_FOUND));
     }
