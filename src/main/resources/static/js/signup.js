@@ -41,7 +41,7 @@ async function submitCertificationNumber() {
 
     // when
     let query = Object.keys(params)
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .map(k => encodeURIComponent(k) + '=' + encodeURI(params[k]))
     .join('&')
 
     let url = BASE_URL + '/api/users/verify?' + query
