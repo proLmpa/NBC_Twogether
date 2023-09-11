@@ -71,7 +71,6 @@ async function callMyBoard() {
 		decks.empty()
 		archive.empty()
 		let board = await res.json()
-		console.log(board)
 
 		for (let deck of board['decks']) {
 			if (deck['archived']) {
@@ -545,6 +544,9 @@ async function deleteComment(cardId, commentId) {
 async function addCheckList(cardId) {
 	// given
 	let title = document.getElementById('checkList-input-' + cardId).value
+	if (title === '') {
+		title = 'Checklist'
+	}
 
 	const request = {
 		title: title
@@ -572,6 +574,40 @@ async function addCheckList(cardId) {
 		}
 
 		callMyCard(cardId).then()
+	})
+}
+
+async function editCheckListTitle(cardId, chlId, newTitle) {
+	// given
+	let title = newTitle
+	if (title === '') {
+		title = null
+	}
+	const request = {
+		title: title
+	};
+
+	// when
+	fetch('/api/checklists/' + chlId, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: JSON.stringify(request),
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+		callMyCard(cardId);
 	})
 }
 
@@ -626,6 +662,37 @@ async function checkItem(cardId, chlItemId) {
 		}
 
 		callMyCard(cardId).then()
+	})
+}
+
+async function editChlItem(cardId, chlItemId, newContent) {
+	// given
+	let content = newContent
+	if (content === '') {
+		content = null
+	}
+
+	// when
+	fetch('/api/chlItems/' + chlItemId + '/content', {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			'Authorization': Cookies.get('Authorization'),
+			'Refresh-Token': Cookies.get('Refresh-Token')
+		},
+		body: content,
+	})
+
+	// then
+	.then(async res => {
+		checkTokenExpired(res)
+		refreshToken(res)
+
+		if (res.status !== 200) {
+			let error = await res.json()
+			alert(error['message'])
+		}
+		callMyCard(cardId);
 	})
 }
 
@@ -982,7 +1049,7 @@ function formCardPage(card) {
 					<div class="card-sidebar">
 						<button class="sidebar-button" id="sidebar-button-members" style="display: none">Members</button>
 						<button class="sidebar-button" id="sidebar-button-labels" style="display: none">Labels</button>
-						<button class="sidebar-button" id="sidebar-button-checklist" style="display: none">Checklist</button>
+						<button class="sidebar-button" id="sidebar-button-checklist" onclick="addCheckList(${cardId})">Checklist</button>
 						<button class="sidebar-button" id="sidebar-button-duedate" style="display: none">Due Date</button>
 						<button class="sidebar-button" id="sidebar-button-attachment" style="display: none">Attachment</button>
 						<button class="sidebar-button" id="sidebar-button-archive" onclick="archiveCard(${cardId})">Archive</button>
@@ -998,7 +1065,6 @@ function formCommentList(comment) {
 	let writer = comment['writer']
 	let icon = comment['icon']
 	let content = comment['content']
-	let modifiedAt = comment['modifiedAt']
 
 	return`
 		<div class="comment-item" id="comment-${commentId}">
@@ -1043,7 +1109,8 @@ function formCheckListItem(chlItem) {
 	return`
 		<div class="checkList-item" id="checkList-item-${chlItemId}">
 			${checkbox}
-			<label class="checkbox-title" for="checkbox-${chlItemId}">${content}</label>
+			<!--label로 설정하면 클릭 시 체크박스만 체크되고 content 수정이 안되는 문제가 있어 p로 변경하였습니다.-->
+			<p class="checkbox-title" id="checkbox-title-${chlItemId}" onclick="editChlItemInCP(${cardId}, ${chlItemId})">${content}</p>
 			<button class="Item-delete-button" onclick="deleteCheckListItem(${cardId}, ${chlItemId})">삭제</button>
 		</div>
 	`
@@ -1054,6 +1121,7 @@ function closeCard(cardId) {
 	while (cardPage.firstChild) {
 		cardPage.removeChild(cardPage.firstChild)
 	}
+	callMyBoard()
 }
 
 // 보드 페이지에서 카드 제목 수정하기
@@ -1202,6 +1270,76 @@ function editCommentInCP(cardId, commentId) {
 		const newComment = inputElement.value;
 		contentElement.innerHTML = newComment;
 		editComment(cardId, commentId, newComment);
+	});
+}
+
+function editCheckListTitleInCP(cardId, chlId) {
+	// 클릭한 제목 요소 가져오기
+	const titleElement = document.getElementById(`checkList-title-${chlId}`);
+
+	// 현재 제목 내용 가져오기
+	const currentTitle = titleElement.innerText;
+
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentTitle;
+
+	// 제목을 input 요소로 교체
+	titleElement.innerHTML = "";
+	titleElement.appendChild(inputElement);
+
+	// input 요소에 포커스 설정
+	inputElement.focus();
+
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newTitle = inputElement.value;
+			titleElement.innerHTML = newTitle;
+			editCheckListTitle(cardId, chlId, newTitle);
+		}
+	});
+
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newTitle = inputElement.value;
+		titleElement.innerHTML = newTitle;
+		editCheckListTitle(cardId, chlId, newTitle);
+	});
+}
+
+function editChlItemInCP(cardId, chlItemId) {
+	// 클릭한 제목 요소 가져오기
+	const titleElement = document.getElementById(`checkbox-title-${chlItemId}`);
+
+	// 현재 제목 내용 가져오기
+	const currentTitle = titleElement.innerText;
+
+	// 수정 가능한 input 요소 생성
+	const inputElement = document.createElement("input");
+	inputElement.value = currentTitle;
+
+	// 제목을 input 요소로 교체
+	titleElement.innerHTML = "";
+	titleElement.appendChild(inputElement);
+
+	// input 요소에 포커스 설정
+	inputElement.focus();
+
+	inputElement.addEventListener("keydown", (event) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			const newTitle = inputElement.value;
+			titleElement.innerHTML = newTitle;
+			editChlItem(cardId, chlItemId, newTitle);
+		}
+	});
+
+	// input 요소에서 포커스가 해제되면 수정 완료 처리
+	inputElement.addEventListener("blur", () => {
+		const newTitle = inputElement.value;
+		titleElement.innerHTML = newTitle;
+		editChlItem(cardId, chlItemId, newTitle);
 	});
 }
 
