@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://52.78.70.219'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {
@@ -36,7 +37,6 @@ async function logout() {
     })
 }
 
-
 async function getUserInfo() {
 	// when
 	await fetch('/api/users/info', {
@@ -60,11 +60,8 @@ async function getUserInfo() {
 		callMyBoard()
 	})
 }
-// 워크스페이스로 이동
-function moveToWorkspace() {
-	window.location.href = BASE_URL + '/views/workspace'
-}
 
+// Board 관련 로직
 async function callMyBoard() {
 	// given
 	let boardId = document.getElementById('boardId').textContent
@@ -1091,6 +1088,9 @@ async function deleteCard(cardId) {
 }
 
 // 순수 javascript 동작
+function moveToWorkspace() {
+	window.location.href = BASE_URL + '/views/workspace'
+}
 
 function toggleCreateWorkspace() {
 	$('#create-workspace-form').toggle()
