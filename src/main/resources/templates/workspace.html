@@ -28,7 +28,9 @@
 </head>
 <body>
 <header id="header">
-    <h2 id='header-title'>Two Gether</h2>
+    <div onclick="moveToWorkspace()">
+        <h2 id='header-title'>Two Gether</h2>
+    </div>
     <div id="header-profileImage-container"><img id="header-profileImage"></div>
     <div id="alarm-badge"></div>
     <div id="alarm-button">
@@ -91,6 +93,40 @@
         <button id="change-userInfo-btn">Edit Info</button><br>
         <button id="change-userImage-btn">Edit Image</button><br>
     </div>
+  <nav id="nav">
+    <div class="nav-workspace-lists">
+      <h3>My Workspaces</h3>
+      <div class="nav-wp-lists">
+      <ul id="nav-workspaces"></ul>
+      </div>
+      <hr>
+      <div style="display:none">
+      <h3>Collab Workspaces</h3>
+      <div class="nav-col-wp-lists">
+      <ul id="nav-col-workspaces"></ul>
+      </div>
+      </div>
+    </div>
+
+    <div class="nav-create-workspace-btns">
+    <button class="create-workspace-btns" id="create-workspace" onclick="createWorkspaceOnOff()"><i class="fas fa-plus"></i>
+      워크스페이스 새로 만들기
+    </button>
+    </div>
+    <div id="create-workspace-form" style="display:none">
+      <div class="create-workspace-form-content">
+        <div>
+        <label for="workspace-title">타이틀</label>
+        <input type="text" id="workspace-title"/>
+        </div>
+        <div>
+        <label for="workspace-description">정보</label>
+        <input type="text" id="workspace-description"/>
+        </div>
+        <div>
+      <button class="create-workspace-submit" id="create-workspace-btn" onclick="createWorkspace()">생성</button>
+        </div>
+      </div>
 
     <!--워크스페이스-->
     <nav id="nav">
