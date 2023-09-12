@@ -38,6 +38,10 @@
   object-fit: cover;
 }
 
+#alarm-button {
+  font: icon;
+}
+
 #logout {
   position: absolute;
   top: 20px;
