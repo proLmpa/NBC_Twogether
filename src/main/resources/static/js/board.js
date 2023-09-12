@@ -92,12 +92,8 @@ async function callMyBoard() {
 			return
 		}
 
-		var boardTitle =$('#board-title')
-
 		var decks = $('#deck-list')
 		var archive = $('#archive-container')
-
-		boardTitle.empty()
 		decks.empty()
 		archive.empty()
 		let board = await res.json()
@@ -106,7 +102,6 @@ async function callMyBoard() {
 			$('#invite-board-collaborator-list').append(formBoardCollaborator(boardId,boardCollaborator))
 		}
 
-		boardTitle.append(board['title'])
 		for (let deck of board['decks']) {
 			if (deck['archived']) {
 				archive.append(formArchived(deck))
@@ -1605,10 +1600,16 @@ function dragDeck(event) {
 }
 
 function allowDrop(event) {
-    event.preventDefault();
+	event.preventDefault();
+	if (event.target.classList.contains('deck')) {
+		event.target.classList.add('drag-over');
+	}
 }
 function dragleave(event) {
 	event.preventDefault();
+	if (event.target.classList.contains('deck')) {
+		event.target.classList.remove('drag-over');
+	}
 }
 
 function drop(event) {
@@ -1616,6 +1617,8 @@ function drop(event) {
 
     const deckList = document.getElementById('deck-list');
     if (deckList.contains(event.target) && event.target.classList.contains('deck')) {
+		event.target.classList.remove('drag-over')
+
         const dropIndex = Array.from(deckList.children).indexOf(event.target);
         let currentDeck = deckList.children[draggedDeckIndex]
         let targetDeck = event.target
