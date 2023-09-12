@@ -68,11 +68,10 @@ function deleteAlarm(aId) {
             checkTokenExpired(res);
             refreshToken(res);
 
-            let alarms = await res.json();
+            alert('알림이 삭제되었습니다.');
 
-            for (let alarm of alarms['alarms']) {
-                alert('알림이 삭제되었습니다.');
-            }
+            $('#alarm-list').empty();
+            callMyAlarms();
         })
         .catch(error => {
             console.error('알림 삭제 실패:', error);
@@ -93,17 +92,11 @@ function readAlarm(aId) {
         checkTokenExpired(res)
         refreshToken(res)
 
-        let alarms = await res.json();
+        console.log('알림 읽음');
+        alert('알림 읽음');
 
-        if (Array.isArray(alarms)) {
-            for (let alarm of alarms) {
-                if (alarm['id'] === aId) {
-                    console.log('알림 읽음');
-                    alert('알림 읽음');
-                    break;
-                }
-            }
-        }
+        $('#alarm-list').empty();
+        callMyAlarms();
     })
     .catch(error => {
         console.error('알림 읽기 실패 :', error);
