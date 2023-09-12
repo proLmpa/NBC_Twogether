@@ -1626,12 +1626,12 @@ function drop(event) {
             currentDeck.classList.contains('deck') &&
             targetDeck.classList.contains('deck')) {
             if (draggedDeckIndex < dropIndex) {
-                let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id
+                let nextDeckId = targetDeck.nextElementSibling === null ? 0 : targetDeck.nextElementSibling.id.split('-')[1]
 
                 moveDeck(curId, tarId, nextDeckId)
                 .then(() => deckList.insertBefore(currentDeck, targetDeck.nextElementSibling))
             } else {
-                let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id
+                let prevDeckId = targetDeck.previousElementSibling === null ? 0 : targetDeck.previousElementSibling.id.split('-')[1]
 
                 moveDeck(curId, prevDeckId, tarId)
                 .then(() => deckList.insertBefore(currentDeck, targetDeck))
@@ -1670,7 +1670,7 @@ function dropCard(event) {
 	if(event.target.classList.contains('card')) {
 		const currCard = draggedCard.id
 		const nextCard = event.target.id
-		const prevCard = event.target.previousElementSibling === null ? '-0' : event.target.previousElementSibling.id
+		const prevCard = event.target.previousElementSibling === null ? '-0' : event.target.previousElementSibling.previousElementSibling.id
 		const deck = event.target.parentNode.id
 
 		moveCard(deck.split('-')[3], currCard.split('-')[1], prevCard.split('-')[1], nextCard.split('-')[1])
