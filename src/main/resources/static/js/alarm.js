@@ -21,6 +21,7 @@ function callMyAlarms() {
             if (alarms.hasOwnProperty(alarmId)) {
                 let alarm = alarms[alarmId];
                 $('#alarm-list').append(formAlarm(alarm));
+                $('#alarm-default-msg').hide();
 
                 // 여기서 알림 객체마다 이벤트 리스너를 추가
                 $('#read-alarm-btn-' + alarmId).click(function () {

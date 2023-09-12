@@ -107,7 +107,7 @@ async function callMyBoard() {
 				}
 			}
 		}
-	})
+	});
 }
 
 async function createWorkspace() {
