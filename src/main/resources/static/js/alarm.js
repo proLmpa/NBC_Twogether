@@ -1,3 +1,7 @@
+function callAlarmBadge() {
+
+}
+
 function callMyAlarms() {
 
     $('#alarm_list').empty();
@@ -16,6 +20,7 @@ function callMyAlarms() {
 
         let alarmsResponse = await res.json();
         let alarms = alarmsResponse['alarms'];
+        let isUnreadAlarmExist = false;
 
         for (let alarmId in alarms) {
             if (alarms.hasOwnProperty(alarmId)) {
@@ -27,6 +32,22 @@ function callMyAlarms() {
                 $('#read-alarm-btn-' + alarmId).click(function () {
                     readAlarm(alarmId);
                 });
+            }
+
+            for (const alarm of alarms) {
+                if (!alarm['isRead']) {
+                    isUnreadAlarmExist = true;
+                    break;
+                }
+            }
+
+            if (isUnreadAlarmExist) {
+                // 하나라도 읽지 않은 알림이 있을 때, 형광 초록색으로 변환
+                $('#alarm-badge').css('background-color', 'limegreen');
+            } else {
+                // 모든 알림이 읽힌 경우, 현재 색상으로 유지
+                // 이때, 현재 색상은 CSS에 지정된 색상일 것입니다.
+                $('#alarm-badge').css('background-color', '');
             }
         }
     })

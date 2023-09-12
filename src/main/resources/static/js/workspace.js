@@ -59,6 +59,7 @@ $(document).ready(function () {
     // 본인 정보 불러오기
     callMyUserInfo()
     callMyAlarms()
+    callAlarmBadge()
 })
 
 function callMyWorkspaces() {

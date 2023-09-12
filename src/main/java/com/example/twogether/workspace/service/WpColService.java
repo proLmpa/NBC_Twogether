@@ -75,6 +75,30 @@ public class WpColService {
         }
     }
 
+    @Transactional
+    public void autoInviteWpCol(User user, Long wpId, String email) {
+
+        Workspace foundWorkspace = findWpById(wpId);
+
+        // workspaceCollaborators 필드를 로드하여 Lazy Loading을 강제로 발생시키기
+        foundWorkspace.loadWorkspaceCollaborators();
+
+        // 이미 등록된 사용자 초대당하기 불가
+        if (wpColRepository.existsByWorkspaceAndEmail(foundWorkspace, email)) {
+            throw new CustomException(CustomErrorCode.WORKSPACE_COLLABORATOR_ALREADY_EXISTS);
+        }
+
+        // 워크스페이스 협업자로 등록
+        User invitedUser = findUser(email);
+        WorkspaceCollaborator newWpCol = WpColRequestDto.toEntity(invitedUser, foundWorkspace);
+
+        // 아이디 수동 할당 - 데이터가 덮어 씌어지는 문제 방지
+        newWpCol.assignNewId();
+
+        wpColRepository.save(newWpCol);
+        eventPublisher.publishInviteWpColEvent(user, invitedUser, foundWorkspace);
+    }
+
     // 워크스페이스 협업자 추방
     @Transactional
     public void outWpCol(User user, Long wpId, String email) {
