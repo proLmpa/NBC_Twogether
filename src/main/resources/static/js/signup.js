@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:8080'
-// const BASE_URL = 'http://www.twogetherwork.com'
+// const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://www.twogetherwork.com'
 async function submitEmail() {
     // given
     let email = document.getElementById('email').value

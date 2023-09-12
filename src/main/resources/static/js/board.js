@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:8080'
-// const BASE_URL = 'http://www.twogetherwork.com'
+// const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://www.twogetherwork.com'
 
 // html 로딩 시 바로 실행되는 로직
 $(document).ready(function () {

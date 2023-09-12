@@ -1,3 +1,6 @@
+// const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://www.twogetherwork.com'
+
 async function logout() {
     // when
     await fetch('/api/users/logout', {
