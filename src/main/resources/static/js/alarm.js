@@ -1,7 +1,3 @@
-function callAlarmBadge() {
-
-}
-
 function callMyAlarms() {
 
     $('#alarm_list').empty();
@@ -113,17 +109,6 @@ function readAlarm(aId) {
         console.error('알림 읽기 실패 :', error);
     });
 }
-
-// function updateAlarmBadgeColor(alarms) {
-//     const alarmBadge = document.getElementById('alarm-badge');
-//     const isAnyUnread = alarms.some(alarm => !alarm.isRead);
-//
-//     if (isAnyUnread) {
-//         alarmBadge.style.backgroundColor = '#37ff02'; // Fluorescent green
-//     } else {
-//         alarmBadge.style.backgroundColor = '#705c3b'; // Brown
-//     }
-// }
 
 function formAlarm(alarm) {
     let aId = alarm['id']

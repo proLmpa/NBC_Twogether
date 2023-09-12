@@ -29,6 +29,11 @@ $(document).ready(function () {
         }
     })
 
+    // 알림 창 : 리드 버튼 클릭 이벤트 핸들러 추가
+    $('.alarm-panel-btn').click(function () {
+        readAlarm();
+    })
+
     // 개인 프로필 창 : 사진 클릭 이벤트 핸들러 추가
     $('.close-userProfile-panel').click(function () {
         $('#userProfile-panel').hide();
@@ -59,7 +64,6 @@ $(document).ready(function () {
     // 본인 정보 불러오기
     callMyUserInfo()
     callMyAlarms()
-    callAlarmBadge()
 })
 
 function callMyWorkspaces() {
