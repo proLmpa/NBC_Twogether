@@ -94,12 +94,14 @@ async function callMyBoard() {
 
 		var decks = $('#deck-list')
 		var archive = $('#archive-container')
+		var boardCol = $('#invite-board-collaborator-list')
 		decks.empty()
 		archive.empty()
+		boardCol.empty()
 		let board = await res.json()
 
 		for(let boardCollaborator of board['boardCollaborators']) {
-			$('#invite-board-collaborator-list').append(formBoardCollaborator(boardId,boardCollaborator))
+			boardCol.append(formBoardCollaborator(boardId,boardCollaborator))
 		}
 
 		for (let deck of board['decks']) {
@@ -188,8 +190,6 @@ async function createWorkspace() {
 		checkTokenExpired(res)
 		refreshToken(res)
 
-		// 생성된 workspace도 노출되도록 하기 위해 함수 호출
-		callMyWorkspaces()
 	})
 }
 

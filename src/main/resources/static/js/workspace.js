@@ -62,6 +62,8 @@ $(document).ready(function () {
     // 본인 정보 불러오기
     callMyUserInfo()
     callMyAlarms()
+    callMyWorkspaces()
+    callColWorkspaces()
 })
 
 function callMyWorkspaces() {
@@ -95,7 +97,6 @@ function callMyWorkspaces() {
             }
 
             for (let collaborator of workspace['wpCollaborators']) {
-                console.log(collaborator)
                 $('#invite-wp-col-list-' + wId).append(
                     formCollaborator(wId, collaborator))
             }

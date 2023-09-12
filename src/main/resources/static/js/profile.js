@@ -39,11 +39,6 @@ async function callMyUserInfo() {
         let imageURL = user.icon;
         $('#header-profileImage').attr('src', imageURL);
         $('#panel-profileImage').attr('src', imageURL);
-
-        // 본인이 생성한 workspace 불러오기
-        callMyWorkspaces()
-        // 본인이 초대된 workspace 불러오기
-        callColWorkspaces()
     })
 }
 
