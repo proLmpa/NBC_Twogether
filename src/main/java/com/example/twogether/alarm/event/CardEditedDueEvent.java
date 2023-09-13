@@ -35,8 +35,7 @@ public class CardEditedDueEvent extends ApplicationEvent {
 
     private String generateContent(Card card, LocalDateTime oldDue, LocalDateTime newDue) {
 
-        return "[ Updated Comment's Due Date ]\n\n\n"
-            + "Card Title : " + card.getTitle() + "\n"
-            + "Comment's Due Date : " + oldDue + " → " + newDue + "\n";
+        return "Card Title : " + card.getTitle() + "<br>"
+            + "Comment's Due Date : " + oldDue + " → " + newDue;
     }
 }
