@@ -1,11 +1,8 @@
 package com.example.twogether.alarm.event;
 
-import com.example.twogether.board.entity.Board;
 import com.example.twogether.card.entity.Card;
-import com.example.twogether.card.entity.CardCollaborator;
 import com.example.twogether.user.entity.User;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
