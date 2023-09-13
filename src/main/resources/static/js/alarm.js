@@ -23,6 +23,7 @@ function callMyAlarms() {
         if(alarms.length === 0) {
             $('#alarm-default-msg').text("도착한 알림이 없습니다.")
         }
+
         for (let alarmId in alarms) {
             if (alarms.hasOwnProperty(alarmId)) {
                 let alarm = alarms[alarmId];

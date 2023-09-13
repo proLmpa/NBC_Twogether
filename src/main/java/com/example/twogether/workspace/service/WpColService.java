@@ -78,7 +78,7 @@ public class WpColService {
     }
 
     @Transactional
-    public void autoInviteWpCol(User user, Long wpId, String email) {
+    public void autoInviteWpCol(Long wpId, String email) {
 
         Workspace foundWorkspace = findWpById(wpId);
 
