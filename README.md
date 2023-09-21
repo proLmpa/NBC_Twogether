@@ -1,41 +1,70 @@
-<h1>
-  
-> 협업 도구 Twogether 만들기 : <br> 내일배움캠프 Spring 최종 팀 프로젝트 2조
+<h2>01. 프로젝트 소개</h2>
 
-</h1>
+<h3>서비스명: 칸반 보드 서비스 Twogether</h3>
+사이트 바로가기 : www.twogetherwork.com <br>
+Swagger : http://www.twogetherwork.com/swagger-ui/index.html 
+<br><br>
+<details>
+<summary>ERD</summary>
+  <div markdown="1">
+    <img src="https://github.com/song-eojin/song-eojin.github.io/assets/122079064/683a5763-d601-4755-83e6-43327bf9e403">
+  </div>
+</details>
+
+<details>
+  <summary>Architecture</summary>
+    <div markdown="1">
+      <img src="https://github.com/song-eojin/song-eojin.github.io/assets/122079064/2ea42782-53d6-4875-932a-67c07654d584">      
+    </div>
+</details>
+<br>
+
+<h3>02. 팀 구성 및 담당</h3>
+
+| 팀 구성 | 역할 | 담당한 업무 |
+|------|---------|------------------------------------------------------|
+| 김희열 | 팀장 | - GithubAction CI/CD<br> - AWS 배포<br>- Redis: 이메일 인증 기능, RefreshToken<br> - BE : 사용자, 카드 댓글 기능<br> - FE : 드래그&드랍 |
+| 한지훈 | 부팀장 | - 테스트 환경을 위한 JUnit5와 H2 데이터베이스 적용<br> - 테스트 코드 작성<br> - BE & FE: 덱, 카드 기능 |
+| 송어진 | 팀원 | - BE & FE: 보드, 협업자 초대/추방, 사용자 프로필, 알림 |
+| 양소영 | 팀원 | - BE: 워크스페이스, 카드 체크리스트 기능<br> - FE: 전반적인 CSS 작업 |
 
 <br>
 
-  <h6>back-end</h6>
-<p style="display: block;">
-    <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&amp;logoColor=white">
-    <img src="https://camo.githubusercontent.com/c1fc168684171582321954905e8b9dc4f59810243ed85e645f3b7938ee3145cb/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6d7973716c2d3434373941313f7374796c653d666f722d7468652d6261646765266c6f676f3d6d7973716c266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&amp;logo=mysql&amp;logoColor=white">
+<h2>03. 기술 스택</h2>
+
+  <h6>Back-Ends</h6>
+  <p style="display: block;">
+    <img src="https://camo.githubusercontent.com/3a0dace00568ec7ad400eea60fb7c652b31ce613f0d2a085ff6837b56829524f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a6176612d3030373339363f7374796c653d666c6174266c6f676f3d4f70656e4a444b266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Java-007396?style=flat&amp;logo=OpenJDK&amp;logoColor=white" style="max-width: 100%;">
+    <img src="https://camo.githubusercontent.com/0a0b651e9a24fb80d3feb0ba5794d966ea53419a83d8423723b8f580ba6f95f9/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e672d3644423333463f7374796c653d666c6174266c6f676f3d537072696e67266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Spring-6DB33F?style=flat&amp;logo=Spring&amp;logoColor=white" style="max-width: 100%;"></a>
+  <img src="https://camo.githubusercontent.com/716d630ce4c683c3709b7bcd10d5c0a244ea723754496717cd47e6054df59843/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e675f426f6f742d3644423333463f7374796c653d666c6174266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&amp;logo=springboot&amp;logoColor=white" style="max-width: 100%;">
+    <img src="https://camo.githubusercontent.com/55862ab388067d25dd13b1767598f4b0b1e44b6711f32ca4e0c54e5f9cdcfd26/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e675f53656375726974792d3644423333463f7374796c653d666c6174266c6f676f3d737072696e677365637572697479266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Spring_Security-6DB33F?style=flat&amp;logo=springsecurity&amp;logoColor=white" style="max-width: 100%;">
+  <img src="https://camo.githubusercontent.com/a80bd28043f7b9286cf77bbba728de2748d86978f5e4c958dfa09c2dce9ba49f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e675f446174615f4a50412d3644423333463f7374796c653d666c6174" data-canonical-src="https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat" style="max-width: 100%;">  <img src="https://camo.githubusercontent.com/78f3152017f7dae410d842069791c2518dfc6d1a842e50b99ad5c4ed30ee0ae4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f48696265726e6174652d3539363636433f7374796c653d666f722d7468652d6261646765266c6f676f3d68696265726e617465266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&amp;logo=hibernate&amp;logoColor=white">
+    <img src="https://camo.githubusercontent.com/c0f71772804c86d0f144ce923027aff25e8d761c6b791d2de6698607e21c5465/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f677261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&amp;logo=gradle&amp;logoColor=white">
+    <img src="https://img.shields.io/badge/Thymeleaf-005f0f.svg?style=for-the-badge&logo=Thymeleaf-&logoColor=white">
+  <img src="https://camo.githubusercontent.com/c1fc168684171582321954905e8b9dc4f59810243ed85e645f3b7938ee3145cb/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6d7973716c2d3434373941313f7374796c653d666f722d7468652d6261646765266c6f676f3d6d7973716c266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&amp;logo=mysql&amp;logoColor=white">
     <img src="https://img.shields.io/badge/H2-0000bb?style=for-the-badge&logo=H2&amp;logoColor=white">
     <img src="https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white">
-    <img src="https://img.shields.io/badge/Spring-6DB33F.svg?style=for-the-badge&logo=Spring&logoColor=white">
-    <img src="https://img.shields.io/badge/Spring%20Security-6DB33F.svg?style=for-the-badge&logo=Spring-Security&logoColor=white">
-    <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=Spring-Boot&logoColor=white">
-    <img src="https://camo.githubusercontent.com/a4797e4acda6db88d63a7a0ef7332bd6a3e7cf9282fa0d7d1af6605efe11929c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e672044617461204a50412d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&amp;logo=&amp;logoColor=white">
+    <img src="https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&amp;logo=jsonwebtokens&amp;logoColor=white">
+  <br>
+</p>
+
+  <h6>Front-Ends</h6>
+  <p><img src="https://camo.githubusercontent.com/72b4d41915b3fc041632ccc2a16d19a91bc6532a23763ba33ef1388e8372af11/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f48544d4c2d4533344632363f7374796c653d666c6174266c6f676f3d68746d6c35266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/HTML-E34F26?style=flat&amp;logo=html5&amp;logoColor=white" style="max-width: 100%;">
+    <img src="https://camo.githubusercontent.com/692ce159a41a4ac291000fc2a24848b6cd89bcbcb318a73cdfe3d3040de8e74d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4353532d3135373242363f7374796c653d666c6174266c6f676f3d63737333266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/CSS-1572B6?style=flat&amp;logo=css3&amp;logoColor=white" style="max-width: 100%;">
+    <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E">    
+  </p>
+  
+  <h6>Server</h6>
+  <p>
     <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white">
     <img src="https://img.shields.io/badge/AWS EC2-f90?style=for-the-badge&logo=amazon-awsec2&logoColor=white">
     <img src="https://img.shields.io/badge/AWS CodeDeploy-f90?style=for-the-badge&logo=amazon-aws-CodeDeploy-f90&logoColor=white">
     <img src="https://img.shields.io/badge/AWS RDS-f90?style=for-the-badge&logo=amazon-aws-RDS-f90&logoColor=white">
     <img src="https://img.shields.io/badge/AWS S3-f90.svg?style=for-the-badge&logo=amazon-aws-S3&logoColor=white">
     <img src="https://img.shields.io/badge/AWS ElastiCache-f90.svg?style=for-the-badge&logo=ElastiCache&logoColor=white">
-    <img src="https://camo.githubusercontent.com/78f3152017f7dae410d842069791c2518dfc6d1a842e50b99ad5c4ed30ee0ae4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f48696265726e6174652d3539363636433f7374796c653d666f722d7468652d6261646765266c6f676f3d68696265726e617465266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&amp;logo=hibernate&amp;logoColor=white">
-    <img src="https://camo.githubusercontent.com/c0f71772804c86d0f144ce923027aff25e8d761c6b791d2de6698607e21c5465/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f677261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&amp;logo=gradle&amp;logoColor=white">
-    <img src="https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&amp;logo=jsonwebtokens&amp;logoColor=white">
-  </p>
-
-  <h6>front-end</h6>
-  <p style="display: block;">
-    <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white">
-    <img src="https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white">
-    <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E">
-    <img src="https://img.shields.io/badge/Thymeleaf-005f0f.svg?style=for-the-badge&logo=Thymeleaf-&logoColor=white">
   </p>
   
-  <h6>tool</h6>
+  <h6>Tools</h6>
   <p style="display: block;">
     <img src="https://camo.githubusercontent.com/699cfd7f3bb6a4e1764449f9b0da88a99a8d46bee71b93752b15ee8fbca5026a/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f496e74656c6c694a20494445412d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d496e74656c6c694a2049444541266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&amp;logo=IntelliJ IDEA&amp;logoColor=white">
     <img src="https://img.shields.io/badge/GitHub-181717.svg?style=for-the-badge&logo=GitHub&logoColor=white">
@@ -48,34 +77,9 @@
     <img src="https://img.shields.io/badge/Notion-000000.svg?style=for-the-badge&logo=Notion&logoColor=white">
     <img src="https://img.shields.io/badge/Trello-%23026AA7.svg?style=for-the-badge&logo=Trello&logoColor=white">
   </p>
+<br>
 
-<br><br>
-
-<h3>01. 프로젝트 소개</h3>
-
-* 주제 : `칸반 보드 기반의 협업 도구 만들기`
-* 선정 배경 : 최종 프로젝트 이전 마지막 프로젝트가 협업 도구 만들기였는데, 해당 프로젝트가 짧은 기간만 하고 지나치기에는 너무 아쉽고 `나중에 직접 사용하고 싶을 정도의 협업 도구를 만들어보자!` 라는 마음에서 이 주제를 선정하게 되었습니다.
-* 사이트 바로가기 : www.twogetherwork.com
-* Swagger : http://www.twogetherwork.com/swagger-ui/index.html
-* ERD :
-  <img src="https://github.com/song-eojin/song-eojin.github.io/assets/122079064/683a5763-d601-4755-83e6-43327bf9e403">
-* Architecture : 
-  <img src="https://github.com/song-eojin/song-eojin.github.io/assets/122079064/2ea42782-53d6-4875-932a-67c07654d584">
-
-<br><br>
-
-<h3>02. 팀 구성 및 담당</h3>
-
-| 팀 구성 | 역할 | 담당한 업무 |
-|------|---------|------------------------------------------------------|
-| 김희열 | 팀장 | GithubAction CI/CD, Redis - RefreshToken, 프론트 드래그&드랍, 카드 댓글, 라벨링 백엔드 기능 구현 |
-| 한지훈 | 부팀장 | 덱, 카드 백엔드 ~ 프론트 기능 구현, 통합 테스트 코드 H2 환경 설정 및 작성 |
-| 송어진 | 팀원 | 보드 백엔드 기능 구현, 협업자, 개인프로필, 알림 백엔드 ~ 프론트 기능 구현 |
-| 양소영 | 팀원 | 워크스페이스, 카드 체크리스트 백엔드 기능 구현, 모든 CSS 작업 |
-
-<br><br>
-
-<h3>03. 구현 기능</h3>
+<h3>04. 구현 기능</h3>
 
 <details>
 <summary>워크스페이스 기본 기능</summary>
@@ -202,9 +206,9 @@
 </div>
 </details> 
 
-<br><br>
+<br>
 
-<h3>04. 트러블 슈팅</h3>
+<h3>05. 트러블 슈팅</h3>
 
 <details>
 <summary>더미 데이터를 통한 테스트 코드 실행</summary>
